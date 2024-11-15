@@ -2,8 +2,9 @@ import tensorflow as tf
 import numpy as np
 import os 
 import sys
-PROJECT_DIR = os.environ['PROJECT_DIR']
-sys.path.append(os.path.join(PROJECT_DIR))
+
+PRJ_DIR= os.environ['PROJECT_DIR']
+sys.path.append(os.path.join(PRJ_DIR))
 sys.path.append(os.path.join(PRJ_DIR, "nystromformer"))
 
 from nystromformer.nystrom_attention import NystromAttention 
