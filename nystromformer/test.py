@@ -5,8 +5,6 @@ import sys
 PROJECT_DIR = os.environ['PROJECT_DIR']
 sys.path.append(os.path.join(PROJECT_DIR))
 
-
-
 def create_test_data(batch_size, seq_len, dim):
     """
     Create random data for testing. 
