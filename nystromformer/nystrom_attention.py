@@ -109,7 +109,7 @@ class NystromAttention(tf.keras.layers.Layer):
 
         einops_eq = "... i d, ... j d -> ... i j"
         sim1 = tf.einsum(einops_eq, q, k_landmarks)
-        sim2 = tf.einsum(einops_eq, q_landmarks, k_landmarks)
+            sim2 = tf.einsum(einops_eq, q_landmarks, k_landmarks)
         sim3 = tf.einsum(einops_eq, q_landmarks, k)
 
         attn1, attn2, attn3 = map(
@@ -130,4 +130,4 @@ class NystromAttention(tf.keras.layers.Layer):
             attn = attn1 @ attn2_inv @ attn3
             return out, attn
 
-return out
+        return out
