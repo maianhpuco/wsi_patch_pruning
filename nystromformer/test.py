@@ -4,8 +4,9 @@ import os
 import sys
 PROJECT_DIR = os.environ['PROJECT_DIR']
 sys.path.append(os.path.join(PROJECT_DIR))
+
 from nystromformer.nystrom_attension import NystromAttention 
-from nystromformer.nystromformer import Nystromformer
+from nystromformer.nystrom_former import Nystromformer
  
 
 def create_test_data(batch_size, seq_len, dim):
@@ -32,7 +33,8 @@ if __name__ == "__main__":
 
      # Create test data
     test_data = create_test_data(batch_size, seq_len, dim)
-    
+    print("test data shape")
+    print(test_data.shape)
     # Call the Nyström Attention layer
     attn_output = nystrom_attention_layer(test_data)
     print(f"NystromAttention output shape: {attn_output.shape}")
@@ -64,4 +66,5 @@ if __name__ == "__main__":
     
    
     nystromformer_output = nystromformer_model(test_data)
+
     print(f"Nystromformer output shape: {nystromformer_output.shape}")
