@@ -1,4 +1,6 @@
 import tensorflow as tf
+import os 
+import sys 
 
 PRJ_DIR = os.environ.get("PROJECT_DIR")
 sys.path.append(os.path.join(PRJ_DIR))
