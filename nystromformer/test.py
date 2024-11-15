@@ -4,6 +4,9 @@ import os
 import sys
 PROJECT_DIR = os.environ['PROJECT_DIR']
 sys.path.append(os.path.join(PROJECT_DIR))
+from nystromformer.nystrom_attension import NystromAttention 
+from nystromformer.nystromformer import Nystromformer
+ 
 
 def create_test_data(batch_size, seq_len, dim):
     """

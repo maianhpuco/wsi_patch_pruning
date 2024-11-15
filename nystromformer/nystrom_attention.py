@@ -1,65 +1,130 @@
+import math
+
+PRJ_DIR = os.environ.get("PROJECT_DIR")
+sys.path.append(os.path.join(PRJ_DIR))
+
 import tensorflow as tf
-import numpy as np
-import os 
-import sys
-PROJECT_DIR = os.environ['PROJECT_DIR']
-sys.path.append(os.path.join(PROJECT_DIR))
+from einops import rearrange, reduce
+from nystromformer.utils import MoorePenrosePseudoinverse
+import tensorflow_addons as tfa
 
 
 
-def create_test_data(batch_size, seq_len, dim):
-    """
-    Create random data for testing. 
-    """
-    return tf.random.normal((batch_size, seq_len, dim))
+class NystromAttention(tf.keras.layers.Layer):
+    def __init__(
+        self,
+        dim,
+        dim_head=64,
+        heads=8,
+        num_landmarks=256,
+        pinv_iterations=6,
+        residual=True,
+        residual_conv_kernel=33,
+        eps=1e-8,
+        dropout=0.0,
+        **kwargs
+    ):
+        super(NystromAttention, self).__init__(**kwargs)
 
-# Test NystromAttention
-print("Testing NystromAttention...")
+        self.eps = eps
+        inner_dim = heads * dim_head
+
+        self.num_landmarks = num_landmarks
+        self.pinv_iterations = pinv_iterations
 
 
-if __name__ == "__main__":
-    # Define testing parameters
-    batch_size = 16
-    seq_len = 128  # Length of the sequence
-    dim = 512  # Dimensionality of input
-    dim_head = 64  # Dimensionality of the head in attention
-    heads = 8  # Number of attention heads
-    num_landmarks = 256  # Number of landmarks for Nyström method
-    pinv_iterations = 6  # Number of iterations for Moore-Penrose Pseudoinverse
+        self.heads = heads
+        self.scale = dim_head**-0.5
+
+        self.to_qkv = tf.keras.layers.Dense(
+            inner_dim * 3, input_dim=dim, use_bias=False
+        )
+
+        self.avg_layer = tfa.layers.AdaptiveAveragePooling2D((self.heads, self.num_landmarks))
+        self.to_out = tf.keras.Sequential(
+            [
+                tf.keras.layers.Dense(dim),
+                tf.keras.layers.Dropout(dropout),
+            ]
+        )
+
+        self.residual = residual
+        if residual:
+            kernel_size = residual_conv_kernel
+            padding = residual_conv_kernel // 2
+
+            self.res_conv = tf.keras.Sequential(
+                [
+                    tf.keras.layers.Conv2D(
+                        use_bias=False,
+                        groups=heads,
+                        kernel_size=(kernel_size, 1),
+                        filters=(dim_head/heads) * heads,
+                        padding="same",
+                    ),
+                ]
+            )
+
+    def call(self, inputs, mask=None, return_attn=False, **kwargs):
+
+        b = tf.shape(inputs)[0]
+        n = tf.shape(inputs)[1]
+        _ = tf.shape(inputs)[2]
+
+        h, m, iters, eps = (
+            self.heads,
+            self.num_landmarks,
+            self.pinv_iterations,
+            self.eps,
+        )
 
 
-     # Create test data
-    test_data = create_test_data(batch_size, seq_len, dim)
-    
-    # Call the Nyström Attention layer
-    attn_output = nystrom_attention_layer(test_data)
-    print(f"NystromAttention output shape: {attn_output.shape}")
-    
-    # Test Nystromformer
-    print("Testing Nystromformer...")
+        remainder = n % m
+        padding = m - (n % m)
+        padding = tf.convert_to_tensor([[0, 0], [padding, 0], [0, 0]])
+        def padded_matrix():
+            return tf.pad(inputs, padding, constant_values=0)
 
-    nystrom_attention_layer = NystromAttention(
-       dim=dim,
-       dim_head=dim_head,
-       heads=heads,
-       num_landmarks=num_landmarks,
-       pinv_iterations=pinv_iterations,
-       residual=True,
-       dropout=0.1
-    )
-    nystromformer_model = Nystromformer(
-        dim=dim,
-        depth=4,
-        dim_head=dim_head,
-        heads=heads,
-        num_landmarks=num_landmarks,
-        pinv_iterations=pinv_iterations,
-        attn_values_residual=True,
-        attn_values_residual_conv_kernel=33,
-        attn_dropout=0.1,
-        ff_dropout=0.1
-    )
-    
-   
-    nystromformer_output = nystromformer_model(test_data)
-    print(f"Nystromformer output shape: {nystromformer_output.shape}")
+        inputs = tf.cond(tf.greater(remainder, 0), padded_matrix, lambda: tf.identity(inputs))
+
+        if mask is not None:
+                mask = tf.pad(mask, [[padding, 0], [0, 0]], constant_values=False)
+
+        q, k, v = tf.split(self.to_qkv(inputs), 3, axis=-1)
+        q, k, v = map(lambda t: rearrange(t, "b n (h d) -> b h n d", h=h), (q, k, v))
+
+        if mask is not None:
+            mask = rearrange(mask, "b n -> b () n")
+            q, k, v = map(
+                lambda t: t * tf.cast(mask[..., None], dtype=tf.float32), (q, k, v)
+            )
+
+        q = q * self.scale
+
+        q_landmarks = self.avg_layer(q)
+        k_landmarks = self.avg_layer(k)
+
+        einops_eq = "... i d, ... j d -> ... i j"
+        sim1 = tf.einsum(einops_eq, q, k_landmarks)
+        sim2 = tf.einsum(einops_eq, q_landmarks, k_landmarks)
+        sim3 = tf.einsum(einops_eq, q_landmarks, k)
+
+        attn1, attn2, attn3 = map(
+            lambda t: tf.nn.softmax(t, axis=-1), (sim1, sim2, sim3)
+        )
+        attn2_inv = MoorePenrosePseudoinverse(iteration=iters)(attn2)
+
+        out = (attn1 @ attn2_inv) @ (attn3 @ v)
+
+        if self.residual:
+            out += self.res_conv(v)
+
+        out = rearrange(out, "b h n d -> b n (h d)", h=h)
+        out = self.to_out(out)
+        out = out[:, -n:]
+
+        if return_attn:
+            attn = attn1 @ attn2_inv @ attn3
+            return out, attn
+
+return out

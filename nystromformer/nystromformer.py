@@ -1,7 +1,10 @@
 import tensorflow as tf
 
-from .nystrom_attention import NystromAttention
-from .utils import FeedForward, PreNorm
+PRJ_DIR = os.environ.get("PROJECT_DIR")
+sys.path.append(os.path.join(PRJ_DIR))
+
+from nystromformer.nystrom_attention import NystromAttention
+from nystromformer.utils import FeedForward, PreNorm
 
 
 class Nystromformer(tf.keras.Model):
