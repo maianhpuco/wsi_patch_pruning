@@ -19,7 +19,27 @@ def create_test_data(batch_size, seq_len, dim):
 
 # Test NystromAttention
 print("Testing NystromAttention...")
-
+nystrom_attention_layer = NystromAttention(
+    dim=dim,
+    dim_head=dim_head,
+    heads=heads,
+    num_landmarks=num_landmarks,
+    pinv_iterations=pinv_iterations,
+    residual=True,
+    dropout=0.1
+)
+nystromformer_model = Nystromformer(
+    dim=dim,
+    depth=4,
+    dim_head=dim_head,
+    heads=heads,
+    num_landmarks=num_landmarks,
+    pinv_iterations=pinv_iterations,
+    attn_values_residual=True,
+    attn_values_residual_conv_kernel=33,
+    attn_dropout=0.1,
+    ff_dropout=0.1
+)
 
 if __name__ == "__main__":
     print
@@ -44,27 +64,7 @@ if __name__ == "__main__":
     # Test Nystromformer
     print("Testing Nystromformer...")
 
-    nystrom_attention_layer = NystromAttention(
-       dim=dim,
-       dim_head=dim_head,
-       heads=heads,
-       num_landmarks=num_landmarks,
-       pinv_iterations=pinv_iterations,
-       residual=True,
-       dropout=0.1
-    )
-    nystromformer_model = Nystromformer(
-        dim=dim,
-        depth=4,
-        dim_head=dim_head,
-        heads=heads,
-        num_landmarks=num_landmarks,
-        pinv_iterations=pinv_iterations,
-        attn_values_residual=True,
-        attn_values_residual_conv_kernel=33,
-        attn_dropout=0.1,
-        ff_dropout=0.1
-    )
+
     
    
     nystromformer_output = nystromformer_model(test_data)
