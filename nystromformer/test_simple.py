@@ -8,7 +8,7 @@ sys.path.append(os.path.join(PRJ_DIR))
 sys.path.append(os.path.join(PRJ_DIR, "nystromformer"))
 
 from nystromformer.nystrom_attention import NystromAttention  
-from nystromformer.nystromformer import NystromFormer
+from nystromformer.nystrom_former import NystromFormer
 
 
 
