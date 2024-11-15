@@ -9,6 +9,16 @@ sys.path.append(os.path.join(PRJ_DIR, "nystromformer"))
 
 from nystromformer.nystrom_attention import NystromAttention 
 from nystromformer.nystrom_former import Nystromformer
+
+
+    # Define testing parameters
+batch_size = 16
+seq_len = 128  # Length of the sequence
+dim = 512  # Dimensionality of input
+dim_head = 64  # Dimensionality of the head in attention
+heads = 8  # Number of attention heads
+num_landmarks = 256  # Number of landmarks for Nyström method
+pinv_iterations = 6  # Number of iterations for Moore-Penrose Pseudoinverse
  
 
 def create_test_data(batch_size, seq_len, dim):
@@ -42,31 +52,18 @@ nystromformer_model = Nystromformer(
 )
 
 if __name__ == "__main__":
-    print
-    # Define testing parameters
-    batch_size = 16
-    seq_len = 128  # Length of the sequence
-    dim = 512  # Dimensionality of input
-    dim_head = 64  # Dimensionality of the head in attention
-    heads = 8  # Number of attention heads
-    num_landmarks = 256  # Number of landmarks for Nyström method
-    pinv_iterations = 6  # Number of iterations for Moore-Penrose Pseudoinverse
 
 
      # Create test data
     test_data = create_test_data(batch_size, seq_len, dim)
     print("test data shape")
     print(test_data.shape)
+    
     # Call the Nyström Attention layer
     attn_output = nystrom_attention_layer(test_data)
     print(f"NystromAttention output shape: {attn_output.shape}")
-    
     # Test Nystromformer
-    print("Testing Nystromformer...")
-
-
-    
-   
+    print("Testing Nystromformer...")   
     nystromformer_output = nystromformer_model(test_data)
 
     print(f"Nystromformer output shape: {nystromformer_output.shape}")
