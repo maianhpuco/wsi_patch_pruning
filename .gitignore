@@ -5,3 +5,5 @@ data/feature_extractor/
 !data/data_loader.py
 !data/feature_extractor/*
 !data/feature_extractor/.gitkeep
+
+env 
