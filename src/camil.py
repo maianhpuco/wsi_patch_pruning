@@ -174,4 +174,5 @@ class Encoder(nn.Module):
         # by combining the weighted attention values (xl) 
         # with the residual connection (encoder_output). 
         # The result depends on the attention weights (wei and squared_wei). 
-        return xo, alpha 
+        return xo, alpha
+    

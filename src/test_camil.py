@@ -10,6 +10,9 @@ from collections import deque
 PROJECT_DIR = os.environ.get('PROJECT_DIR') 
 sys.path.append(os.path.join(PROJECT_DIR))
 sys.path.append(os.path.join(PROJECT_DIR, "src"))
+
+
+
 from src.nystromformer import NystromAttention     
 from src.camil import CAMIL 
 import numpy as np
