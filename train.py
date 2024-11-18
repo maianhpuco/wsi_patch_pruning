@@ -30,13 +30,13 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Training configuration for CAMIL model")
     
     # Dataset and paths
+    parser.add_argument('--train_or_test', type=str, choices=["train", "test"], default='train', help="training or inferencing")  
     parser.add_argument('--dataset_name', type=str, choices=["camelyon16"], default='camelyon16', help="dataset name") 
     parser.add_argument('--input_shape', type=int, default=512, help="Input feature dimension (default: 512)")
     parser.add_argument('--n_classes', type=int, default=2, help="Number of output classes (default: 2)")
     parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
     # Training parameters
     parser.add_argument('--epochs', type=int, default=3, help="Number of epochs to train (default: 10)")
-    parser.add_argument('--batch_size', type=int, default=32, help="Batch size (default: 32)")
     parser.add_argument('--learning_rate', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
     
     # Device (GPU/CPU)
@@ -45,36 +45,70 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():
-
+    NUM_EPOCH = 10 
     # Parse arguments
     args = parse_arguments()
-    print(f"Training for dataset {format(args.dataset_name)}")
     
+    #TODO: later args should be save in a YML file ! 
+    print(f"Training for dataset {format(args.dataset_name)}")
+    train_or_test_or_val = 'train'
+    args.epochs = NUM_EPOCH 
     if args.dataset_name == 'camelyon16':     
-        args.label_file = os.path.join(PROJECT_DIR, "label_files/camelyon_data.csv")
-        args.split_paths = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits")
-        args.file_paths =  glob.glob(
-            os.path.join(
-                PROJECT_DIR, 
-                "data/camelyon16_features/h5_files/*.h5")  
-        )
-        
-        
+        args.label_file = os.path.join(PROJECT_DIR, "data/label_files/camelyon_data.csv")
+        args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_0.csv")
+        args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files') 
+        args.save_dir = os.path.join(PROJECT_DIR, "data/weights") 
+        args.log_dir = os.path.join(PROJECT_DIR, "data/logs")  
     # Initialize the model
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
  
     model = CAMIL(args)
     model.to(device)   
 
+    import datetime
+    # Generate the dynamic save path with dataset name, timestamp, and "completed"
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
+    save_path = f"{args.save_dir}/{args.dataset_name}_{timestamp}_completed.pth" 
+    log_path = f"{args.log_dir}/{args.dataset_name}_{timestamp}.json"  
+    
     # Create dataset
-    dataset = CustomDataset(file_paths=args.file_paths, label_file=args.label_file, shuffle=True)
-
+    train_dataset = CustomDataset(
+        train_or_test_or_val = 'train',
+        split_filepath=args.split_filepath, 
+        label_file=args.label_file,
+        feature_folder=args.feature_folder, 
+        feature_file_end ='h5',  
+        shuffle=True,  
+    )
+        # Create dataset
+    val_dataset = CustomDataset(
+        train_or_test_or_val = 'val',
+        split_filepath=args.split_filepath, 
+        label_file=args.label_file,
+        feature_folder=args.feature_folder, 
+        feature_file_end ='h5',  
+        shuffle=True
+    )
+    
+    # Print the length of the train and validation datasets
+    print(f"Length of train_dataset: {len(train_dataset)}")
+    print(f"Length of val_dataset: {len(val_dataset)}")
     # # Set device (GPU or CPU)
     # device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # # Call the train function
-    train(model, dataset, epochs=10, learning_rate=1e-3, device=device)
+    train(
+        model, 
+        train_dataset,
+        val_dataset, 
+        epochs=args.epochs, 
+        learning_rate=args.learning_rate, 
+        device=device, 
+        save_path=save_path, 
+        log_file=log_path
+        )
 
+    
 if __name__ == '__main__':
     main()

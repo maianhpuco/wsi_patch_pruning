@@ -8,27 +8,54 @@ import pandas as pd
 from sklearn.preprocessing import normalize
 
 class CustomDataset(Dataset):
-    def __init__(self, file_paths, split_paths, label_file, shuffle=False):
+    def __init__(
+        self, 
+        train_or_test_or_val,
+        split_filepath, 
+        label_file,
+        feature_folder, 
+        feature_file_end ='h5',  
+        shuffle=True
+        ):
         """
         Args:
             label_file (str): Path to the CSV file containing labels for each sample.
             shuffle (bool): Whether to shuffle the data or not. Default is False.
         """
-        self.file_paths = file_paths
+        assert train_or_test_or_val in ['train','test', 'val'], f"Invalid argument: {train_or_test_or_val}. Must be 'train', 'val', or 'tstv'."
+        self.train_or_test_or_val = train_or_test_or_val 
+        self.feature_folder = feature_folder
+        self.split_filepath = split_filepath 
         self.label_file = label_file
         self.shuffle = shuffle
+        self.feature_file_end = feature_file_end
         
         # Load labels from CSV file
-        self.labels_df = pd.read_csv(label_file)
+        # self.labels_df = pd.read_csv(label_file)
         
         # Optionally shuffle  if required
-        self.indices = np.arange(len(self.file_paths))
+        # self.indices = np.arange(len(self.file_paths))
+        df = pd.read_csv(self.split_filepath)
+     
+        self.name_label_dict = df.set_index(self.train_or_test_or_val)[
+            f'{self.train_or_test_or_val}_label'].to_dict()
+        self.names = [k for k, v in self.name_label_dict.items()]
+        import random 
+        self.names = random.sample(self.names, len(self.names))[:5]
+ 
+        self.indices = np.arange(len(self.names))
+        
+        
         if self.shuffle:
             np.random.shuffle(self.indices)
         
+    def get_feature_path(self, basename):
+        return os.path.join(self.feature_folder, 
+                            f'{basename}.{self.feature_file_end}')
+    
     def __len__(self):
         """Returns the total number of samples."""
-        return len(self.file_paths)
+        return len(self.indices)
 
     
     def __getitem__(self, index):
@@ -41,25 +68,19 @@ class CustomDataset(Dataset):
         """
         # Get the index of the file
         file_idx = self.indices[index]
-        file_path = self.file_paths[file_idx]
-        
+        file_basename = self.names[file_idx]
+        file_path = self.get_feature_path(file_basename)
         # Load the HDF5 file
         with h5py.File(file_path,  "r") as f:
             features = f['features'][:]
             neighbor_indices = f['indices'][:]
             values = f['similarities'][:]
-
             values = np.nan_to_num(values)
-            
-            # Get the label
-            base_name = os.path.splitext(os.path.basename(file_path))[0]
-            label = self.labels_df.loc[self.labels_df["slide_id"] == base_name, "slide_label"].values[0]
-            # print("--> basename", base_name)
-            # print("--> label", label) 
-            
+            # base_name = os.path.splitext(os.path.basename(file_path))[0]
+            label = self.name_label_dict[file_basename]
         # label_tensor = torch.tensor(label, dtype=torch.float32)
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
-
+        # print(label_tensor)
         # Process adjacency matrix
         Idx = neighbor_indices[:, :8]
         rows = np.asarray([[enum] * len(item) for enum, item in enumerate(Idx)]).ravel()
