@@ -12,7 +12,7 @@ down load this file
 ```!gdown 1CS7I0yrTSNLbFk_CzqLrh5TKesZo3uXm ``` 
 then unzip them into ```data/camelyon16_feature/h5_files```
 
-
+``` 
 .
 ├── README.md
 ├── check_cuda.py
@@ -46,3 +46,5 @@ then unzip them into ```data/camelyon16_feature/h5_files```
     ├── eval.py
     ├── helper.py
     └── utils.py 
+
+``` 
