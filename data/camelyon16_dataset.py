@@ -15,7 +15,8 @@ class CustomDataset(Dataset):
         label_file,
         feature_folder, 
         feature_file_end ='h5',  
-        shuffle=True
+        shuffle=True, 
+        dry_run = False, 
         ):
         """
         Args:
@@ -40,6 +41,8 @@ class CustomDataset(Dataset):
         self.name_label_dict = df.set_index(self.train_or_test_or_val)[
             f'{self.train_or_test_or_val}_label'].to_dict()
         self.names = [k for k, v in self.name_label_dict.items()]
+        if dry_run == False: 
+            
         import random 
         self.names = random.sample(self.names, len(self.names))[:5]
  

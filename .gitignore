@@ -7,7 +7,7 @@ __pycache__/
 
 
 
-/data/camelyon16_features/* 
+data/camelyon16_features/* 
 
 
 
@@ -19,3 +19,7 @@ utils/train_bk.py
 src/test.py 
 src/test_camil.py 
 
+data/logs/* 
+!data/logs/.gitkeep
+data/weights/*
+!data/logs/.gitkeep
