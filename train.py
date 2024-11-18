@@ -122,17 +122,17 @@ def main():
     # device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # # # Call the train function
-    # train(
-    #     model, 
-    #     train_dataset,
-    #     val_dataset, 
-    #     epochs=args.epochs, 
-    #     learning_rate=args.learning_rate, 
-    #     device=device, 
-    #     save_path=save_path, 
-    #     log_file=log_path
-    #     )
+    # # Call the train function
+    train(
+        model, 
+        train_dataset,
+        val_dataset, 
+        epochs=args.epochs, 
+        learning_rate=args.learning_rate, 
+        device=device, 
+        save_path=save_path, 
+        log_file=log_path
+        )
 
     
 if __name__ == '__main__':
