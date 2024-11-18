@@ -12,6 +12,11 @@ down load this file
 ```!gdown 1CS7I0yrTSNLbFk_CzqLrh5TKesZo3uXm ``` 
 then unzip them into ```data/camelyon16_feature/h5_files```
 
+- to running the training: 
+```python train.py```
+- to dry run (testing the code with few sample), run:
+```python train.py -dry_run True```
+
 ``` 
 .
 ├── README.md
