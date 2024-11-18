@@ -15,7 +15,7 @@ then unzip them into ```data/camelyon16_feature/h5_files```
 - to running the training: 
 ```python train.py```
 - to dry run (testing the code with few sample), run:
-```python train.py -dry_run True```
+```python train.py --dry_run True```
 
 ``` 
 .
