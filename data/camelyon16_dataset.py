@@ -37,14 +37,15 @@ class CustomDataset(Dataset):
         # Optionally shuffle  if required
         # self.indices = np.arange(len(self.file_paths))
         df = pd.read_csv(self.split_filepath)
-     
+        df.dropna(subset=[self.train_or_test_or_val, f'{self.train_or_test_or_val}_label'], inplace=True)
+  
         self.name_label_dict = df.set_index(self.train_or_test_or_val)[
             f'{self.train_or_test_or_val}_label'].to_dict()
         self.names = [k for k, v in self.name_label_dict.items()]
         if dry_run is True: 
             import random 
             self.names = random.sample(self.names, 5 )
- 
+        # print(self.names)
         self.indices = np.arange(len(self.names))
         
         
