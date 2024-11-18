@@ -82,7 +82,7 @@ class MILAttentionLayer(nn.Module):
         # Compute tanh(v * h_k^T)
         # instance.shape = (batch_size, seq_len, 512), v_weight_params.shape = (512, weight_params_dim)
         instance = torch.tanh(torch.matmul(instance, self.v_weight_params))  # Attention computation
-        print("- tanh result: ", instance.shape)
+        # print("- tanh result: ", instance.shape)
         # If gated mechanism is used, apply gating mechanism
         if self.use_gated:
             # print("-sigmoid_result", sigmoid_result.shape)
