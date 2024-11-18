@@ -36,7 +36,7 @@ def parse_arguments():
     parser.add_argument('--n_classes', type=int, default=2, help="Number of output classes (default: 2)")
     parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
     # Training parameters
-    parser.add_argument('--epochs', type=int, default=3, help="Number of epochs to train (default: 10)")
+    parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
     parser.add_argument('--learning_rate', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
     
     # Device (GPU/CPU)
@@ -45,14 +45,13 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():
-    NUM_EPOCH = 10 
     # Parse arguments
     args = parse_arguments()
     
     #TODO: later args should be save in a YML file ! 
     print(f"Training for dataset {format(args.dataset_name)}")
     train_or_test_or_val = 'train'
-    args.epochs = NUM_EPOCH 
+    # args.epochs = NUM_EPOCH 
     if args.dataset_name == 'camelyon16':     
         args.label_file = os.path.join(PROJECT_DIR, "data/label_files/camelyon_data.csv")
         args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_0.csv")
@@ -72,28 +71,30 @@ def main():
     log_path = f"{args.log_dir}/{args.dataset_name}_{timestamp}.json"  
 
     if args.dry_run == True: 
-            print("RUNING THE DRY RUN---->>> ")
-            train_dataset = CustomDataset(
-                train_or_test_or_val = 'train',
-                split_filepath=args.split_filepath, 
-                label_file=args.label_file,
-                feature_folder=args.feature_folder, 
-                feature_file_end ='h5',  
-                shuffle=True,  
-                dry_run=True
+        args.epochs = 3 
+        print("RUNING THE DRY RUN---->>> ")
+        train_dataset = CustomDataset(
+            train_or_test_or_val = 'train',
+            split_filepath=args.split_filepath, 
+            label_file=args.label_file,
+            feature_folder=args.feature_folder, 
+            feature_file_end ='h5',  
+            shuffle=True,  
+            dry_run=True
 
-            )
-                # Create dataset
-            val_dataset = CustomDataset(
-                train_or_test_or_val = 'val',
-                split_filepath=args.split_filepath, 
-                label_file=args.label_file,
-                feature_folder=args.feature_folder, 
-                feature_file_end ='h5',  
-                shuffle=True, 
-                dry_run=True
-            )
+        )
+            # Create dataset
+        val_dataset = CustomDataset(
+            train_or_test_or_val = 'val',
+            split_filepath=args.split_filepath, 
+            label_file=args.label_file,
+            feature_folder=args.feature_folder, 
+            feature_file_end ='h5',  
+            shuffle=True, 
+            dry_run=True
+        )
     else: 
+        print(f"Running the training with {args.epochs} epochs")
         # Create dataset
         train_dataset = CustomDataset(
             train_or_test_or_val = 'train',
