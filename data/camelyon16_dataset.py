@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.preprocessing import normalize
 
 class CustomDataset(Dataset):
-    def __init__(self, file_paths, label_file, shuffle=False):
+    def __init__(self, file_paths, split_paths, label_file, shuffle=False):
         """
         Args:
             label_file (str): Path to the CSV file containing labels for each sample.

@@ -50,11 +50,16 @@ def main():
     args = parse_arguments()
     print(f"Training for dataset {format(args.dataset_name)}")
     
-    if args.dataset_name == 'camelyon16':      
+    if args.dataset_name == 'camelyon16':     
         args.label_file = os.path.join(PROJECT_DIR, "label_files/camelyon_data.csv")
+        args.split_paths = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits")
         args.file_paths =  glob.glob(
-            os.path.join(PROJECT_DIR, "data/camelyon16_features/h5_files/*.h5")  
+            os.path.join(
+                PROJECT_DIR, 
+                "data/camelyon16_features/h5_files/*.h5")  
         )
+        
+        
     # Initialize the model
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
  
