@@ -1,9 +1,11 @@
 src/__pycache__
-data 
-data/feature_extractor/
-
+ 
+data/camelyon16_features/* 
+data/.DS_Store
+data/__pycache__
+ 
 !data/data_loader.py
-!data/feature_extractor/*
-!data/feature_extractor/.gitkeep
-
+!data/camelyon16_features/.gitkeep
+!data/
 env 
+
