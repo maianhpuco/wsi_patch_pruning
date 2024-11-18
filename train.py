@@ -28,7 +28,7 @@ def parse_arguments():
     Parses the command line arguments.
     """
     parser = argparse.ArgumentParser(description="Training configuration for CAMIL model")
-    
+    parser.add_argument('--dry_run', type=bool, default=False, help="test running okay? ")    
     # Dataset and paths
     parser.add_argument('--train_or_test', type=str, choices=["train", "test"], default='train', help="training or inferencing")  
     parser.add_argument('--dataset_name', type=str, choices=["camelyon16"], default='camelyon16', help="dataset name") 
@@ -70,25 +70,49 @@ def main():
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     save_path = f"{args.save_dir}/{args.dataset_name}_{timestamp}_completed.pth" 
     log_path = f"{args.log_dir}/{args.dataset_name}_{timestamp}.json"  
-    
-    # Create dataset
-    train_dataset = CustomDataset(
-        train_or_test_or_val = 'train',
-        split_filepath=args.split_filepath, 
-        label_file=args.label_file,
-        feature_folder=args.feature_folder, 
-        feature_file_end ='h5',  
-        shuffle=True,  
-    )
+
+    if args.dry_run == True: 
+            print("RUNING THE DRY RUN---->>> ")
+            train_dataset = CustomDataset(
+                train_or_test_or_val = 'train',
+                split_filepath=args.split_filepath, 
+                label_file=args.label_file,
+                feature_folder=args.feature_folder, 
+                feature_file_end ='h5',  
+                shuffle=True,  
+                dry_run=True
+
+            )
+                # Create dataset
+            val_dataset = CustomDataset(
+                train_or_test_or_val = 'val',
+                split_filepath=args.split_filepath, 
+                label_file=args.label_file,
+                feature_folder=args.feature_folder, 
+                feature_file_end ='h5',  
+                shuffle=True, 
+                dry_run=True
+            )
+    else: 
         # Create dataset
-    val_dataset = CustomDataset(
-        train_or_test_or_val = 'val',
-        split_filepath=args.split_filepath, 
-        label_file=args.label_file,
-        feature_folder=args.feature_folder, 
-        feature_file_end ='h5',  
-        shuffle=True
-    )
+        train_dataset = CustomDataset(
+            train_or_test_or_val = 'train',
+            split_filepath=args.split_filepath, 
+            label_file=args.label_file,
+            feature_folder=args.feature_folder, 
+            feature_file_end ='h5',  
+            shuffle=True,  
+        )
+            # Create dataset
+        val_dataset = CustomDataset(
+            train_or_test_or_val = 'val',
+            split_filepath=args.split_filepath, 
+            label_file=args.label_file,
+            feature_folder=args.feature_folder, 
+            feature_file_end ='h5',  
+            shuffle=True
+        )
+
     
     # Print the length of the train and validation datasets
     print(f"Length of train_dataset: {len(train_dataset)}")
