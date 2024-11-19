@@ -94,7 +94,19 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
         
         # Collect predictions and labels for AUC calculation
         all_train_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
-        all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
+        all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D 
+        
+        # Convert the predictions and labels to numpy arrays of float64
+    all_train_preds_np = np.array(all_train_preds, dtype=np.float64)
+    all_train_labels_np = np.array(all_train_labels, dtype=np.float64)
+
+    # If you want them as Python lists, you can convert them using tolist():
+    all_train_preds_list = all_train_preds_np.tolist()
+    all_train_labels_list = all_train_labels_np.tolist() 
+    
+    print("- train pred", all_train_preds_list)
+    print("- train label", all_train_labels_list)
+      
     # print("all_train_preds", all_train_preds)
     # print("all_train_labels", all_train_labels)  
     # Calculate average loss and accuracy for training
