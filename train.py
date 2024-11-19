@@ -131,7 +131,8 @@ def main():
         learning_rate=args.learning_rate, 
         device=device, 
         save_path=save_path, 
-        log_file=log_path
+        log_file=log_path, 
+        checkpoint_path=None
         )
 
     

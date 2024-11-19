@@ -19,20 +19,21 @@ def save_checkpoint(model, optimizer, epoch, loss, filename='checkpoint.pth'):
     }, filename)
 
 # Helper function to load checkpoints and resume training
-def load_checkpoint(model, optimizer, filename='checkpoint.pth'):
-    if os.path.isfile(filename):
-        print(f"Loading checkpoint from {filename}...")
-        checkpoint = torch.load(filename)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-        loss = checkpoint['loss']
-        print(f"Resuming from epoch {epoch}, last loss: {loss}")
-        return model, optimizer, epoch, loss
-    else:
+def load_checkpoint(model, optimizer, filename=None):
+    if filename is not None:
         print("No checkpoint found, starting fresh.")
         return model, optimizer, 0, None
-
+    else: 
+        if os.path.isfile(filename):
+            print(f"Loading checkpoint from {filename}...")
+            checkpoint = torch.load(filename)
+            model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            epoch = checkpoint['epoch']
+            loss = checkpoint['loss']
+            print(f"Resuming from epoch {epoch}, last loss: {loss}")
+            return model, optimizer, epoch, loss
+        
 
 def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, device):
     """
@@ -145,7 +146,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     return avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc
  
 def train(
-    model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, device="cuda", save_path="best_model.pth", log_file=None, checkpoint_path="checkpoint.pth"):
+    model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, 
+    device="cuda", save_path="best_model.pth", log_file=None, checkpoint_path=None):
     """
     Train the model for multiple epochs, saving the model with the best validation performance and logging the results.
     
