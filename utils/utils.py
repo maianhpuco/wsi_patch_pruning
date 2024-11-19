@@ -92,8 +92,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
         # Collect predictions and labels for AUC calculation
         all_train_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
         all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
-    print("all_train_preds", all_train_preds)
-    print("all_train_labels", all_train_labels)  
+    # print("all_train_preds", all_train_preds)
+    # print("all_train_labels", all_train_labels)  
     # Calculate average loss and accuracy for training
     avg_train_loss = running_train_loss / len(train_dataset)
     train_accuracy = correct_train / total_train
@@ -133,8 +133,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             # Collect predictions and labels for AUC calculation
             all_val_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
             all_val_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
-    print("all_val_preds", all_val_preds)
-    print("all_val_labels", all_val_labels)
+    # print("all_val_preds", all_val_preds)
+    # print("all_val_labels", all_val_labels)
     # Calculate average loss and accuracy for validation
     avg_val_loss = running_val_loss / len(val_dataset)
     val_accuracy = correct_val / total_val
@@ -216,7 +216,7 @@ def train(
             best_model_weights = model.state_dict()  # Save the model's state dict
 
         # Save checkpoint every epoch
-        save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
+        # save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
 
     # After all epochs, save the best model's weights
     if best_model_weights is not None:
