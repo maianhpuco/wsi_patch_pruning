@@ -123,8 +123,8 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("device", device)
     # # Call the train function
-    if checkpoint_filename is not None: 
-        checkpoint_path = os.path.join(PROJECT_DIR, 'data/weights', checkpoint_filename) 
+    if args.checkpoint_filename is not None: 
+        checkpoint_path = os.path.join(PROJECT_DIR, 'data/weights', args.checkpoint_filename) 
     else: 
         checkpoint_path = None
     train(
