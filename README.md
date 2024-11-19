@@ -53,10 +53,11 @@ then unzip them into ```data/camelyon16_feature/h5_files```
     └── utils.py 
 
 ```
-
+Experiment 01: 
+- use pretrained embedding
+- learning rate: 1e-05
+- epochs: 30 
+ 
  ![image](https://github.com/user-attachments/assets/91b3114e-57a1-4cb4-9e81-2b3dda59f5a8)
 
 
-experiment:
-- learning rate: 1e-05
-- epochs: 30 
