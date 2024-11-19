@@ -38,7 +38,7 @@ def parse_arguments():
     # Training parameters
     parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
     parser.add_argument('--learning_rate', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
-    
+    parser.add_argument('--checkpoint_filename', type=str, default=None)
     # Device (GPU/CPU)
     parser.add_argument('--device', type=str, choices=["cpu", "cuda"], default="cuda", help="Device for training (default: cuda)")
 
@@ -57,7 +57,7 @@ def main():
         args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_3.csv")
         args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files') 
         args.save_dir = os.path.join(PROJECT_DIR, "data/weights") 
-        args.log_dir = os.path.join(PROJECT_DIR, "data/logs")  
+        args.log_dir = os.path.join(PROJECT_DIR, "data/logs")   
     # Initialize the model
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
  
@@ -102,7 +102,7 @@ def main():
             label_file=args.label_file,
             feature_folder=args.feature_folder, 
             feature_file_end ='h5',  
-            shuffle=True,  
+            shuffle=True, 
         )
             # Create dataset
         val_dataset = CustomDataset(
@@ -123,6 +123,10 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("device", device)
     # # Call the train function
+    if checkpoint_filename is not None: 
+        checkpoint_path = os.path.join(PROJECT_DIR, 'data/weights', checkpoint_filename) 
+    else: 
+        checkpoint_path = None
     train(
         model, 
         train_dataset,
@@ -132,9 +136,10 @@ def main():
         device=device, 
         save_path=save_path, 
         log_file=log_path, 
-        checkpoint_path=None
+        checkpoint_path=checkpoint_path 
         )
 
     
 if __name__ == '__main__':
     main()
+#checkpoint_path camelyon16_20241118-1932_completed.pth 
