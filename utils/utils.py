@@ -6,6 +6,8 @@ import torch.nn as nn
 import time
 from collections import deque
 import json
+import numpy as np 
+
 from sklearn.metrics import roc_auc_score 
 
 # Helper function to save checkpoints
