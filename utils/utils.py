@@ -104,8 +104,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     all_train_preds_list = all_train_preds_np.tolist()
     all_train_labels_list = all_train_labels_np.tolist() 
     
-    print("- train pred", all_train_preds_list)
-    print("- train label", all_train_labels_list)
+    # print("- train pred", all_train_preds_list)
+    # print("- train label", all_train_labels_list)
       
     # print("all_train_preds", all_train_preds)
     # print("all_train_labels", all_train_labels)  
@@ -131,8 +131,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             labels = labels.to(device)
 
             # Forward pass: Get model outputs
-            outputs, _, _ = model(features, sparse_matrix)
-            predicted_prob = torch.sigmoid(outputs)
+            predicted_prob, _, _ = model(features, sparse_matrix)
 
             # Calculate loss
             loss = loss_fn(predicted_prob, labels)
@@ -157,8 +156,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     all_val_preds_list = all_val_preds.tolist()
     all_val_labels_list = all_val_labels.tolist() 
     
-    print("val pred", all_val_preds_list)
-    print("val label", all_val_labels_list)
+    # print("val pred", all_val_preds_list)
+    # print("val label", all_val_labels_list)
     
     # Calculate average loss and accuracy for validation
     avg_val_loss = running_val_loss / len(val_dataset)
@@ -168,10 +167,10 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     val_auc = roc_auc_score(all_val_labels, all_val_preds)
         # Convert to a standard numpy array (float64)
     # Print the results
-    print("-----")
-    print(f"Validation Loss: {avg_val_loss:.4f}")
-    print(f"Validation Accuracy: {val_accuracy:.4f}")
-    print(f"Validation AUC: {val_auc:.4f}") 
+    # print("-----")
+    # print(f"Validation Loss: {avg_val_loss:.4f}")
+    # print(f"Validation Accuracy: {val_accuracy:.4f}")
+    # print(f"Validation AUC: {val_auc:.4f}") 
     return avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc
 
 def train(
