@@ -144,7 +144,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     val_auc = roc_auc_score(all_val_labels, all_val_preds)
 
     return avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc
- 
+
 def train(
     model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, 
     device="cuda", save_path="best_model.pth", log_file=None, checkpoint_path=None):
@@ -217,10 +217,21 @@ def train(
             best_epoch = epoch + 1
             best_model_weights = model.state_dict()  # Save the model's state dict
 
+            # # Save the best model weights if there is an improvement
+            # torch.save(best_model_weights, save_path)
+            # print(f"Best model saved at epoch {best_epoch} with validation accuracy: {best_val_accuracy:.4f}")
+            # temp_cheeck_point_basename = checkpoint_path.split(".pth")[0]
+            # check_point_file_path= os.path.join(
+            #     os.path.dirname(checkpoint_path), 
+            #     checkpoint_path.split(".pth")[0], 
+            #     f"epoch_{best_epoch}.pth"
+            #     )
+             
+            # print(f"save to file {check_point_file_path}")
         # Save checkpoint every epoch
-        # save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
+            # save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
 
-    # After all epochs, save the best model's weights
+# After all epochs, save the best model's weights
     if best_model_weights is not None:
         torch.save(best_model_weights, save_path)
         print(f"Best model saved at epoch {best_epoch} with validation accuracy: {best_val_accuracy:.4f}")
@@ -233,5 +244,110 @@ def train(
             json.dump(log_data, f, indent=4)
         print(f"Training log saved to {log_file}")
     
+    print("Training complete") 
+    # Save the log data to a JSON file
+    if log_file is not None:
+        with open(log_file, "w") as f:
+            json.dump(log_data, f, indent=4)
+        print(f"Training log saved to {log_file}")
+    
     print("Training complete")
+
+
+
+
+
+
+
+
+ 
+# def train(
+#     model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, 
+#     device="cuda", save_path="best_model.pth", log_file=None, checkpoint_path=None):
+#     """
+#     Train the model for multiple epochs, saving the model with the best validation performance and logging the results.
+    
+#     Args:
+#         model: The model to be trained.
+#         train_dataset: The dataset to load training data from.
+#         val_dataset: The dataset to load validation data from.
+#         epochs: Number of epochs to train.
+#         learning_rate: Learning rate for optimizer.
+#         device: The device to train on ('cuda' or 'cpu').
+#         save_path: Path where to save the model weights of the best epoch.
+#         log_file: Path to save the log file containing epoch results.
+#         checkpoint_path: Path to load/save the checkpoint file.
+#     """
+    
+#     # Move model to the specified device (GPU/CPU)
+#     model.to(device)
+    
+#     # Set up the optimizer (using Adam here)
+#     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    
+#     # Loss function (using binary cross-entropy for binary classification)
+#     loss_fn = torch.nn.BCELoss()  # Use this if your model outputs raw logits
+    
+#     best_val_accuracy = 0.0  # Track the best validation accuracy
+#     best_epoch = -1  # To store the epoch of the best model
+#     best_model_weights = None  # To store the best model's weights
+
+#     # List to store logs for each epoch
+#     log_data = []
+
+#     # Load checkpoint if it exists
+#     model, optimizer, start_epoch, _ = load_checkpoint(model, optimizer, checkpoint_path)
+    
+#     # Training loop over multiple epochs
+#     for epoch in range(start_epoch, epochs):
+#         # Train and validate for the current epoch
+#         epoch_start_time = time.time() 
+#         avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc = train_one_epoch(
+#             model, train_dataset, val_dataset, optimizer, loss_fn, device)
+        
+#         # End the timer for the epoch
+#         epoch_end_time = time.time()
+#         epoch_duration = epoch_end_time - epoch_start_time
+
+#         # Print results for the current epoch, including AUC for both train and validation
+#         print(f"Epoch [{epoch+1}/{epochs}], "
+#             f"Train Loss: {avg_train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}, Train AUC: {train_auc:.4f}, "
+#             f"Val Loss: {avg_val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}, Val AUC: {val_auc:.4f}, "
+#             f"Time: {epoch_duration:.2f} seconds") 
+        
+#         # Log results for the current epoch, including AUC
+#         if log_file is not None:
+#             log_data.append({
+#                 "epoch": epoch + 1,
+#                 "train_loss": avg_train_loss,
+#                 "train_accuracy": train_accuracy,
+#                 "train_auc": train_auc,  # Add train AUC
+#                 "val_loss": avg_val_loss,
+#                 "val_accuracy": val_accuracy,
+#                 "val_auc": val_auc   # Add validation AUC
+#             }) 
+        
+#         # If the current epoch has better validation accuracy, save the model
+#         if val_accuracy > best_val_accuracy:
+#             best_val_accuracy = val_accuracy
+#             best_epoch = epoch + 1
+#             best_model_weights = model.state_dict()  # Save the model's state dict
+
+#         # Save checkpoint every epoch
+#         # save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
+
+#     # After all epochs, save the best model's weights
+#     if best_model_weights is not None:
+#         torch.save(best_model_weights, save_path)
+#         print(f"Best model saved at epoch {best_epoch} with validation accuracy: {best_val_accuracy:.4f}")
+#     else:
+#         print("No model improvement detected.")
+    
+#     # Save the log data to a JSON file
+#     if log_file is not None:
+#         with open(log_file, "w") as f:
+#             json.dump(log_data, f, indent=4)
+#         print(f"Training log saved to {log_file}")
+    
+#     print("Training complete")
  

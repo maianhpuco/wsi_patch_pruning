@@ -9,6 +9,11 @@ import argparse
 
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR') 
+DATA_DIR  = '/project/hnguyen2/mvu9/camelyon16_features_data/h5_files'
+sys.path.append(os.path.join(PROJECT_DIR))
+sys.path.append(os.path.join(DATA_DIR))
+# sys.path.append(os.path.join(DATA_DIR))
+
 sys.path.append(os.path.join(PROJECT_DIR, "utils"))
 sys.path.append(os.path.join(PROJECT_DIR, "src")) 
 sys.path.append(os.path.join(PROJECT_DIR, "datase_utils")) 
@@ -34,7 +39,7 @@ def parse_arguments():
     parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
     # Training parameters
     parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
-    parser.add_argument('--learning_rate', type=float, default=1e-4, help="Learning rate (default: 1e-3)")
+    parser.add_argument('--learning_rate', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
     parser.add_argument('--checkpoint_filename', type=str, default=None)
     # Device (GPU/CPU)
     parser.add_argument('--device', type=str, choices=["cpu", "cuda"], default="cuda", help="Device for training (default: cuda)")
@@ -50,7 +55,7 @@ def main():
     train_or_test_or_val = 'train'
     # args.epochs = NUM_EPOCH 
     if args.dataset_name == 'camelyon16':     
-        args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files')  
+        args.feature_folder =os.path.join(DATA_DIR)  
         args.label_file = os.path.join(PROJECT_DIR, "data/label_files/camelyon_data.csv")
         args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_3.csv")
         # args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files') 

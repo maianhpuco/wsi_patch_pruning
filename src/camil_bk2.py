@@ -35,7 +35,7 @@ class CAMIL(nn.Module):
         self.attcls = MILAttentionLayer(
             input_dim=512, 
             weight_params_dim=128, 
-            use_gated=False, 
+            use_gated=True, 
             )
         # self.wv = nn.Linear(512, 512)
         self.neigh = NeighborAggregator(output_dim=1)

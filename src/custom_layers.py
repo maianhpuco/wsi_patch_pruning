@@ -122,24 +122,10 @@ class NeighborAggregator(nn.Module):
         
         data_input = inputs[0]  # Extract the dense input data (node feature vectors)
         adj_matrix = inputs[1]  # Extract the adjacency matrix (graph structure)
-        # # Ensure the adjacency matrix is in COO format to access the indices and values
-        # indices = adj_matrix._indices()  # Get indices of non-zero entries in the adjacency matrix
-        # values = adj_matrix._values()  # Get the corresponding values (the actual weights or connections)
-        # # Indices give us the rows and columns of the sparse adjacency matrix
-        # row_indices = indices[0]  # The row indices of the non-zero elements
-        # col_indices = indices[1]  # The column indices of the non-zero elements
         adj_matrix_dense = adj_matrix.to_dense() 
         # selected_rows = data_input[row_indices]  # This selects the rows from `data_input` corresponding to the row indices
         sparse_data_input =  adj_matrix_dense * data_input # values should be reshaped to match the feature dimension
-    
-        # print(">> neighbor:", sparse_data_input.shape)
- 
-        # Perform element-wise multiplication between the adjacency matrix and the node features (data_input)
-        # This operation sets the features of non-neighboring nodes to 0, keeping only the features of neighboring nodes.
-        # sparse_data_input = adj_matrix * data_input
-        
-        # Aggregate the information by summing over the neighbors (rows of the adjacency matrix)
-        # This operation results in a tensor where each element represents the summed features of the neighboring nodes.
+
         reduced_sum = sparse_data_input.sum(dim=1)  # Sum along the second dimension (seq_len), aggregating features of neighbors
 
         # Apply softmax to the aggregated sum to get attention scores for each node's neighborhood.
