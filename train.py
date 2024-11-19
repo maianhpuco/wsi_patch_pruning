@@ -34,7 +34,7 @@ def parse_arguments():
     parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
     # Training parameters
     parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
-    parser.add_argument('--learning_rate', type=float, default=1e-4, help="Learning rate (default: 1e-3)")
+    parser.add_argument('--learning_rate', type=float, default=1e-5, help="Learning rate (default: 1e-3)")
     parser.add_argument('--checkpoint_filename', type=str, default=None)
     # Device (GPU/CPU)
     parser.add_argument('--device', type=str, choices=["cpu", "cuda"], default="cuda", help="Device for training (default: cuda)")
