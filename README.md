@@ -1,4 +1,4 @@
-# camil in pytorch
+# implementation of CAMIL in pytorch 
 
 
 Run 
