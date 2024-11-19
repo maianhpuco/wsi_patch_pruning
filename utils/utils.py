@@ -133,9 +133,10 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
 
             # Collect predictions and labels for AUC calculation
             all_val_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
-            all_val_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
-    # print("all_val_preds", all_val_preds)
-    # print("all_val_labels", all_val_labels)
+            all_val_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D 
+             
+    print("all_val_preds", all_val_preds)
+    print("all_val_labels", all_val_labels)
     # Calculate average loss and accuracy for validation
     avg_val_loss = running_val_loss / len(val_dataset)
     val_accuracy = correct_val / total_val
