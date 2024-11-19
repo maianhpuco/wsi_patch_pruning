@@ -20,12 +20,12 @@ def save_checkpoint(model, optimizer, epoch, loss, filename='checkpoint.pth'):
 
 # Helper function to load checkpoints and resume training
 def load_checkpoint(model, optimizer, filename=None):
-    if filename is not None:
+    if filename is None:
         print("No checkpoint found, starting fresh.")
         return model, optimizer, 0, None
     else: 
+        print(f"Loading checkpoint from {filename}...") 
         if os.path.isfile(filename):
-            print(f"Loading checkpoint from {filename}...")
             checkpoint = torch.load(filename)
             model.load_state_dict(checkpoint['model_state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
