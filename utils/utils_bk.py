@@ -1,37 +1,10 @@
-import os
-import sys  
 import torch
 import torch.optim as optim
-import torch.nn as nn
-import time
-from collections import deque
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+import torch
 import json
 from sklearn.metrics import roc_auc_score 
-
-# Helper function to save checkpoints
-def save_checkpoint(model, optimizer, epoch, loss, filename='checkpoint.pth'):
-    print(f"Saving checkpoint at epoch {epoch}...")
-    torch.save({
-        'epoch': epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'loss': loss,
-    }, filename)
-
-# Helper function to load checkpoints and resume training
-def load_checkpoint(model, optimizer, filename='checkpoint.pth'):
-    if os.path.isfile(filename):
-        print(f"Loading checkpoint from {filename}...")
-        checkpoint = torch.load(filename)
-        model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-        loss = checkpoint['loss']
-        print(f"Resuming from epoch {epoch}, last loss: {loss}")
-        return model, optimizer, epoch, loss
-    else:
-        print("No checkpoint found, starting fresh.")
-        return model, optimizer, 0, None
 
 
 def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, device):
@@ -68,11 +41,17 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
         features = features.to(device)
         sparse_matrix = sparse_matrix.to(device)
         labels = labels.to(device)
-
+        # Print the shape of each tensor
+        # print("Features shape:", features.shape)
+        # print("Sparse matrix shape:", sparse_matrix.shape)
+        # print("Labels shape:", labels.shape)
+        # Zero the parameter gradients
         optimizer.zero_grad()
 
         # Forward pass: Get model outputs
         predicted_prob, _, _ = model(features, sparse_matrix)
+        # print(predicted_prob)
+        # print("predict prob:", predicted_prob) 
         # Calculate loss (assuming outputs are logits)
         loss = loss_fn(predicted_prob, labels)
 
@@ -91,13 +70,18 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
         
         # Collect predictions and labels for AUC calculation
         all_train_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
-        all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
-    print("all_train_preds", all_train_preds)
-    print("all_train_labels", all_train_labels)  
+        all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D 
+    # print("---------------- ")
+    # print("all_train_preds", all_train_preds)
+    # print("all_train_labels", all_train_labels)  
+    
+     
     # Calculate average loss and accuracy for training
     avg_train_loss = running_train_loss / len(train_dataset)
     train_accuracy = correct_train / total_train
 
+    # print("all_train_labels", all_train_labels)
+    # print("all_train_preds", all_train_preds)
     # Calculate AUC for training
     train_auc = roc_auc_score(all_train_labels, all_train_preds)
 
@@ -133,8 +117,10 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             # Collect predictions and labels for AUC calculation
             all_val_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
             all_val_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
-    print("all_val_preds", all_val_preds)
-    print("all_val_labels", all_val_labels)
+    # print("--")
+    # print("all_val_preds", all_val_preds)
+    # print("all_val_labels", all_val_labels) 
+    
     # Calculate average loss and accuracy for validation
     avg_val_loss = running_val_loss / len(val_dataset)
     val_accuracy = correct_val / total_val
@@ -145,7 +131,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     return avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc
  
 def train(
-    model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, device="cuda", save_path="best_model.pth", log_file=None, checkpoint_path="checkpoint.pth"):
+    model, train_dataset, val_dataset, epochs=10, learning_rate=1e-3, device="cuda", save_path="best_model.pth", log_file=None):
     """
     Train the model for multiple epochs, saving the model with the best validation performance and logging the results.
     
@@ -158,7 +144,6 @@ def train(
         device: The device to train on ('cuda' or 'cpu').
         save_path: Path where to save the model weights of the best epoch.
         log_file: Path to save the log file containing epoch results.
-        checkpoint_path: Path to load/save the checkpoint file.
     """
     
     # Move model to the specified device (GPU/CPU)
@@ -177,26 +162,18 @@ def train(
     # List to store logs for each epoch
     log_data = []
 
-    # Load checkpoint if it exists
-    model, optimizer, start_epoch, _ = load_checkpoint(model, optimizer, checkpoint_path)
-    
     # Training loop over multiple epochs
-    for epoch in range(start_epoch, epochs):
+    for epoch in range(epochs):
         # Train and validate for the current epoch
-        epoch_start_time = time.time() 
         avg_train_loss, train_accuracy, avg_val_loss, val_accuracy, train_auc, val_auc = train_one_epoch(
             model, train_dataset, val_dataset, optimizer, loss_fn, device)
         
-        # End the timer for the epoch
-        epoch_end_time = time.time()
-        epoch_duration = epoch_end_time - epoch_start_time
-
+        # Print results for the current epoch
         # Print results for the current epoch, including AUC for both train and validation
         print(f"Epoch [{epoch+1}/{epochs}], "
             f"Train Loss: {avg_train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}, Train AUC: {train_auc:.4f}, "
-            f"Val Loss: {avg_val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}, Val AUC: {val_auc:.4f}, "
-            f"Time: {epoch_duration:.2f} seconds") 
-        
+            f"Val Loss: {avg_val_loss:.4f}, Val Accuracy: {val_accuracy:.4f}, Val AUC: {val_auc:.4f}")
+
         # Log results for the current epoch, including AUC
         if log_file is not None:
             log_data.append({
@@ -215,9 +192,6 @@ def train(
             best_epoch = epoch + 1
             best_model_weights = model.state_dict()  # Save the model's state dict
 
-        # Save checkpoint every epoch
-        save_checkpoint(model, optimizer, epoch + 1, avg_val_loss, checkpoint_path)
-
     # After all epochs, save the best model's weights
     if best_model_weights is not None:
         torch.save(best_model_weights, save_path)
@@ -231,5 +205,20 @@ def train(
             json.dump(log_data, f, indent=4)
         print(f"Training log saved to {log_file}")
     
-    print("Training complete")
+    print("Training complete") 
  
+ 
+def load_checkpoint(model, optimizer, filename='checkpoint.pth'):
+    if os.path.isfile(filename):
+        print(f"Loading checkpoint from {filename}...")
+        checkpoint = torch.load(filename)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
+        loss = checkpoint['loss']
+        print(f"Resuming from epoch {epoch}, last loss: {loss}")
+        return model, optimizer, epoch, loss
+    else:
+        print("No checkpoint found, starting fresh.")
+        return model, optimizer, 0, None
+  

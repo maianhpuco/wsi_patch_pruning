@@ -121,7 +121,7 @@ def main():
     # # Set device (GPU or CPU)
     # device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+    print("device", device)
     # # Call the train function
     train(
         model, 
