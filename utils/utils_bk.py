@@ -221,4 +221,68 @@ def load_checkpoint(model, optimizer, filename='checkpoint.pth'):
     else:
         print("No checkpoint found, starting fresh.")
         return model, optimizer, 0, None
-  
+
+
+ def evaluate(model, val_dataset, device, checkpoint_path=None):
+    """
+    Evaluate the model performance on the validation or test dataset.
+    
+    Args:
+        model (torch.nn.Module): The trained model.
+        val_dataset (torch.utils.data.Dataset): The validation or test dataset.
+        device (torch.device): The device to evaluate the model on ('cpu' or 'cuda').
+        checkpoint_path (str, optional): The path to the model checkpoint for loading weights. Default is None.
+    
+    Returns:
+        None
+    """
+    # Load model weights if checkpoint path is provided
+    if checkpoint_path:
+        checkpoint = torch.load(checkpoint_path)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        print(f"Loaded model from {checkpoint_path}")
+    else:
+        print("No checkpoint path provided. Evaluating with the current model state.")
+    
+    # Set the model to evaluation mode
+    model.eval()
+    
+    # Initialize lists for collecting predictions and labels
+    all_preds = []
+    all_labels = []
+
+    # Iterate through the validation dataset
+    with torch.no_grad():  # No gradient computation for evaluation
+        for features, sparse_matrix, labels in val_dataset:
+            features = features.to(device)
+            sparse_matrix = sparse_matrix.to(device)
+            labels = labels.to(device)
+            
+            # Forward pass: Get model outputs
+            outputs, _, _ = model(features, sparse_matrix)
+            predicted_probs = torch.sigmoid(outputs)  # Apply sigmoid to get probabilities
+            
+            # Collect predictions and labels
+            all_preds.extend(predicted_probs.cpu().numpy().flatten())  # Flatten to 1D
+            all_labels.extend(labels.cpu().numpy().flatten())  # Flatten to 1D
+    
+    # Convert lists to numpy arrays for evaluation
+    all_preds = np.array(all_preds)
+    all_labels = np.array(all_labels)
+    
+    # Compute evaluation metrics
+    from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score
+
+    accuracy = accuracy_score(all_labels, all_preds > 0.5)  # Threshold at 0.5 for binary classification
+    auc = roc_auc_score(all_labels, all_preds)
+    precision = precision_score(all_labels, all_preds > 0.5)
+    recall = recall_score(all_labels, all_preds > 0.5)
+    f1 = f1_score(all_labels, all_preds > 0.5)
+
+    # Print evaluation results
+    print(f"Evaluation Results:")
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"AUC: {auc:.4f}")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1 Score: {f1:.4f}")

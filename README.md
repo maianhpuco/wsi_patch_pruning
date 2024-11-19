@@ -52,4 +52,8 @@ then unzip them into ```data/camelyon16_feature/h5_files```
     ├── helper.py
     └── utils.py 
 
-``` 
+```
+
+experiment:
+- learning rate: 1e-05
+- epochs: 30 
