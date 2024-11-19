@@ -39,7 +39,7 @@ def parse_arguments():
     parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
     # Training parameters
     parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
-    parser.add_argument('--learning_rate', type=float, default=1e-3, help="Learning rate (default: 1e-3)")
+    parser.add_argument('--learning_rate', type=float, default=1e-5, help="Learning rate (default: 1e-3)")
     parser.add_argument('--checkpoint_filename', type=str, default=None)
     # Device (GPU/CPU)
     parser.add_argument('--device', type=str, choices=["cpu", "cuda"], default="cuda", help="Device for training (default: cuda)")
@@ -72,7 +72,7 @@ def main():
     timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     save_path = f"{args.save_dir}/{args.dataset_name}_{timestamp}_completed.pth" 
     log_path = f"{args.log_dir}/{args.dataset_name}_{timestamp}.json"  
-
+    print(args)
     if args.dry_run == True: 
         args.epochs = 30 
         print("RUNING THE DRY RUN---->>> ")
