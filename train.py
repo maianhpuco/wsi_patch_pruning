@@ -54,7 +54,7 @@ def main():
     # args.epochs = NUM_EPOCH 
     if args.dataset_name == 'camelyon16':     
         args.label_file = os.path.join(PROJECT_DIR, "data/label_files/camelyon_data.csv")
-        args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_0.csv")
+        args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_3.csv")
         args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files') 
         args.save_dir = os.path.join(PROJECT_DIR, "data/weights") 
         args.log_dir = os.path.join(PROJECT_DIR, "data/logs")  
