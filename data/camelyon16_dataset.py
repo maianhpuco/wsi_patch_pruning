@@ -44,7 +44,7 @@ class CustomDataset(Dataset):
         self.names = [k for k, v in self.name_label_dict.items()]
         if dry_run is True: 
             import random 
-            self.names = random.sample(self.names, 5 )
+            self.names = random.sample(self.names, 10 )
         # print(self.names)
         self.indices = np.arange(len(self.names))
         

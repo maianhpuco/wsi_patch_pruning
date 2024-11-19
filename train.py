@@ -71,7 +71,7 @@ def main():
     log_path = f"{args.log_dir}/{args.dataset_name}_{timestamp}.json"  
 
     if args.dry_run == True: 
-        args.epochs = 3 
+        args.epochs = 30 
         print("RUNING THE DRY RUN---->>> ")
         train_dataset = CustomDataset(
             train_or_test_or_val = 'train',
@@ -121,7 +121,7 @@ def main():
     # # Set device (GPU or CPU)
     # device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+    device = torch.device("cpu")
     # # Call the train function
     train(
         model, 

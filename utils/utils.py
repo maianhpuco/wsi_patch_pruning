@@ -37,19 +37,23 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     all_train_labels = []
 
     for features, sparse_matrix, labels in train_dataset:
+        
         features = features.to(device)
         sparse_matrix = sparse_matrix.to(device)
         labels = labels.to(device)
-
+        # Print the shape of each tensor
+        # print("Features shape:", features.shape)
+        # print("Sparse matrix shape:", sparse_matrix.shape)
+        # print("Labels shape:", labels.shape)
         # Zero the parameter gradients
         optimizer.zero_grad()
 
         # Forward pass: Get model outputs
-        outputs, _, _ = model(features, sparse_matrix)
-        predicted_prob = torch.sigmoid(outputs)  # Convert to probabilities
-
+        predicted_prob, _, _ = model(features, sparse_matrix)
+        # print(predicted_prob)
+        # print("predict prob:", predicted_prob) 
         # Calculate loss (assuming outputs are logits)
-        loss = loss_fn(outputs, labels)
+        loss = loss_fn(predicted_prob, labels)
 
         # Backward pass: Compute gradients
         loss.backward()
@@ -59,7 +63,6 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
 
         # Track running loss
         running_train_loss += loss.item()
-
         # Calculate accuracy (for binary classification)
         predicted = predicted_prob > 0.5  # Convert logits to binary class predictions
         correct_train += (predicted == labels.unsqueeze(1)).sum().item()
@@ -68,8 +71,11 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
         # Collect predictions and labels for AUC calculation
         all_train_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
         all_train_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D 
-
+    # print("---------------- ")
+    # print("all_train_preds", all_train_preds)
+    # print("all_train_labels", all_train_labels)  
     
+     
     # Calculate average loss and accuracy for training
     avg_train_loss = running_train_loss / len(train_dataset)
     train_accuracy = correct_train / total_train
@@ -98,7 +104,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             predicted_prob = torch.sigmoid(outputs)
 
             # Calculate loss
-            loss = loss_fn(outputs, labels)
+            loss = loss_fn(predicted_prob, labels)
 
             # Track running loss
             running_val_loss += loss.item()
@@ -111,6 +117,10 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             # Collect predictions and labels for AUC calculation
             all_val_preds.extend(predicted_prob.detach().cpu().numpy().flatten())  # Flatten to 1D
             all_val_labels.extend(labels.detach().cpu().numpy().flatten())  # Flatten to 1D  
+    # print("--")
+    # print("all_val_preds", all_val_preds)
+    # print("all_val_labels", all_val_labels) 
+    
     # Calculate average loss and accuracy for validation
     avg_val_loss = running_val_loss / len(val_dataset)
     val_accuracy = correct_val / total_val

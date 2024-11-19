@@ -56,38 +56,25 @@ class CAMIL(nn.Module):
             self.class_fc = LastSigmoid(
                 input_dim=512, output_dim=1, subtyping=self.subtyping, pooling_mode='sum')
 
-
     def forward(self, bag, adjacency_matrix):
         """
         Define the forward pass of the model
         """
         # Pass through the encoder
         xo, alpha = self.encoder([bag, adjacency_matrix])
+        # print("- xo:", xo.shape)
+        # print("- alpha:", alpha.shape) 
         
-        # Slice and print parts of the output for debugging
-        # print("- xo (full):", xo.shape)
-        # print("- xo (first 5):", xo[:5])  # Slicing to print the first 5 elements
-        # print("- alpha (full):", alpha.shape)
-        # print("- alpha (first 5):", alpha[:5])  # Slicing to print the first 5 elements
-
         # Attention mechanism
         k_alpha = self.attcls(xo)
-        
-        # print("- k_alpha (full):", k_alpha.shape)
-        # print("- k_alpha (first 5):", k_alpha[:5])  # Slicing to print the first 5 elements
+        # print("- k_alpha:", k_alpha.shape)
         # print("---- xo * k_alpha")
-        
         # Apply attention to the encoder output
         attn_output = torch.mul(k_alpha, xo)
-        
-        # print("- attention output shape:", attn_output.shape)
-        # print("- attention output (first 5):", attn_output[:5])  # Slicing to print the first 5 elements
+        # print("- attention output:", attn_output.shape)
         
         # Final classification layer
         out = self.class_fc(attn_output)
-        
-        # print("- out (full):", out.shape)
-        # print("- out (first 5):", out[:5])  # Slicing to print the first 5 elements
         return out, alpha, k_alpha
     
 class Encoder(nn.Module):

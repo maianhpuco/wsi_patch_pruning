@@ -147,11 +147,83 @@ class NeighborAggregator(nn.Module):
         alpha = F.softmax(reduced_sum, dim=0)  # Apply softmax over the aggregated sum to normalize the scores
         
         return alpha, reduced_sum  # Return the attention scores and raw aggregated sum
-
 class LastSigmoid(nn.Module):
     def __init__(self,
                  input_dim, 
-                 output_dim, subtyping, kernel_initializer='glorot_uniform', bias_initializer='zeros', pooling_mode="sum", use_bias=True):
+                 output_dim, 
+                 subtyping, 
+                 kernel_initializer='glorot_uniform', 
+                 bias_initializer='zeros', 
+                 pooling_mode="sum", 
+                 use_bias=True,
+                 hidden_dim=256  # Hidden dimension for the intermediate layer to gradually reduce dimension
+                 ):
+        super(LastSigmoid, self).__init__()
+        
+        # Initialize key parameters such as the output dimension, subtyping flag, and pooling mode
+        self.output_dim = output_dim
+        self.subtyping = subtyping
+        self.pooling_mode = pooling_mode
+        self.use_bias = use_bias
+        
+        # Define the weight kernel (output transformation matrix)
+        # Define hidden layers with gradually reduced dimensions
+        self.hidden1 = nn.Linear(input_dim, 256)
+        self.hidden2 = nn.Linear(256, 128)
+        self.hidden3 = nn.Linear(128, 64)
+        self.hidden4 = nn.Linear(64, 32)
+        self.hidden5 = nn.Linear(32, 8)
+        self.hidden6 = nn.Linear(8, 1)  # Output layer
+        
+        # Optionally add a bias term, but `Linear` layers in PyTorch already include biases by default.
+        if not use_bias:
+            self.hidden1.bias = None
+            self.hidden2.bias = None
+            self.hidden3.bias = None
+            self.hidden4.bias = None
+            self.hidden5.bias = None
+            self.hidden6.bias = None
+
+    def forward(self, x):
+        # Pooling: Apply either max pooling or sum pooling based on the pooling_mode
+        if self.pooling_mode == 'max':
+            x = x.max(dim=0, keepdim=True)[0]
+        elif self.pooling_mode == 'sum':
+            x = x.sum(dim=0, keepdim=True)
+        
+        # Apply the first linear layer to reduce the input dimension
+        # x = self.hidden(x)
+        
+        # # Apply a non-linearity (ReLU) after the first transformation
+        # x = F.relu(x)
+        
+        # Apply the second linear layer for final transformation
+        # x = self.output(x)
+        # Apply the hidden layers with ReLU activations
+        x = F.relu(self.hidden1(x))  # First hidden layer
+        x = F.relu(self.hidden2(x))  # Second hidden layer
+        x = F.relu(self.hidden3(x))  # Third hidden layer
+        x = F.relu(self.hidden4(x))  # Fourth hidden layer
+        x = F.relu(self.hidden5(x))  # Fifth hidden layer
+        x = self.hidden6(x)  # Sixth hidden layer (output layer)
+        
+        
+        # If subtyping, use softmax, else use sigmoid for binary classification
+        if self.subtyping:
+            return F.softmax(x, dim=-1)  # For subtyping, use softmax
+        else:
+            return torch.sigmoid(x) 
+        
+class LastSigmoid_bk(nn.Module):
+    def __init__(self,
+                 input_dim, 
+                 output_dim, 
+                 subtyping, 
+                 kernel_initializer='glorot_uniform', 
+                 bias_initializer='zeros', 
+                 pooling_mode="sum", 
+                 use_bias=True
+                 ):
         super(LastSigmoid, self).__init__()
         
         # Initialize key parameters such as the output dimension, subtyping flag, and pooling mode
@@ -175,7 +247,8 @@ class LastSigmoid(nn.Module):
             x = x.max(dim=0, keepdim=True)[0]
         elif self.pooling_mode == 'sum':
             x = x.sum(dim=0, keepdim=True)
-
+        print("x", x.shape)
+        
         # Perform the final transformation
         if self.subtyping:
             x = torch.matmul(x, self.kernel)
@@ -186,6 +259,7 @@ class LastSigmoid(nn.Module):
             x = torch.matmul(x, self.kernel)
             if self.use_bias:
                 x += self.bias
+            print("before", x)
             return torch.sigmoid(x)  # For binary classification, use sigmoid
 
 class CustomAttention(nn.Module):
