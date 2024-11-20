@@ -110,7 +110,7 @@ class NeighborAggregator(nn.Module):
 
         Args:
             inputs (tuple): A tuple of two tensors:
-                - data_input (torch.Tensor): A tensor of shape (batch_size, seq_len, feature_dim), representing node feature vectors.
+                - data_input (torch.Tensor): A tensor of shape (batch_size, seq_len, seq_len), representing attention matrix result  Q * K .
                 - adj_matrix (torch.Tensor): A sparse adjacency matrix of shape (batch_size, seq_len, seq_len), 
                   indicating the graph structure (1 for connection, 0 for no connection).
         
