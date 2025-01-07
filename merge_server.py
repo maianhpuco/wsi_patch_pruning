@@ -12,7 +12,7 @@ PROJECT_DIR = os.environ.get('PROJECT_DIR')
 SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 
 sys.path.append(os.path.join(PROJECT_DIR))
-sys.path.append(os.path.join(DATA_DIR))
+sys.path.append(os.path.join(SLIDE_DIR))
 
 
 def parse_arguments():
@@ -37,25 +37,16 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():
-    # Parse arguments
     args = parse_arguments()
     
-    #TODO: later args should be save in a YML file ! 
     print(f"Training for dataset {format(args.dataset_name)}")
     train_or_test_or_val = 'train'
-    # args.epochs = NUM_EPOCH 
+
     if args.dataset_name == 'camelyon16':     
-        args.feature_folder =os.path.join(DATA_DIR)  
-        args.label_file = os.path.join(PROJECT_DIR, "data/label_files/camelyon_data.csv")
-        args.split_filepath = os.path.join(PROJECT_DIR, "data/camelyon_csv_splits/splits_3.csv")
-        # args.feature_folder =os.path.join(PROJECT_DIR,'data/camelyon16_features/h5_files') 
-        args.save_dir = os.path.join(PROJECT_DIR, "data/weights") 
-        args.log_dir = os.path.join(PROJECT_DIR, "data/logs")   
-    # Initialize the model
+        args.feature_folder =os.path.join(SLIDE_DIR)  
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
  
-    model = CAMIL(args)
-    model.to(device)   
+
 
     import datetime
 
