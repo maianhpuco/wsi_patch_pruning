@@ -26,3 +26,5 @@ data/weights/*
 
 src/camil_bk.py
 src/camil_bk2.py 
+
+.codegpt
