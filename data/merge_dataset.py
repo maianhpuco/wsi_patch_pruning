@@ -19,7 +19,8 @@ class SuperpixelDataset(Dataset):
         return None  
     
 
-if __name__ == 'main':
+if __name__ == '__main__':
+    print(SLIDE_PATH)
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*/*.tif'))
     print(wsi_path) 
     wsi_path = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
