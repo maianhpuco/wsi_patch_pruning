@@ -75,7 +75,8 @@ def main():
                 # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
-                all_features.append(features)
+                flattened_features = features.view(-1, features.shape[-1]) 
+                all_features.append(flattened_features)
                 
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
