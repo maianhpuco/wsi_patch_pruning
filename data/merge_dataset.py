@@ -22,7 +22,7 @@ class SuperpixelDataset(Dataset):
 if __name__ == '__main__':
     print(SLIDE_PATH)
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*/*.tif'))
-    print(wsi_path) 
+    print(wsi_paths) 
     wsi_path = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     print("----")
-    print(wsi_path)
+    print(wsi_paths)
