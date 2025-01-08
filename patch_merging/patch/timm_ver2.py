@@ -138,8 +138,9 @@ def make_tome_class(transformer_class):
             # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
             # self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
             # self.patch_embed  = nn.Identity()
-            self.pos_embed = None
-             
+            
+        def forward_feature(): 
+              
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly.
@@ -181,6 +182,7 @@ def apply_patch(
         "class_token": model.cls_token is not None,
         "distill_token": False,
     }
+    model.pos_embed = None
 
     if hasattr(model, "dist_token") and model.dist_token is not None:
         model._tome_info["distill_token"] = True
