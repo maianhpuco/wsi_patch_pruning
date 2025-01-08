@@ -23,7 +23,7 @@ class PatchDataset(Dataset):
         coverage_threshold=0.1, 
         transform=None, 
         return_feature=True, 
-        model=model
+        model=None
         ):
         self.region_np = region
         self.mask = mask
