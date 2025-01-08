@@ -1,5 +1,6 @@
 import torch
 from timm.models.vision_transformer import VisionTransformer, Block, Attention
+from torch import nn
 from typing import Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
@@ -70,6 +71,12 @@ def make_tome_class(transformer_class):
         Modifications:
         - Initialize r, token size, and token sources.
         """
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Adding a linear layer for token processing (transforming feature_size if necessary)
+            self.token_embed = nn.Linear(self.embed_dim, self.embed_dim)  # Adjust `embed_dim` as needed
+
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly (shape: [batch_size, num_tokens, feature_size]).
@@ -78,13 +85,23 @@ def make_tome_class(transformer_class):
             if len(x.shape) == 2:  # Shape [num_tokens, feature_size]
                 x = x.unsqueeze(0)  # Add batch dimension: shape becomes [batch_size, num_tokens, feature_size]
 
+            # Apply a linear transformation to the token features (if necessary)
+            x = self.token_embed(x)
+
             # Skip the patch embedding and positional encoding, as the tokens are already embedded
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
 
-            # Directly pass the tokenized input to the transformer layers
-            return super().forward(x, *args, **kwdargs)
+            # Apply positional embedding (optional)
+            x = self.pos_embed(x)
+
+            # Pass the tokens through transformer blocks
+            x = self.blocks(x)
+
+            # Final normalization
+            x = self.norm(x)
+            return x
 
     return ToMeVisionTransformer
 
