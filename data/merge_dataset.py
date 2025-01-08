@@ -188,12 +188,14 @@ class WSIDataset(Dataset):
                 patch_area = patch.size
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
                 
-                if mask_coverage >= coverage_threshold:
+                # if mask_coverage >= coverage_threshold:
                     # Store the bounding box (top, left, bottom, right)
-                    bbox = (top, left, bottom, right)
-                    patch_idx += 1
-                    patches.append(patches)
-                    bboxes.append(bboxes)
+                    
+                bbox = (top, left, bottom, right)
+                patch_idx += 1
+                patches.append(patches)
+                bboxes.append(bboxes)
+                
         return patches, bboxes 
         
     
