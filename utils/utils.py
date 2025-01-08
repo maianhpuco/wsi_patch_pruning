@@ -130,6 +130,8 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
             sparse_matrix = sparse_matrix.to(device)
             labels = labels.to(device)
             print("features.shape", features.shape)
+            print("label": labels.shape)
+            print(labels)
             # Forward pass: Get model outputs
             predicted_prob, _, _ = model(features, sparse_matrix)
 
