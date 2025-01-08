@@ -78,7 +78,7 @@ def main():
             print(">> feature output size")
             print("Time to finish a superpixel", time.time() - start, "second")
       
-            print(ts_all_features_of_superpixelts.shape)              
+            print(ts_all_features_of_superpixel.shape)              
 
         break
 
