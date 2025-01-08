@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from timm.models.vision_transformer import VisionTransformer, Block, Attention
+from timm.models.vision_transformer import VisionTransformer, Block, Attention, PatchEmbed
 from typing import Optional, Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
