@@ -85,7 +85,7 @@ def main():
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
 
-            print(">> feature output size", ts_all_features_of_superpixel.shape)
+            print(">>--------feature output size", ts_all_features_of_superpixel.shape)
             model_merge.r = 8 
             with torch.no_grad(): 
                 print("Printing attention to see how number of token reduce") 

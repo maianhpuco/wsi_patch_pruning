@@ -37,6 +37,11 @@ class ToMeBlock(Block):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Note: this is copied from timm.models.vision_transformer.Block with modifications.
+        # Compute and print the mean and standard deviation for x
+        print("before processing ------ ") 
+        print(f'Mean of x: {x.mean().item()}')
+        print(f'Std of x: {x.std().item()}')  
+        
         attn_size = self._tome_info["size"] if self._tome_info["prop_attn"] else None
         x_attn, metric = self.attn(self.norm1(x), attn_size)
         x = x + self._drop_path1(x_attn)
@@ -57,6 +62,9 @@ class ToMeBlock(Block):
             x, self._tome_info["size"] = merge_wavg(merge, x, self._tome_info["size"])
 
         x = x + self._drop_path2(self.mlp(self.norm2(x)))
+        print("after processing ------ ")
+        print(f'Mean of x: {x.mean().item()}')
+        print(f'Std of x: {x.std().item()}')   
         return x
 
 
@@ -72,9 +80,7 @@ class ToMeAttention(Attention):
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         # Note: this is copied from timm.models.vision_transformer.Attention with modifications.
         B, N, C = x.shape
-        # Compute and print the mean and standard deviation for x
-        print(f'Mean of x: {x.mean().item()}')
-        print(f'Std of x: {x.std().item()}') 
+
         qkv = (
             self.qkv(x)
             .reshape(B, N, 3, self.num_heads, C // self.num_heads)
