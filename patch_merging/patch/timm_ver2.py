@@ -1,10 +1,9 @@
 import torch
+import torch.nn as nn
 from timm.models.vision_transformer import VisionTransformer, Block, Attention
-from torch import nn
-from typing import Tuple
+from typing import Optional, Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
-
 
 class ToMeBlock(Block):
     """
@@ -12,6 +11,7 @@ class ToMeBlock(Block):
      - Apply ToMe between the attention and mlp blocks.
      - Compute and propagate token size and potentially the token sources.
     """
+
     def _drop_path1(self, x):
         return self.drop_path1(x) if hasattr(self, "drop_path1") else self.drop_path(x)
 
@@ -72,14 +72,16 @@ def make_tome_class(transformer_class):
         Modifications:
         - Initialize r, token size, and token sources.
         """
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             # Adding a linear layer for token processing (transforming feature_size if necessary)
             self.token_embed = nn.Linear(self.embed_dim, self.embed_dim)  # Adjust `embed_dim` as needed
 
             # Skip patch embedding by setting it to None
-            self.patch_embed = None
-
+            self.patch_embed = None 
+            self._pos_embed = None 
+            
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly (shape: [batch_size, num_tokens, feature_size]).
@@ -104,6 +106,31 @@ def make_tome_class(transformer_class):
 
             # Final normalization
             x = self.norm(x)
+            return x
+
+        def forward_features(self, x: torch.Tensor) -> torch.Tensor:
+            """
+            Modified forward_features to accept tokenized input and apply necessary transformations.
+            """
+            # Apply positional encoding to tokens
+            x = self.pos_embed(x)
+
+            # Pass the tokens through transformer blocks
+            x = self.norm_pre(x)  # Normalization before blocks
+            x = self.blocks(x)
+
+            x = self.norm(x)  # Final normalization after blocks
+            return x
+
+        def forward_head(self, x: torch.Tensor, pre_logits: bool = False) -> torch.Tensor:
+            x = self.pool(x)
+            x = self.fc_norm(x)
+            x = self.head_drop(x)
+            return x if pre_logits else self.head(x)
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            x = self.forward_features(x)
+            x = self.forward_head(x)
             return x
 
     return ToMeVisionTransformer
