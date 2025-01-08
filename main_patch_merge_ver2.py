@@ -45,52 +45,57 @@ def main():
     model_merge.eval()
     with torch.no_grad():
         output = model_merge(tokens)
-         
+ 
         
-    # wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
-    # wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
-    # json_folder = JSON_PATH  
+    wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
+    wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
+    json_folder = JSON_PATH  
     
-    # dataset = SuperpixelDataset(
-    #     slide_paths=wsi_paths,
-    #     json_folder=json_folder,
-    #     )
+    dataset = SuperpixelDataset(
+        slide_paths=wsi_paths,
+        json_folder=json_folder,
+        )
     
-    # import time 
+    import time 
     
-    # # llop though each WSI image 
-    # for wsi_data in dataset:
-    #     #loop though each superpixel
-    #     for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
-    #         start = time.time()
-    #         print("foreground_id", foreground_idx)
-    #         print("region shape", region_np.shape)
-    #         print("superpixel shape", superpixel_extrapolated.shape) 
-    #         patch_dataset = PatchDataset(
-    #             region_np,
-    #             superpixel_extrapolated,
-    #             patch_size = (224, 224),
-    #             transform = transform, 
-    #             return_feature=True,  # Enable feature extraction
-    #             model=model 
-    #         )
-    #         patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
-    #         all_features = [] 
-    #         for features, patches, bboxes in patch_dataloader: 
-    #             # print(f"Batch of features shape: {features.shape}")
-    #             # print(f"Batch of patches shape: {patches.shape}")
-    #             # print(f"Batch of bounding boxes: {bboxes}")
+    # llop though each WSI image 
+    for wsi_data in dataset:
+        #loop though each superpixel
+        for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
+            start = time.time()
+            print("foreground_id", foreground_idx)
+            print("region shape", region_np.shape)
+            print("superpixel shape", superpixel_extrapolated.shape) 
+            patch_dataset = PatchDataset(
+                region_np,
+                superpixel_extrapolated,
+                patch_size = (224, 224),
+                transform = transform, 
+                return_feature=True,  # Enable feature extraction
+                model=model 
+            )
+            patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
+            all_features = [] 
+            for features, patches, bboxes in patch_dataloader: 
+                # print(f"Batch of features shape: {features.shape}")
+                # print(f"Batch of patches shape: {patches.shape}")
+                # print(f"Batch of bounding boxes: {bboxes}")
             
-    #             # Stack all features
-    #             # print(features.shape)
-    #             flattened_features = features.view(-1, features.shape[-1]) 
-    #             all_features.append(flattened_features)
+                # Stack all features
+                # print(features.shape)
+                flattened_features = features.view(-1, features.shape[-1]) 
+                all_features.append(flattened_features)
                  
-    #         # stack of features of a superpixel 
-    #         ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
-    #         ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
-    #         print(">> feature output size", ts_all_features_of_superpixel.shape)
-    #         print("Time to finish a superpixel", time.time() - start, "second")
+            # stack of features of a superpixel 
+            ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
+            ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
+
+
+            print(">> feature output size", ts_all_features_of_superpixel.shape)
+            out = model_merge(ts_all_features_of_superpixel) 
+            print(out.shape) 
+            
+            print("Time to finish a superpixel", time.time() - start, "second")
       
 
         # break
