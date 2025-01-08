@@ -51,7 +51,7 @@ def main():
     for wsi_data in dataset:
         #loop though each superpixel
         for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
-            start = time.time() s
+            start = time.time()
             print("foreground_id", foreground_idx)
             print("region shape", region_np.shape)
             print("superpixel shape", superpixel_extrapolated.shape) 
