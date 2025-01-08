@@ -71,14 +71,15 @@ class SuperpixelDataset(Dataset):
             
             region_cropped = self.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region_cropped) 
-
-            patches, bboxes = self.extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
-            data = {   
-                    "superpixel_idx": foreground_idx, 
-                    'patches': patches, 
-                    'bboxes': bboxes
-                    }
-            yield data
+            
+            yield foreground_idx, region_np,superpixel_extrapolated 
+            # patches, bboxes = self.extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
+            # data = {   
+            #         "superpixel_idx": foreground_idx, 
+            #         'patches': patches, 
+            #         'bboxes': bboxes
+            #         }
+            # yield data
                 
         # return patch_superpixels
     
