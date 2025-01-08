@@ -57,7 +57,7 @@ def main():
             patch_dataset = PatchDataset(
                 region_np,
                 superpixel_extrapolated,
-                patch_size = (256, 256),
+                patch_size = (224, 224),
                 transform = transform, 
                 return_feature=True,  # Enable feature extraction
                 model=model 
