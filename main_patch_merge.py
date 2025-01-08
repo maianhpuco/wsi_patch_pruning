@@ -9,6 +9,9 @@ from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
+import timm 
+
+
  # Define the image transformations
 transform = transforms.Compose([
     transforms.Resize((256, 256)),  # Resize the patch to 256x256
@@ -27,6 +30,10 @@ JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
  
  
 sys.path.append(os.path.join(PROJECT_DIR))
+# Load a pre-trained ViT model from timm
+
+model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
+model.eval()  # Set the model to evaluation mode 
 
 def main():
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
@@ -51,12 +58,20 @@ def main():
                 region_np,
                 superpixel_extrapolated,
                 patch_size = (256, 256),
-                transform = transform
+                transform = transform, 
+                return_feature=True,  # Enable feature extraction
+                model=model 
             )
             patch_dataloader = DataLoader(patch_dataset, batch_size=4, shuffle=True)
+            all_features_of_superpixel = [] 
             for patches, bboxes in patch_dataloader: 
                 print(f"Batch of patches shape: {patches.shape}")
-                print(f"Batch of bounding boxes: {bboxes}") 
+                print(f"Batch of bounding boxes: {bboxes}")
+            
+                # Stack all features
+                all_features_of_superpixel.append(patches)
+            ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
+            print(ts_all_features_of_superpixelts.shape)              
 
         break
     print("Time to finish", time.time() - start, "second")

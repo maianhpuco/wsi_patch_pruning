@@ -16,12 +16,21 @@ from PIL import Image
 
 class PatchDataset(Dataset):
     def __init__(
-        self, region, mask, patch_size=(256, 256), coverage_threshold=0.1, transform=None):
+        self, 
+        region, 
+        mask, 
+        patch_size=(256, 256), 
+        coverage_threshold=0.1, 
+        transform=None, 
+        return_feature=True, 
+        model=model
+        ):
         self.region_np = region
         self.mask = mask
         self.patch_size = patch_size
         self.coverage_threshold = coverage_threshold
         self.transform = transform
+        self.model = model
         
         # Get region dimensions and patch size
         region_height, region_width = region.shape[:2]
@@ -49,6 +58,7 @@ class PatchDataset(Dataset):
                     bbox = (top, left, bottom, right)
                     self.patches.append(patch)
                     self.bboxes.append(bbox)
+                    
 
     def __len__(self):
         """Returns the total number of patches."""
@@ -64,8 +74,15 @@ class PatchDataset(Dataset):
         # Apply the transformations if provided
         if self.transform:
             patch_pil = self.transform(patch_pil)
-
-        return patch_pil, bbox 
+            
+        if self.return_feature:
+            patch_tensor = patch_pil.unsqueeze(0)  # Add batch dimension
+            with torch.no_grad():
+                features = self.model(patch_tensor)  # Pass through the model to extract features
+            return features.squeeze(0), patch_pil, bbox  # Remove batch dimension and return features
+        else:
+            return _, patch_pil, bbox 
+        
 
 class SuperpixelDataset(Dataset):
     def __init__(self, slide_paths, json_folder):
@@ -100,7 +117,6 @@ class SuperpixelDataset(Dataset):
         superpixel_labels = sample['superpixel_labels']
           
         for foreground_idx in foreground_superpixels:
-            
             bbox = bounding_boxes[foreground_idx]
             xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
              
