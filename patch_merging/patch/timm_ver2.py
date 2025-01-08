@@ -109,12 +109,23 @@ def make_tome_class(transformer_class):
         - Initialize r, token size, and token sources.
         """
 
-        def forward(self, *args, **kwdargs) -> torch.Tensor:
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
+            self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
+
+        def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
+            """
+            Override the forward pass to accept tokenized input directly.
+            """
+            if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
+                x = x.unsqueeze(0)
+
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
 
-            return super().forward(*args, **kwdargs)
+            return super().forward(x, *args, **kwdargs)
 
     return ToMeVisionTransformer
 

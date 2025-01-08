@@ -46,8 +46,6 @@ def main():
     with torch.no_grad():
         output = model(tokens)  
         
-
-
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = JSON_PATH  
