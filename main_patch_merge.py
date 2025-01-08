@@ -7,6 +7,7 @@ import numpy as np
 import argparse
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
+from torch.utils.data import DataLoader
  
  # Define the image transformations
 transform = transforms.Compose([
