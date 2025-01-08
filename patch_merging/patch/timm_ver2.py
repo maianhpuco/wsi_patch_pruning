@@ -5,11 +5,30 @@ from typing import Optional, Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
 
+class ToMePatchEmbed(PatchEmbed):
+    """
+    Custom Patch Embedding class to process pre-tokenized input (a list of tokens).
+    Skips the patch embedding process and directly accepts tokenized input.
+    """
+
+    def __init__(self, embed_dim: int, **kwargs):
+        super().__init__(**kwargs)
+        self.token_embed = nn.Identity()  # No patch embedding, just identity for tokens
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Accept a list of tokens directly without applying patch embedding.
+        The input is assumed to be of shape [batch_size, num_tokens, feature_size].
+        """
+        x = self.token_embed(x)  
+        
+        return x
+
 class ToMeBlock(Block):
     """
     Modifications:
-     - Apply ToMe between the attention and mlp blocks.
-     - Compute and propagate token size and potentially the token sources.
+     - Apply ToMe between the attention and mlp blocks
+     - Compute and propogate token size and potentially the token sources.
     """
 
     def _drop_path1(self, x):
@@ -19,17 +38,24 @@ class ToMeBlock(Block):
         return self.drop_path2(x) if hasattr(self, "drop_path2") else self.drop_path(x)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Note: this is copied from timm.models.vision_transformer.Block with modifications.
         attn_size = self._tome_info["size"] if self._tome_info["prop_attn"] else None
         x_attn, metric = self.attn(self.norm1(x), attn_size)
         x = x + self._drop_path1(x_attn)
 
         r = self._tome_info["r"].pop(0)
         if r > 0:
+            # Apply ToMe here
             merge, _ = bipartite_soft_matching(
-                metric, r, self._tome_info["class_token"], self._tome_info["distill_token"]
+                metric,
+                r,
+                self._tome_info["class_token"],
+                self._tome_info["distill_token"],
             )
             if self._tome_info["trace_source"]:
-                self._tome_info["source"] = merge_source(merge, x, self._tome_info["source"])
+                self._tome_info["source"] = merge_source(
+                    merge, x, self._tome_info["source"]
+                )
             x, self._tome_info["size"] = merge_wavg(merge, x, self._tome_info["size"])
 
         x = x + self._drop_path2(self.mlp(self.norm2(x)))
@@ -42,17 +68,26 @@ class ToMeAttention(Attention):
      - Apply proportional attention
      - Return the mean of k over heads from attention
     """
-    def forward(self, x: torch.Tensor, size: torch.Tensor = None) -> Tuple[torch.Tensor, torch.Tensor]:
+
+    def forward(
+        self, x: torch.Tensor, size: torch.Tensor = None
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        # Note: this is copied from timm.models.vision_transformer.Attention with modifications.
         B, N, C = x.shape
         qkv = (
             self.qkv(x)
             .reshape(B, N, 3, self.num_heads, C // self.num_heads)
             .permute(2, 0, 3, 1, 4)
         )
-        q, k, v = qkv[0], qkv[1], qkv[2]
+        q, k, v = (
+            qkv[0],
+            qkv[1],
+            qkv[2],
+        )  # make torchscript happy (cannot use tensor as tuple)
 
         attn = (q @ k.transpose(-2, -1)) * self.scale
 
+        # Apply proportional attention
         if size is not None:
             attn = attn + size.log()[:, None, None, :, 0]
 
@@ -63,8 +98,8 @@ class ToMeAttention(Attention):
         x = self.proj(x)
         x = self.proj_drop(x)
 
+        # Return k as well here
         return x, k.mean(1)
-
 
 def make_tome_class(transformer_class):
     class ToMeVisionTransformer(transformer_class):
@@ -73,53 +108,50 @@ def make_tome_class(transformer_class):
         - Initialize r, token size, and token sources.
         """
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            # Skip patch embedding by setting it to None
-            self.patch_embed = None
-
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
-            Override the forward pass to accept tokenized input directly (shape: [batch_size, num_tokens, feature_size]).
+            Override the forward pass to accept tokenized input directly.
             """
-            # If the input tensor has shape [num_tokens, feature_size], add batch dimension
-            if len(x.shape) == 2:  # Shape [num_tokens, feature_size]
-                x = x.unsqueeze(0)  # Add batch dimension: shape becomes [batch_size, num_tokens, feature_size]
+            # Ensure x has shape [batch_size, num_tokens, feature_size]
+            if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
+                x = x.unsqueeze(0)  # Add batch dimension
+            
+            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
+            self._tome_info["size"] = None
+            self._tome_info["source"] = None
 
-            # Pass through transformer blocks directly without patch embedding or positional encoding
-            x = self.blocks(x)
+            return super().forward(x, *args, **kwdargs)
 
-            # Final normalization
-            x = self.norm(x)
-            return x
+    return ToMeVisionTransformer 
 
-        def forward_features(self, x: torch.Tensor) -> torch.Tensor:
-            """
-            Modified forward_features to accept tokenized input and apply necessary transformations.
-            """
-            # Directly pass the tokens through transformer blocks
-            x = self.blocks(x)
+def make_tome_class(transformer_class):
+    class ToMeVisionTransformer(transformer_class):
+        """
+        Modifications:
+        - Initialize r, token size, and token sources.
+        """
 
-            x = self.norm(x)  # Final normalization after blocks
-            return x
+        def forward(self, *args, **kwdargs) -> torch.Tensor:
+            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
+            self._tome_info["size"] = None
+            self._tome_info["source"] = None
 
-        def forward_head(self, x: torch.Tensor, pre_logits: bool = False) -> torch.Tensor:
-            x = self.pool(x)
-            x = self.fc_norm(x)
-            x = self.head_drop(x)
-            return x if pre_logits else self.head(x)
-
-        def forward(self, x: torch.Tensor) -> torch.Tensor:
-            x = self.forward_features(x)
-            x = self.forward_head(x)
-            return x
+            return super().forward(*args, **kwdargs)
 
     return ToMeVisionTransformer
 
 
-def apply_patch(model: VisionTransformer, trace_source: bool = False, prop_attn: bool = True):
+def apply_patch(
+    model: VisionTransformer, trace_source: bool = False, prop_attn: bool = True
+):
     """
     Applies ToMe to this transformer. Afterward, set r using model.r.
+
+    If you want to know the source of each token (e.g., for visualization), set trace_source = true.
+    The sources will be available at model._tome_info["source"] afterward.
+
+    For proportional attention, set prop_attn to True. This is only necessary when evaluating models off
+    the shelf. For trianing and for evaluating MAE models off the self set this to be False.
     """
     ToMeVisionTransformer = make_tome_class(model.__class__)
 
@@ -137,10 +169,16 @@ def apply_patch(model: VisionTransformer, trace_source: bool = False, prop_attn:
 
     if hasattr(model, "dist_token") and model.dist_token is not None:
         model._tome_info["distill_token"] = True
-
+    
     for module in model.modules():
         if isinstance(module, Block):
             module.__class__ = ToMeBlock
             module._tome_info = model._tome_info
         elif isinstance(module, Attention):
             module.__class__ = ToMeAttention
+        elif isinstance(module, PatchEmbed):
+            module.__class__ = ToMePatchEmbed
+         
+            
+            
+             
