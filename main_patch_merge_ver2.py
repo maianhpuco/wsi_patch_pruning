@@ -35,14 +35,13 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  # Set the model to evaluation mode 
 
-
 def main(): 
     model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
     patch_merging.patch.timm(model_merge) 
-    tokens = torch.randn(1, 3030, 768)  
+    # tokens = torch.randn(1, 3030, 768)  
     model_merge.eval()
-    with torch.no_grad():
-        output = model_merge(tokens)
+    # with torch.no_grad():
+    #     output = model_merge(tokens)
  
         
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
@@ -83,8 +82,8 @@ def main():
 
             print(">> feature output size", ts_all_features_of_superpixel.shape)
             model_merge.r = 8 
-            out = model_merge(ts_all_features_of_superpixel) 
-            print(f"r = {model_merge.r} first 5 layers 's most likely class",out.topk(5).indices[0].tolist()) 
+            with torch.no_grad(): 
+                out = model_merge(ts_all_features_of_superpixel) 
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
@@ -92,8 +91,3 @@ def main():
     
 if __name__ == '__main__':
     main()
-#checkpoint_path camelyon16_20241118-1932_completed.pth
-# /project/hnguyen2/mvu9/camelyon16_features_data
-
-# cp -r /home/mvu9/digital_pathology/camil_pytorch/data/camelyon16_features/* /project/hnguyen2/mvu9/camelyon16_features_data/ 
-  

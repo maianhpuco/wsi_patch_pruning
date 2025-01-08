@@ -1,11 +1,26 @@
-from typing import Tuple
-
 import torch
-from timm.models.vision_transformer import Attention, Block, VisionTransformer
-
+import torch.nn as nn
+from timm.models.vision_transformer import VisionTransformer, Block, Attention, PatchEmbed
+from typing import Optional, Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
 
+class ToMePatchEmbed(PatchEmbed):
+    """
+    Custom Patch Embedding class to process pre-tokenized input (a list of tokens).
+    Skips the patch embedding process and directly accepts tokenized input.
+    """
+
+    def __init__(self, embed_dim: int, **kwargs):
+        super().__init__(**kwargs)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Accept a list of tokens directly without applying patch embedding.
+        The input is assumed to be of shape [batch_size, num_tokens, feature_size].
+        """
+        x = self.norm(x)
+        return x 
 
 class ToMeBlock(Block):
     """
@@ -91,35 +106,24 @@ def make_tome_class(transformer_class):
         - Initialize r, token size, and token sources.
         """
 
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
+            # self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
+            # self.patch_embed  = nn.Identity()
+              
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly.
             """
-            # Ensure x has shape [batch_size, num_tokens, feature_size]
             if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
-                x = x.unsqueeze(0)  # Add batch dimension
+                x = x.unsqueeze(0)
             
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
 
             return super().forward(x, *args, **kwdargs)
-
-    return ToMeVisionTransformer 
-
-def make_tome_class(transformer_class):
-    class ToMeVisionTransformer(transformer_class):
-        """
-        Modifications:
-        - Initialize r, token size, and token sources.
-        """
-
-        def forward(self, *args, **kwdargs) -> torch.Tensor:
-            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
-            self._tome_info["size"] = None
-            self._tome_info["source"] = None
-
-            return super().forward(*args, **kwdargs)
 
     return ToMeVisionTransformer
 
@@ -149,16 +153,17 @@ def apply_patch(
         "class_token": model.cls_token is not None,
         "distill_token": False,
     }
+    model.pos_embed = None
 
     if hasattr(model, "dist_token") and model.dist_token is not None:
         model._tome_info["distill_token"] = True
-
+    
     for module in model.modules():
         if isinstance(module, Block):
             module.__class__ = ToMeBlock
             module._tome_info = model._tome_info
         elif isinstance(module, Attention):
             module.__class__ = ToMeAttention
-            
-            
-            
+        elif isinstance(module, PatchEmbed):
+            module.__class__ = ToMePatchEmbed
+         
