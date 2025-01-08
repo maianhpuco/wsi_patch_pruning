@@ -33,7 +33,7 @@ if __name__ == '__main__':
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     
     for wsi_path in wsi_paths: 
-        basename = os.path.basename(wsi_path)
+        basename = os.path.basename(wsi_path).split(".")[0]
         print(wsi_path)
         
         slide = openslide.open_slide(wsi_path)
