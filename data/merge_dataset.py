@@ -22,7 +22,7 @@ class PatchDataset(Dataset):
         patch_size=(256, 256), 
         coverage_threshold=0.1, 
         transform=None, 
-        return_feature=True, 
+        return_feature=False, 
         model=None
         ):
         self.region_np = region
@@ -31,6 +31,7 @@ class PatchDataset(Dataset):
         self.coverage_threshold = coverage_threshold
         self.transform = transform
         self.model = model
+        self.return_feature = return_feature 
         
         # Get region dimensions and patch size
         region_height, region_width = region.shape[:2]
@@ -39,6 +40,7 @@ class PatchDataset(Dataset):
         self.patches = []
         self.bboxes = []
 
+        
         # Loop through the region and extract patches
         for top in range(0, region_height, patch_height):
             for left in range(0, region_width, patch_width):  
