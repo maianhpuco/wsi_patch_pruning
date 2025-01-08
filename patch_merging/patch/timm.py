@@ -90,6 +90,8 @@ class ToMeAttention(Attention):
             attn = attn + size.log()[:, None, None, :, 0]
 
         attn = attn.softmax(dim=-1)
+        print(attn.shape)
+        
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B, N, C)
