@@ -211,7 +211,10 @@ if __name__ == '__main__':
     start = time.time()
     for wsi_data in dataset:
         patch_superpixels = wsi_data
-        for superpixel_foreground_id, data in patch_superpixel.item():
+        import tqdm 
+        for superpixel_foreground_id, data in tqdm(patch_superpixels.items(), desc="Processing Superpixels", total=len(patch_superpixels)):
+ 
+        # for superpixel_foreground_id, data in patch_superpixel.item():
             print(superpixel_foreground_id)
             patches_list = data['pathes']
             bboxes_list = data['bboxes']
