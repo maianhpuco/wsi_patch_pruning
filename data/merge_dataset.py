@@ -104,7 +104,6 @@ class WSIDataset(Dataset):
         downsample_factor):
         mask = (superpixel_downsampling == superpixel_idx).astype(np.uint8)
         xmin, ymin, xmax, ymax = [int(i) for i in bounding_boxes[superpixel_idx]]
-        print(xmin, ymin, xmax, ymax)
         cropped_mask = mask[ymin:ymax, xmin:xmax]  # Corrected cropping
 
         upscaled_mask = cv2.resize(
@@ -207,50 +206,19 @@ if __name__ == '__main__':
     dataset = WSIDataset(
         slide_paths=wsi_paths,
         json_folder=json_folder,
-
         )
+    start = time.time()
+    for wsi_data in dataset:
+        patch_superpixels = wsi_data
+        for superpixel_foreground_id, data in patch_superpixel.item():
+            print(superpixel_foreground_id)
+            patches_list = data['pathes']
+            bboxes_list = data['bboxes']
+            print(patches_list)
+            print(bboxes_list)
+        break
+    print("Time to finish", time.time() - start, "second")
     
-    for sample in dataset:
-        sample
-        break  
-    # for wsi_path in wsi_paths: 
-    #     basename = os.path.basename(wsi_path).split(".")[0]
-    #     print(wsi_path)
-        
-    #     slide = openslide.open_slide(wsi_path)
-    #     print(slide.dimensions)
-        
-    #     json_path = os.path.join(JSON_PATH, f'{basename}.json')
-    #     print(json_path)
-    #     with open(json_path, 'r') as json_file:
-    #         loaded_data = json.load(json_file)
-
-    #         superpixel_labels = np.array(loaded_data['superpixel_labels'])
-    #         downscaled_region_array = np.array(loaded_data['downscaled_region_array'])
-    #         output_image_with_bboxes = np.array(loaded_data['output_image_with_bboxes'])
-
-    #         # Convert float values in 'foreground_superpixels' and 'background_superpixels' back to integers
-    #         foreground_superpixels = [int(i) for i in loaded_data['foreground_superpixels']]
-    #         background_superpixels = [int(i) for i in loaded_data['background_superpixels']]
-
-    #         # Convert the 'bounding_boxes' keys back to integers and values back to tuples
-    #         bounding_boxes = {int(k): tuple(v) for k, v in loaded_data['bounding_boxes'].items()}
-
-    #         # Scalar values remain as they are
-    #         downsample_factor = loaded_data['downsample_factor']
-    #         new_width = loaded_data['new_width']
-    #         new_height = loaded_data['new_height']
-
-            # # Print the loaded data to verify
-            # print(f"Superpixel Labels: {superpixel_labels.shape}")
-            # print(f"Downscaled Region Array: {downscaled_region_array.shape}")
-            # print(f"Output Image with BBoxes: {output_image_with_bboxes.shape}")
-            # print(f"Foreground Superpixels: {foreground_superpixels[:5]}")  # First 5 for brevity
-            # print(f"Background Superpixels: {background_superpixels[:5]}")  # First 5 for brevity
-            # print(f"Bounding Boxes: {list(bounding_boxes.keys())[:2]}")  # First 2 keys for brevity
-            # print(f"Downsample Factor: {downsample_factor}, Width: {new_width}, Height: {new_height}") 
-            #     # reading superpixel 
-        
             
-
-        
+             
+    
