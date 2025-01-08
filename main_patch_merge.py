@@ -17,29 +17,6 @@ JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
  
  
 sys.path.append(os.path.join(PROJECT_DIR))
-# sys.path.append(os.path.join(SLIDE_DIR))
-
-
-def parse_arguments():
-    """
-    Parses the command line arguments.
-    """
-    # parser = argparse.ArgumentParser(description="Training configuration for CAMIL model")
-    # parser.add_argument('--dry_run', type=bool, default=False, help="test running okay? ")    
-    # # Dataset and paths
-    # parser.add_argument('--train_or_test', type=str, choices=["train", "test"], default='train', help="training or inferencing")  
-    # parser.add_argument('--dataset_name', type=str, choices=["camelyon16"], default='camelyon16', help="dataset name") 
-    # parser.add_argument('--input_shape', type=int, default=512, help="Input feature dimension (default: 512)")
-    # parser.add_argument('--n_classes', type=int, default=2, help="Number of output classes (default: 2)")
-    # parser.add_argument('--subtyping', type=bool, default=False, help="Whether to use subtyping (default: False)")
-    # # Training parameters
-    # parser.add_argument('--epochs', type=int, default=30, help="Number of epochs to train (default: 10)")
-    # parser.add_argument('--learning_rate', type=float, default=1e-5, help="Learning rate (default: 1e-3)")
-    # parser.add_argument('--checkpoint_filename', type=str, default=None)
-    # # Device (GPU/CPU)
-    # parser.add_argument('--device', type=str, choices=["cpu", "cuda"], default="cuda", help="Device for training (default: cuda)")
-
-    # return parser.parse_args()
 
 def main():
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
@@ -53,18 +30,23 @@ def main():
     
     import time 
     start = time.time()
-    
+    # llop though each WSI image 
     for wsi_data in dataset:
-        # for d in enumerate(wsi_data):
-        #     # print(d)
+        #loop though each superpixel
         for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
             print(foreground_idx)
             print(region_np.shape)
             print(superpixel_extrapolated.shape) 
-        #    superpixel_idx = patch_data['superpixel_idx']
-        #    print(superpixel_idx)
-        #    patches        = patch_data['patches']
-        #    bboxes         = patch_data['bboxes'] 
+            patch_dataset = PatchDataset(
+                region_np,
+                superpixel_extrapolated,
+                patch_size = (256, 256),  
+            )
+            print(path_dataset)
+            # loop through each patch image
+            for patch, bbox in patch_dataset:
+                print(patch.shape) 
+                print(bbox.shape)
         break
     print("Time to finish", time.time() - start, "second")
      

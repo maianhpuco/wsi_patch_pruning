@@ -13,20 +13,84 @@ import cv2
 import time 
 
 
-# class SuperpixelDataset(Dataset):
-#     def __init__(self, slide_root, superpixel_root, basename):
-#         self.slide = None 
-#         self.basename = os.path.basename(slide_path)
-    
-#     def __getitem__(self, index):
-        
-#         return None  
-    
 class PatchDataset(Dataset):
-    def __init__(self):
-        pass 
+    def __init__(self, region, mask, patch_size=(256, 256), coverage_threshold=0.1):
+        self.region_np = region
+        self.mask = mask
+        self.patch_size = patch_size
+        self.coverage_threshold = coverage_threshold
+        
+        # Get region dimensions and patch size
+        region_height, region_width = region.shape[:2]
+        patch_height, patch_width = patch_size
+
+        self.patches = []
+        self.bboxes = []
+
+        # Loop through the region and extract patches
+        for top in range(0, region_height, patch_height):
+            for left in range(0, region_width, patch_width):  
+                # Ensure the patch is within bounds
+                bottom = min(top + patch_height, region_height)
+                right = min(left + patch_width, region_width)
+                
+                # Extract the patch and corresponding mask region
+                patch = region[top:bottom, left:right]
+                patch_mask = mask[top:bottom, left:right]
+
+                patch_area = patch.size
+                mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
+                
+                # Only include patches that satisfy the coverage threshold
+                if mask_coverage >= self.coverage_threshold:
+                    bbox = (top, left, bottom, right)
+                    self.patches.append(patch)
+                    self.bboxes.append(bbox)
+
+    def __len__(self):
+        """Returns the total number of patches."""
+        return len(self.patches)
+
     def __getitem__(self, idx):
-        pass 
+        """Returns a patch and its corresponding bounding box."""
+        patch = self.patches[idx]
+        bbox = self.bboxes[idx]
+        
+        return patch, bbox
+    
+    @staticmethod  
+    def extract_patches(region, mask, patch_size=(256, 256), coverage_threshold=0.1):
+        """
+        This method extracts patches from a given region and its corresponding mask,
+        and applies a coverage threshold to only keep patches that meet the mask coverage condition.
+        """
+        patches = []
+        bboxes = []
+
+        count = 0
+        region_height, region_width = region.shape[:2]
+        patch_height, patch_width = patch_size
+
+        for top in range(0, region_height, patch_height):
+            for left in range(0, region_width, patch_width):
+                # Ensure the patch is within bounds
+                bottom = min(top + patch_height, region_height)
+                right = min(left + patch_width, region_width)
+                
+                # Extract patch and corresponding mask region
+                patch = region[top:bottom, left:right]
+                patch_mask = mask[top:bottom, left:right]
+
+                patch_area = patch.size
+                mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of patch covered by mask
+                
+                # Only store patches that satisfy the coverage threshold
+                if mask_coverage >= coverage_threshold:
+                    bbox = (top, left, bottom, right)
+                    patches.append(patch)
+                    bboxes.append(bbox)
+
+        return patches, bboxes
 
 class SuperpixelDataset(Dataset):
     def __init__(self, slide_paths, json_folder):
@@ -74,15 +138,7 @@ class SuperpixelDataset(Dataset):
             
             yield (foreground_idx, region_np, superpixel_extrapolated)
             
-            # patches, bboxes = self.extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
-            # data = {   
-            #         "superpixel_idx": foreground_idx, 
-            #         'patches': patches, 
-            #         'bboxes': bboxes
-            #         }
-            # yield data
-                
-        # return patch_superpixels
+
     
     @staticmethod
     def get_region_original_size(slide, xywh_abs_bbox):
@@ -163,38 +219,7 @@ class SuperpixelDataset(Dataset):
             
         return sample
 
-    @staticmethod
-    def extract_patches(region, mask, patch_size=(256, 256), coverage_threshold=0.1):
-        count = 0 
-        region_height, region_width = region.shape[:2]
-        patch_height, patch_width = patch_size
 
-        patch_idx = 0  # Initialize patch index
-        patches = [] 
-        bboxes =  [] 
-        # Loop through the region and extract patches
-        for top in range(0, region_height, patch_height):
-            for left in range(0, region_width, patch_width):
-                # Ensure the patch is within bounds
-                bottom = min(top + patch_height, region_height)
-                right = min(left + patch_width, region_width)
-            
-            
-                patch = region[top:bottom, left:right]
-                patch_mask = mask[top:bottom, left:right]
-
-                patch_area = patch.size
-                mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
-                
-                # if mask_coverage >= coverage_threshold:
-                    # Store the bounding box (top, left, bottom, right)
-                    
-                bbox = (top, left, bottom, right)
-                patch_idx += 1
-                patches.append(patches)
-                bboxes.append(bboxes)
-                
-        return patches, bboxes 
         
     
 # if __name__ == '__main__':
