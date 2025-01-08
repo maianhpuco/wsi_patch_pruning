@@ -32,10 +32,8 @@ JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
 sys.path.append(os.path.join(PROJECT_DIR))
 # Load a pre-trained ViT model from timm
 
-# model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
-# model.eval()  # Set the model to evaluation mode 
-
-
+model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
+model.eval()  # Set the model to evaluation mode 
 
 
 def main(): 
