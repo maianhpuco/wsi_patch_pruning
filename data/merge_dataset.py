@@ -80,7 +80,9 @@ class PatchDataset(Dataset):
         if self.return_feature:
             patch_tensor = patch_pil.unsqueeze(0)  # Add batch dimension
             with torch.no_grad():
-                features = self.model(patch_tensor)  # Pass through the model to extract features
+                features = self.model.forward_features(patch_tensor) 
+            # with torch.no_grad():
+            #     features = self.model(patch_tensor)  # Pass through the model to extract features
             return features.squeeze(0), patch_pil, bbox  # Remove batch dimension and return features
         else:
             return _, patch_pil, bbox 
