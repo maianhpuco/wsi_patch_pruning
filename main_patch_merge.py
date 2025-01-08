@@ -76,12 +76,12 @@ def main():
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             print(">> feature output size")
-            rint("Time to finish a superpixel", time.time() - start, "second")
+            print("Time to finish a superpixel", time.time() - start, "second")
       
             print(ts_all_features_of_superpixelts.shape)              
 
         break
-    p
+
     
 if __name__ == '__main__':
     main()
