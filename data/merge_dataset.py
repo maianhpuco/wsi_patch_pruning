@@ -71,7 +71,7 @@ class WSIDataset(Dataset):
         bbox = sample['bounding_boxes']
         downsample_factor = sample['downsample_factor']
         
-        xywh_abs_bbox = _get_absolute_bbox_coordinate(bbox, downsample_factor) 
+        xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
         
         superpixel_downsampling = superpixel_labels == foreground_idx
         superpixel_extrapolated = extrapolate_superpixel_mask_segment(
@@ -96,7 +96,7 @@ class WSIDataset(Dataset):
 
         relative_bbox = [xmin_original, ymin_original, width_original, height_original]
 
-    return relative_bbox  
+        return relative_bbox  
 
     @staticmethod 
     def read_json_superpixel(json_path):
