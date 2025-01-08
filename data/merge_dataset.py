@@ -102,7 +102,7 @@ class WSIDataset(Dataset):
         bounding_boxes, 
         downsample_factor):
         mask = (superpixel_downsampling == superpixel_idx).astype(np.uint8)
-        xmin, ymin, xmax, ymax = bounding_boxes[superpixel_idx]
+        xmin, ymin, xmax, ymax = [int(i) for i in bounding_boxes[superpixel_idx]]
         print(xmin, ymin, xmax, ymax)
         cropped_mask = mask[ymin:ymax, xmin:xmax]  # Corrected cropping
 
