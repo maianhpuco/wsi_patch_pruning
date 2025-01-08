@@ -54,13 +54,13 @@ def main():
     start = time.time()
     
     for wsi_data in dataset:
-        patch_superpixels_gen = wsi_data
         for patch_data in enumerate(wsi_data):
-           superpixel_idx = patch_data['superpixel_idx']
-           print(superpixel_idx)
-           patches        = patch_data['patches']
-           bboxes         = patch_data['bboxes'] 
-        break
+            print(patch_data)
+        #    superpixel_idx = patch_data['superpixel_idx']
+        #    print(superpixel_idx)
+        #    patches        = patch_data['patches']
+        #    bboxes         = patch_data['bboxes'] 
+        # break
     print("Time to finish", time.time() - start, "second")
      
     
