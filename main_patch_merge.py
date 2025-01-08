@@ -55,11 +55,11 @@ def main():
     
     for wsi_data in dataset:
         for d in enumerate(wsi_data):
-            print(d)
-            # foreground_idx, region_np, superpixel_extrapolated = d 
-            # print(foreground_idx)
-            # print(region_np.shape)
-            # print(superpixel_extrapolated) 
+            # print(d)
+            foreground_idx, region_np, superpixel_extrapolated = d 
+            print(foreground_idx)
+            print(region_np.shape)
+            print(superpixel_extrapolated) 
         #    superpixel_idx = patch_data['superpixel_idx']
         #    print(superpixel_idx)
         #    patches        = patch_data['patches']
