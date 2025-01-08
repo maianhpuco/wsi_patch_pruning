@@ -35,8 +35,8 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  # Set the model to evaluation mode 
 
-model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-patch_merging.patch.timm(model)
+# model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
+# patch_merging.patch.timm(model)
 
 
 def main():
