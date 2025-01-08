@@ -42,7 +42,6 @@ def main():
                 superpixel_extrapolated,
                 patch_size = (256, 256),  
             )
-            print(path_dataset)
             # loop through each patch image
             for patch, bbox in patch_dataset:
                 print(patch.shape) 
