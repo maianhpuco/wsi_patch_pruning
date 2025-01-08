@@ -71,11 +71,11 @@ def main():
                 # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
-                all_features.append(patches)
+                all_features.append(features)
                 
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
-            print(">> feature output size")
+            print(">> feature output size", )
             print("Time to finish a superpixel", time.time() - start, "second")
       
             print(ts_all_features_of_superpixel.shape)              
