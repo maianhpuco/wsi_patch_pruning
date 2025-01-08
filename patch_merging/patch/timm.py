@@ -137,3 +137,6 @@ def apply_patch(
             module._tome_info = model._tome_info
         elif isinstance(module, Attention):
             module.__class__ = ToMeAttention
+            
+            
+            

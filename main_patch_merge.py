@@ -35,8 +35,8 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  # Set the model to evaluation mode 
 
-# model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-# patch_merging.patch.timm(model)
+model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
+patch_merging.patch.timm(model_merge)
 
 
 def main():
@@ -75,9 +75,10 @@ def main():
                 # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
+                print(features.shape)
                 flattened_features = features.view(-1, features.shape[-1]) 
                 all_features.append(flattened_features)
-                
+                 
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             print(">> feature output size", ts_all_features_of_superpixel.shape)
