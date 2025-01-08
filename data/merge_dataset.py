@@ -8,6 +8,7 @@ import pandas as pd
 from sklearn.preprocessing import normalize
 import glob
 import openslide 
+import json 
 
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 SLIDE_PATH = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images'
