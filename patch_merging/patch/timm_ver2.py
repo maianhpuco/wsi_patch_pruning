@@ -1,4 +1,6 @@
 import torch
+from typing import Tuple
+ 
 from timm.models.vision_transformer import Attention, Block, VisionTransformer
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
