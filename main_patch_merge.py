@@ -51,15 +51,15 @@ def main():
         json_folder=json_folder,
         )
     import time 
-    import tqdm 
     start = time.time()
+    
     for wsi_data in dataset:
         patch_superpixels_gen = wsi_data
-        for data in tqdm(patch_superpixels_gen):
-           superpixel_idx = data['superpixel_idx']
+        for patch_data in enumerate(wsi_data):
+           superpixel_idx = patch_data['superpixel_idx']
            print(superpixel_idx)
-           patches        = data['patches']
-           bboxes         = data['bboxes'] 
+           patches        = patch_data['patches']
+           bboxes         = patch_data['bboxes'] 
         break
     print("Time to finish", time.time() - start, "second")
      
