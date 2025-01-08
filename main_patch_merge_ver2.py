@@ -94,7 +94,7 @@ def main():
             
             print("Time to finish a superpixel", time.time() - start, "second")
             superpixel_num += 1
-            if superpixel_num == 2:
+            if superpixel_num == 3:
                 break 
         break
     

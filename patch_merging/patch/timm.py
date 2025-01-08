@@ -38,7 +38,6 @@ class ToMeBlock(Block):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Note: this is copied from timm.models.vision_transformer.Block with modifications.
         # Compute and print the mean and standard deviation for x
-        print("before processing ------ ") 
         print(f'Mean of x: {x.mean().item()}')
         print(f'Std of x: {x.std().item()}')  
         
