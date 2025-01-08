@@ -80,7 +80,7 @@ class WSIDataset(Dataset):
         region_cropped = get_region_original_size(slide, xywh_abs_bbox)
         region_np = np.array(region_cropped) 
     
-        patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256)):
+        patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
 
         return patches, bboxes
     @staticmethod
