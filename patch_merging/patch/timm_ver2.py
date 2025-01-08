@@ -165,6 +165,6 @@ def apply_patch(
             module._tome_info = model._tome_info
         elif isinstance(module, Attention):
             module.__class__ = ToMeAttention
-        elif isinstance(module, PatchEmbed):
-            module.__class__ = ToMePatchEmbed
+        # elif isinstance(module, PatchEmbed):
+        #     module.__class__ = ToMePatchEmbed
          
