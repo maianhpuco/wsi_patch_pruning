@@ -51,9 +51,9 @@ def main():
     for wsi_data in dataset:
         #loop though each superpixel
         for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
-            print(foreground_idx)
-            print(region_np.shape)
-            print(superpixel_extrapolated.shape) 
+            print("foreground_id", foreground_idx)
+            print("region shape", region_np.shape)
+            print("superpixel shape", superpixel_extrapolated.shape) 
             patch_dataset = PatchDataset(
                 region_np,
                 superpixel_extrapolated,
@@ -62,7 +62,7 @@ def main():
                 return_feature=True,  # Enable feature extraction
                 model=model 
             )
-            patch_dataloader = DataLoader(patch_dataset, batch_size=4, shuffle=True)
+            patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
             all_features_of_superpixel = [] 
             for features, patches, bboxes in patch_dataloader: 
                 # print(f"Batch of features shape: {features.shape}")
