@@ -62,7 +62,7 @@ class WSIDataset(Dataset):
         
         for foreground_idx in foreground_superpixels:
             
-            bbox = bbounding_boxes[foreground_idx]
+            bbox = bounding_boxes[foreground_idx]
             xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
              
             superpixel_downsampling = superpixel_labels == foreground_idx
