@@ -84,11 +84,7 @@ class WSIDataset(Dataset):
             'new_width': new_width,
             'new_height': new_height
         }
-        
-        # Apply transformations if any
-        if self.transform:
-            sample = self.transform(sample)
-        
+            
         return sample 
     
 if __name__ == '__main__':
