@@ -19,7 +19,7 @@ class PatchDataset(Dataset):
         self, 
         region, 
         mask, 
-        patch_size=(256, 256), 
+        patch_size=(224, 224), 
         coverage_threshold=0.1, 
         transform=None, 
         return_feature=False, 
