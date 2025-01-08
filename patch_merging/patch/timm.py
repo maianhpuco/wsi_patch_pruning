@@ -40,7 +40,7 @@ class ToMeBlock(Block):
         # Compute and print the mean and standard deviation for x
         print("before processing ----------- ") 
         old_mean = x.mean().item()
-        old_std = x.mean().item() 
+        old_std = x.std().item() 
         old_shape = x.shape
 
         
