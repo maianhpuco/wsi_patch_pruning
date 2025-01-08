@@ -31,12 +31,8 @@ class CustomDataset(Dataset):
         self.shuffle = shuffle
         self.feature_file_end = feature_file_end
         
-        # Load labels from CSV file
-        # self.labels_df = pd.read_csv(label_file)
-        
-        # Optionally shuffle  if required
-        # self.indices = np.arange(len(self.file_paths))
         df = pd.read_csv(self.split_filepath)
+        print(df.head(5))
         df.dropna(subset=[self.train_or_test_or_val, f'{self.train_or_test_or_val}_label'], inplace=True)
   
         self.name_label_dict = df.set_index(self.train_or_test_or_val)[
@@ -79,16 +75,15 @@ class CustomDataset(Dataset):
             neighbor_indices = f['indices'][:]
             values = f['similarities'][:]
             values = np.nan_to_num(values)
-            # base_name = os.path.splitext(os.path.basename(file_path))[0]
             label = self.name_label_dict[file_basename]
-        # label_tensor = torch.tensor(label, dtype=torch.float32)
+            
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
-        # print(label_tensor)
-        # Process adjacency matrix
+        
+        #Get 5 neighor
         Idx = neighbor_indices[:, :8]
         rows = np.asarray([[enum] * len(item) for enum, item in enumerate(Idx)]).ravel()
         columns = Idx.ravel()
-
+        
         neighbor_matrix = values[:, 1:]
         normalized_matrix = normalize(neighbor_matrix, norm="l2")
 

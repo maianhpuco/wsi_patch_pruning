@@ -46,8 +46,6 @@ def main():
         args.feature_folder =os.path.join(SLIDE_DIR)  
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
  
-
-
     import datetime
 
     
