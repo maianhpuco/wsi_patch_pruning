@@ -133,6 +133,7 @@ class NeighborAggregator(nn.Module):
         alpha = F.softmax(reduced_sum, dim=0)  # Apply softmax over the aggregated sum to normalize the scores
         
         return alpha, reduced_sum  # Return the attention scores and raw aggregated sum
+    
 class LastSigmoid(nn.Module):
     def __init__(self,
                  input_dim, 

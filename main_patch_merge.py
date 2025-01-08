@@ -57,10 +57,7 @@ def main():
             for patches, bboxes in patch_dataloader: 
                 print(f"Batch of patches shape: {patches.shape}")
                 print(f"Batch of bounding boxes: {bboxes}") 
-            # # loop through each patch image
-            # for patch, bbox in patch_dataset:
-            #     print(patch.shape) 
-            #     print(bbox.)
+
         break
     print("Time to finish", time.time() - start, "second")
      
