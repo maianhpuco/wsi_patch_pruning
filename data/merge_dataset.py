@@ -53,7 +53,53 @@ class WSIDataset(Dataset):
         
         # Load corresponding JSON data
         json_path = os.path.join(self.json_folder, f'{basename}.json')
+        sample = self.read_json_superpixel(json_path)
+        
+        
+        sample = {
+            'wsi': slide,
+            'superpixel_labels': superpixel_labels,
+            'downscaled_region_array': downscaled_region_array,
+            'output_image_with_bboxes': output_image_with_bboxes,
+            'foreground_superpixels': foreground_superpixels,
+            'background_superpixels': background_superpixels,
+            'bounding_boxes': bounding_boxes,
+            'downsample_factor': downsample_factor,
+            'new_width': new_width,
+            'new_height': new_height
+        }
+        bbox = sample['bounding_boxes']
+        downsample_factor = sample['downsample_factor']
+        
+        xywh_abs_bbox = _get_absolute_bbox_coordinate(bbox, downsample_factor) 
+        
+        superpixel_downsampling = superpixel_labels == foreground_idx
+        superpixel_extrapolated = extrapolate_superpixel_mask_segment(
+            superpixel_labels, foreground_idx, bounding_boxes, downsample_factor)
+        
+        region_cropped = get_region_original_size(slide, xywh_abs_bbox)
+        region_np = np.array(region_cropped) 
+    
+        patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256)):
 
+        return patches, bboxes
+    @staticmethod
+    def _get_absolute_bbox_coordinate(bbox, downsample_factor):
+        xmin, ymin, xmax, ymax = bbox
+        width = xmax - xmin
+        height = ymax - ymin
+
+        xmin_original = int(xmin / downsample_factor)
+        ymin_original = int(ymin / downsample_factor)
+        width_original = int(width / downsample_factor)
+        height_original = int(height / downsample_factor)
+
+        relative_bbox = [xmin_original, ymin_original, width_original, height_original]
+
+    return relative_bbox  
+
+    @staticmethod 
+    def read_json_superpixel(json_path):
         with open(json_path, 'r') as json_file:
             loaded_data = json.load(json_file)
         
@@ -85,7 +131,38 @@ class WSIDataset(Dataset):
             'new_height': new_height
         }
             
-        return sample 
+        return sample
+    
+    def extract_patches(region, mask, patch_size=(256, 256), coverage_threshold=0.1):
+        count = 0 
+        region_height, region_width = region.shape[:2]
+        patch_height, patch_width = patch_size
+
+        patch_idx = 0  # Initialize patch index
+        patches = [] 
+        bboxes =  [] 
+        # Loop through the region and extract patches
+        for top in range(0, region_height, patch_height):
+            for left in range(0, region_width, patch_width):
+                # Ensure the patch is within bounds
+                bottom = min(top + patch_height, region_height)
+                right = min(left + patch_width, region_width)
+            
+            
+                patch = region[top:bottom, left:right]
+                patch_mask = mask[top:bottom, left:right]
+
+                patch_area = patch.size
+                mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
+                
+                if mask_coverage >= coverage_threshold:
+                    # Store the bounding box (top, left, bottom, right)
+                    bbox = (top, left, bottom, right)
+                    patch_idx += 1
+                    patches.append(patches)
+                    bboxes.append(bboxes)
+        return patches, bboxes 
+        
     
 if __name__ == '__main__':
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
@@ -98,7 +175,7 @@ if __name__ == '__main__':
         )
     
     for sample in dataset:
-        print(sample)
+        sample
         break  
     # for wsi_path in wsi_paths: 
     #     basename = os.path.basename(wsi_path).split(".")[0]
