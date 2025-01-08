@@ -99,7 +99,7 @@ def make_tome_class(transformer_class):
             self._tome_info["source"] = None
 
             # Apply positional embedding (optional)
-            x = self.pos_embed(x)
+            # x = self.pos_embed(x)
 
             # Pass the tokens through transformer blocks
             x = self.blocks(x)
