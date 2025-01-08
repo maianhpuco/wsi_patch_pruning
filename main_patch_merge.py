@@ -17,7 +17,7 @@ JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
  
  
 sys.path.append(os.path.join(PROJECT_DIR))
-sys.path.append(os.path.join(SLIDE_DIR))
+# sys.path.append(os.path.join(SLIDE_DIR))
 
 
 def parse_arguments():
