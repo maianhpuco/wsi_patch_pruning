@@ -58,8 +58,9 @@ class WSIDataset(Dataset):
         bounding_boxes = sample['bounding_boxes']
         downsample_factor = sample['downsample_factor']
         foreground_superpixels = sample['foreground_superpixels']
+        superpixel_labels = sample['superpixel_labels']
         patch_in_superpixels = {}
-        
+          
         for foreground_idx in foreground_superpixels:
             
             bbox = bounding_boxes[foreground_idx]
