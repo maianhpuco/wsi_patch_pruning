@@ -75,7 +75,7 @@ class SuperpixelDataset(Dataset):
 
             patches, bboxes = self.extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
             data = {   
-                    "superpixel_idx": foreground_idx
+                    "superpixel_idx": foreground_idx, 
                     'patches': patches, 
                     'bboxes': bboxes
                     }
