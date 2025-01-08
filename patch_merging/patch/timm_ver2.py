@@ -113,7 +113,7 @@ def make_tome_class(transformer_class):
             Modified forward_features to accept tokenized input and apply necessary transformations.
             """
             # Apply positional encoding to tokens
-            x = self.pos_embed(x)
+            # x = self.pos_embed(x)
 
             # Pass the tokens through transformer blocks
             x = self.norm_pre(x)  # Normalization before blocks
