@@ -5,24 +5,25 @@ from typing import Optional, Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
 
-# class ToMePatchEmbed(PatchEmbed):
-#     """
-#     Custom Patch Embedding class to process pre-tokenized input (a list of tokens).
-#     Skips the patch embedding process and directly accepts tokenized input.
-#     """
+class ToMePatchEmbed(PatchEmbed):
+    """
+    Custom Patch Embedding class to process pre-tokenized input (a list of tokens).
+    Skips the patch embedding process and directly accepts tokenized input.
+    """
 
-#     def __init__(self, embed_dim: int, **kwargs):
-#         super().__init__(**kwargs)
-#         self.token_embed = nn.Identity()  # No patch embedding, just identity for tokens
+    def __init__(self, embed_dim: int, **kwargs):
+        super().__init__(**kwargs)
+        # self.token_embed = nn.Identity()  # No patch embedding, just identity for tokens
 
-#     def forward(self, x: torch.Tensor) -> torch.Tensor:
-#         """
-#         Accept a list of tokens directly without applying patch embedding.
-#         The input is assumed to be of shape [batch_size, num_tokens, feature_size].
-#         """
-#         x = self.token_embed(x)  
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Accept a list of tokens directly without applying patch embedding.
+        The input is assumed to be of shape [batch_size, num_tokens, feature_size].
+        """
+        # x = self.token_embed(x)  
         
-#         return x
+        x = nn.Identity()(x)
+        return x
 
 class ToMeBlock(Block):
     """
@@ -112,7 +113,7 @@ def make_tome_class(transformer_class):
             super().__init__(*args, **kwargs)
             # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
             # self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
-            self.patch_embed  = nn.Identity()
+            # self.patch_embed  = nn.Identity()
              
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
@@ -165,6 +166,6 @@ def apply_patch(
             module._tome_info = model._tome_info
         elif isinstance(module, Attention):
             module.__class__ = ToMeAttention
-        # elif isinstance(module, PatchEmbed):
-        #     module.__class__ = ToMePatchEmbed
+        elif isinstance(module, PatchEmbed):
+            module.__class__ = ToMePatchEmbed
          
