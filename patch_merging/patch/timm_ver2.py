@@ -5,6 +5,7 @@ from typing import Tuple
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
 
+
 class ToMeBlock(Block):
     """
     Modifications:
@@ -71,11 +72,13 @@ def make_tome_class(transformer_class):
         Modifications:
         - Initialize r, token size, and token sources.
         """
-
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             # Adding a linear layer for token processing (transforming feature_size if necessary)
             self.token_embed = nn.Linear(self.embed_dim, self.embed_dim)  # Adjust `embed_dim` as needed
+
+            # Skip patch embedding by setting it to None
+            self.patch_embed = None
 
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
