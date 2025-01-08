@@ -40,8 +40,8 @@ if __name__ == '__main__':
         print(slide.dimensions)
         
         json_path = os.path.join(JSON_PATH, f'{basename}.json')
-        
-        with open('json_path', 'r') as json_file:
+        print(json_path)
+        with open(json_path, 'r') as json_file:
             loaded_data = json.load(json_file)
 
             superpixel_labels = np.array(loaded_data['superpixel_labels'])
