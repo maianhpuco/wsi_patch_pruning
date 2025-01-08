@@ -88,9 +88,10 @@ def main():
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
 
-
             print(">> feature output size", ts_all_features_of_superpixel.shape)
-            out = model_merge.forward_features(ts_all_features_of_superpixel) 
+            model.r = 8 
+            out = model_merge(ts_all_features_of_superpixel) 
+            print(f"r = {r} first 5 layers 's most likely class",out.topk(5).indices[0].tolist()) 
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
