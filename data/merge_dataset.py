@@ -62,8 +62,8 @@ class WSIDataset(Dataset):
         
         for foreground_idx in foreground_superpixels:
             
-            xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
             bbox = bounding_bboxes[foreground_idx]
+            xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
              
             superpixel_downsampling = superpixel_labels == foreground_idx
             superpixel_extrapolated = extrapolate_superpixel_mask_segment(
