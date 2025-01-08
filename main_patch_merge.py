@@ -8,7 +8,7 @@ import argparse
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
- 
+from PIL import Image
  # Define the image transformations
 transform = transforms.Compose([
     transforms.Resize((256, 256)),  # Resize the patch to 256x256
