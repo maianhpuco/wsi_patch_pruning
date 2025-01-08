@@ -51,12 +51,13 @@ def main():
         json_folder=json_folder,
         )
     import time 
+    import tqdm 
     start = time.time()
     for wsi_data in dataset:
         patch_superpixels_gen = wsi_data
-        import tqdm 
-        for data in tqdm(patch_superpixels_gen, desc="Processing Superpixels", total=len(patch_superpixels)):
+        for data in tqdm(patch_superpixels_gen):
            superpixel_idx = data['superpixel_idx']
+           print(superpixel_idx)
            patches        = data['patches']
            bboxes         = data['bboxes'] 
         break
