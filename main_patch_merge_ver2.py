@@ -87,6 +87,7 @@ def main():
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
+            break 
         break
     
 if __name__ == '__main__':
