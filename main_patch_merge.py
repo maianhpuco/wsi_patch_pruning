@@ -5,7 +5,7 @@ import glob
 import pandas as pd
 import numpy as np
 import argparse
-from data.merge_dataset import SuperpixelDataset   
+from data.merge_dataset import SuperpixelDataset, PatchDataset
 
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
