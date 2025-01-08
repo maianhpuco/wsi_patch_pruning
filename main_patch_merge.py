@@ -46,11 +46,12 @@ def main():
         )
     
     import time 
-    start = time.time()
+    
     # llop though each WSI image 
     for wsi_data in dataset:
         #loop though each superpixel
         for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
+            start = time.time() s
             print("foreground_id", foreground_idx)
             print("region shape", region_np.shape)
             print("superpixel shape", superpixel_extrapolated.shape) 
@@ -63,23 +64,24 @@ def main():
                 model=model 
             )
             patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
-            all_features_of_superpixel = [] 
+            all_features = [] 
             for features, patches, bboxes in patch_dataloader: 
                 # print(f"Batch of features shape: {features.shape}")
                 # print(f"Batch of patches shape: {patches.shape}")
                 # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
-                all_features_of_superpixel.append(patches)
+                all_features.append(patches)
                 
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             print(">> feature output size")
+            rint("Time to finish a superpixel", time.time() - start, "second")
+      
             print(ts_all_features_of_superpixelts.shape)              
 
         break
-    print("Time to finish", time.time() - start, "second")
-     
+    p
     
 if __name__ == '__main__':
     main()
