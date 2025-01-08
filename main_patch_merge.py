@@ -83,7 +83,7 @@ def main():
                 # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
-                print(features.shape)
+                # print(features.shape)
                 flattened_features = features.view(-1, features.shape[-1]) 
                 all_features.append(flattened_features)
                  
