@@ -50,7 +50,7 @@ def main():
         slide_paths=wsi_paths,
         json_folder=json_folder,
         )
-    
+    import time 
     start = time.time()
     for wsi_data in dataset:
         patch_superpixels = wsi_data
