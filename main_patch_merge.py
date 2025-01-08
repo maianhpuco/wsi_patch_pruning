@@ -53,20 +53,15 @@ def main():
     import time 
     start = time.time()
     for wsi_data in dataset:
-        patch_superpixels = wsi_data
+        patch_superpixels_gen = wsi_data
         import tqdm 
-        for superpixel_foreground_id, data in tqdm(patch_superpixels.items(), desc="Processing Superpixels", total=len(patch_superpixels)):
- 
-        # for superpixel_foreground_id, data in patch_superpixel.item():
-            print(superpixel_foreground_id)
-            patches_list = data['pathes']
-            bboxes_list = data['bboxes']
-            print(patches_list)
-            print(bboxes_list)
+        for data in tqdm(patch_superpixels_gen, desc="Processing Superpixels", total=len(patch_superpixels)):
+           superpixel_idx = data['superpixel_idx']
+           patches        = data['patches']
+           bboxes         = data['bboxes'] 
         break
     print("Time to finish", time.time() - start, "second")
      
-
     
 if __name__ == '__main__':
     main()
