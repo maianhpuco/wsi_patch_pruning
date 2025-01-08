@@ -1,14 +1,13 @@
 import torch
+from timm.models.vision_transformer import VisionTransformer, Block, Attention
 from typing import Tuple
- 
-from timm.models.vision_transformer import Attention, Block, VisionTransformer
 from patch_merging.merge import bipartite_soft_matching, merge_source, merge_wavg
 from patch_merging.utils import parse_r
 
 class ToMeBlock(Block):
     """
     Modifications:
-     - Apply ToMe between the attention and mlp blocks
+     - Apply ToMe between the attention and mlp blocks.
      - Compute and propagate token size and potentially the token sources.
     """
     def _drop_path1(self, x):
@@ -75,22 +74,22 @@ def make_tome_class(transformer_class):
             """
             Override the forward pass to accept tokenized input directly (shape: [batch_size, num_tokens, feature_size]).
             """
-            # If the input tensor has shape [num_tokens, feature_size], add a batch dimension
+            # If the input tensor has shape [num_tokens, feature_size], add batch dimension
             if len(x.shape) == 2:  # Shape [num_tokens, feature_size]
                 x = x.unsqueeze(0)  # Add batch dimension: shape becomes [batch_size, num_tokens, feature_size]
-            
+
+            # Skip the patch embedding and positional encoding, as the tokens are already embedded
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
 
+            # Directly pass the tokenized input to the transformer layers
             return super().forward(x, *args, **kwdargs)
 
     return ToMeVisionTransformer
 
 
-def apply_patch(
-    model: VisionTransformer, trace_source: bool = False, prop_attn: bool = True
-):
+def apply_patch(model: VisionTransformer, trace_source: bool = False, prop_attn: bool = True):
     """
     Applies ToMe to this transformer. Afterward, set r using model.r.
     """

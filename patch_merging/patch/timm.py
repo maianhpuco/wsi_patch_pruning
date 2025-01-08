@@ -107,21 +107,21 @@ def make_tome_class(transformer_class):
 
     return ToMeVisionTransformer 
 
-# def make_tome_class(transformer_class):
-#     class ToMeVisionTransformer(transformer_class):
-#         """
-#         Modifications:
-#         - Initialize r, token size, and token sources.
-#         """
+def make_tome_class(transformer_class):
+    class ToMeVisionTransformer(transformer_class):
+        """
+        Modifications:
+        - Initialize r, token size, and token sources.
+        """
 
-#         def forward(self, *args, **kwdargs) -> torch.Tensor:
-#             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
-#             self._tome_info["size"] = None
-#             self._tome_info["source"] = None
+        def forward(self, *args, **kwdargs) -> torch.Tensor:
+            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
+            self._tome_info["size"] = None
+            self._tome_info["source"] = None
 
-#             return super().forward(*args, **kwdargs)
+            return super().forward(*args, **kwdargs)
 
-#     return ToMeVisionTransformer
+    return ToMeVisionTransformer
 
 
 def apply_patch(
