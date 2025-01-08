@@ -138,7 +138,7 @@ def make_tome_class(transformer_class):
             # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
             # self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
             # self.patch_embed  = nn.Identity()
-            self.pos_embed = None s
+            self.pos_embed = None
              
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
