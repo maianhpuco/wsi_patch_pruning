@@ -13,13 +13,28 @@ SLIDE_PATH = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON
 JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
 
 class SuperpixelDataset(Dataset):
-    def __init__(self, slide_name, superpixel_idx):
-        pass 
+    def __init__(self, slide_root, superpixel_root, basename):
+        self.slide = None 
+        self.basename = os.path.basename(slide_path)
     def __getitem__(self, index):
         return None  
     
+class PatchDataset(Dataset):
+    def __init__(self):
+        pass 
+    def __getitem__(self, idx):
+        pass 
 
 if __name__ == '__main__':
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
-    print(wsi_paths)
+    
+    for wsi_path in wsi_paths: 
+        print(wsi_path)
+        slide = openslide.open_slide(wsi_path)
+        print(slide.dimensions)
+        break
+        
+        
+        
+        
