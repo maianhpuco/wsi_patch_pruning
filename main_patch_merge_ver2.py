@@ -38,7 +38,7 @@ model.eval()  # Set the model to evaluation mode
 
 def main(): 
     model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-    patch_merging.patch.timm(model_merge)
+    patch_merging.patch.timm(model_merge) 
     tokens = torch.randn(1, 3030, 768)  
     model_merge.eval()
     with torch.no_grad():
@@ -90,7 +90,7 @@ def main():
 
 
             print(">> feature output size", ts_all_features_of_superpixel.shape)
-            out = model_merge(ts_all_features_of_superpixel) 
+            out = model_merge.forward_features(ts_all_features_of_superpixel) 
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
