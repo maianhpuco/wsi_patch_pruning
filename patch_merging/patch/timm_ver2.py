@@ -138,15 +138,15 @@ def make_tome_class(transformer_class):
             # Replace patch embedding with custom ToMePatchEmbed (doesn't do patching)
             # self.patch_embed = ToMePatchEmbed(embed_dim=self.embed_dim, img_size=224, patch_size=16)
             # self.patch_embed  = nn.Identity()
-            self._pos_embed = nn.Identity() 
             
+             
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly.
             """
             if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
                 x = x.unsqueeze(0)
-
+            self._pos_embed = nn.Identity() 
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
