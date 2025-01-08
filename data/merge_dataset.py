@@ -76,8 +76,8 @@ class WSIDataset(Dataset):
             patch_in_superpixels.update(
                 {
                     foreground_idx: 
-                        {'patches': patches}, 
-                        {'bboxes': bboxes}
+                        {'patches': patches, 
+                        'bboxes': bboxes}
                     }
                 )
         return patch_superpixels
