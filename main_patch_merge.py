@@ -55,7 +55,7 @@ def main():
     
     for wsi_data in dataset:
         for d  in enumerate(wsi_data):
-            foreground_idx, region_np,superpixel_extrapolated = d 
+            foreground_idx, region_np, superpixel_extrapolated = d 
             print(foreground_idx)
             print(region_np.shape)
             print(superpixel_extrapolated) 
