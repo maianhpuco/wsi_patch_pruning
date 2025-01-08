@@ -44,7 +44,7 @@ def main():
     tokens = torch.randn(1, 3030, 768)  
     model_merge.eval()
     with torch.no_grad():
-        output = model(tokens)
+        output = model_merge(tokens)
          
         
     # wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
