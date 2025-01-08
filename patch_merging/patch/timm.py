@@ -41,7 +41,7 @@ class ToMeBlock(Block):
         print("before processing ----------- ") 
         old_mean = x.mean().item()
         old_std = x.mean().item() 
-        old_shape = x.shape[0]
+        old_shape = x.shape
 
         
         attn_size = self._tome_info["size"] if self._tome_info["prop_attn"] else None
