@@ -65,16 +65,16 @@ def main():
             patch_dataloader = DataLoader(patch_dataset, batch_size=4, shuffle=True)
             all_features_of_superpixel = [] 
             for features, patches, bboxes in patch_dataloader: 
-                print(f"Batch of features shape: {features.shape}")
-                print(f"Batch of patches shape: {patches.shape}")
-                print(f"Batch of bounding boxes: {bboxes}")
+                # print(f"Batch of features shape: {features.shape}")
+                # print(f"Batch of patches shape: {patches.shape}")
+                # print(f"Batch of bounding boxes: {bboxes}")
             
                 # Stack all features
                 all_features_of_superpixel.append(patches)
                 
             # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
-            
+            print(">> feature output size")
             print(ts_all_features_of_superpixelts.shape)              
 
         break
