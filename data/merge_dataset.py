@@ -94,16 +94,12 @@ class WSIDataset(Dataset):
 if __name__ == '__main__':
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
-     
-    # for wsi_path in wsi_paths: 
-    # basename = os.path.basename(wsi_path).split(".")[0]
-    # print(wsi_path) 
-    json_path = os.path.join(JSON_PATH, f'{basename}.json')
-    # print(json_path)
+
     dataset = WSIDataset(
         slide_paths=wsi_paths,
         json_root=json_root,
         )
+    
     for sample in dataset:
         print(sample)
         break  
