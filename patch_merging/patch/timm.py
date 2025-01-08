@@ -72,7 +72,9 @@ class ToMeAttention(Attention):
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         # Note: this is copied from timm.models.vision_transformer.Attention with modifications.
         B, N, C = x.shape
-        
+        # Compute and print the mean and standard deviation for x
+        print(f'Mean of x: {x.mean().item()}')
+        print(f'Std of x: {x.std().item()}') 
         qkv = (
             self.qkv(x)
             .reshape(B, N, 3, self.num_heads, C // self.num_heads)

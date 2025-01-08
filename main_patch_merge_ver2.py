@@ -58,6 +58,9 @@ def main():
     # llop though each WSI image 
     for wsi_data in dataset:
         #loop though each superpixel
+        superpixel_num = 0 
+        
+        #loop thru each superpixel
         for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
             start = time.time()
             print("foreground_id", foreground_idx)
@@ -72,7 +75,9 @@ def main():
                 model=model 
             )
             patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
-            all_features = [] 
+            all_features = []
+            
+            # loop through each batch of patch to get the features
             for features, patches, bboxes in patch_dataloader: 
                 flattened_features = features.view(-1, features.shape[-1]) 
                 all_features.append(flattened_features)
@@ -88,7 +93,8 @@ def main():
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
-            break 
+            superpixel_num += 1
+            
         break
     
 if __name__ == '__main__':
