@@ -38,7 +38,6 @@ class WSIDataset(Dataset):
         self.json_folder = json_folder 
 
         # Get list of WSI paths and filter by example_list
-        self.wsi_paths = [path for path in self.wsi_paths if os.path.basename(path).split(".")[0] in example_list]
 
     def __len__(self):
         """Returns the total number of samples (WSI images)."""
@@ -47,10 +46,9 @@ class WSIDataset(Dataset):
     def __getitem__(self, index):
         """Returns a sample (WSI image and associated data)."""
         # Get the WSI path and basename
-        wsi_path = self.wsi_paths[index]
+        wsi_path = self.slide_paths[index]
         basename = os.path.basename(wsi_path).split(".")[0]
-        
-        # Load the slide (WSI image) using openslide
+        print(basename) 
         slide = openslide.open_slide(wsi_path)
         
         # Load corresponding JSON data
