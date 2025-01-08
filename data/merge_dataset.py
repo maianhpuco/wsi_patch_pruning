@@ -11,6 +11,7 @@ import openslide
 import json 
 import cv2 
 import time 
+from PIL import Image 
 
 
 class PatchDataset(Dataset):
