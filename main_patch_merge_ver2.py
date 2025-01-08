@@ -84,7 +84,7 @@ def main():
             print(">> feature output size", ts_all_features_of_superpixel.shape)
             model_merge.r = 8 
             out = model_merge(ts_all_features_of_superpixel) 
-            print(f"r = {r} first 5 layers 's most likely class",out.topk(5).indices[0].tolist()) 
+            print(f"r = {model_merge.r} first 5 layers 's most likely class",out.topk(5).indices[0].tolist()) 
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
