@@ -101,7 +101,6 @@ class ToMeAttention(Attention):
         # Return k as well here
         return x, k.mean(1)
 
-
 def make_tome_class(transformer_class):
     class ToMeVisionTransformer(transformer_class):
         """
