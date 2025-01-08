@@ -12,18 +12,15 @@ import json
 import cv2 
 import time 
 
-example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
-SLIDE_PATH = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images'
-JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files'
 
-class SuperpixelDataset(Dataset):
-    def __init__(self, slide_root, superpixel_root, basename):
-        self.slide = None 
-        self.basename = os.path.basename(slide_path)
+# class SuperpixelDataset(Dataset):
+#     def __init__(self, slide_root, superpixel_root, basename):
+#         self.slide = None 
+#         self.basename = os.path.basename(slide_path)
     
-    def __getitem__(self, index):
+#     def __getitem__(self, index):
         
-        return None  
+#         return None  
     
 class PatchDataset(Dataset):
     def __init__(self):
@@ -31,7 +28,7 @@ class PatchDataset(Dataset):
     def __getitem__(self, idx):
         pass 
 
-class WSIDataset(Dataset):
+class SuperpixelDataset(Dataset):
     def __init__(self, slide_paths, json_folder):
         """
         Args:
@@ -51,8 +48,9 @@ class WSIDataset(Dataset):
         wsi_path = self.slide_paths[index]
         basename = os.path.basename(wsi_path).split(".")[0]
         print(basename) 
-        slide = openslide.open_slide(wsi_path)
         
+        slide = openslide.open_slide(wsi_path)
+        print("complete reading WSIs")
         # Load corresponding JSON data
         json_path = os.path.join(self.json_folder, f'{basename}.json')
         sample = self.read_json_superpixel(json_path)
@@ -200,29 +198,8 @@ class WSIDataset(Dataset):
         return patches, bboxes 
         
     
-if __name__ == '__main__':
-    wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
-    wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
-    json_folder = JSON_PATH  
-    dataset = WSIDataset(
-        slide_paths=wsi_paths,
-        json_folder=json_folder,
-        )
-    start = time.time()
-    for wsi_data in dataset:
-        patch_superpixels = wsi_data
-        import tqdm 
-        for superpixel_foreground_id, data in tqdm(patch_superpixels.items(), desc="Processing Superpixels", total=len(patch_superpixels)):
- 
-        # for superpixel_foreground_id, data in patch_superpixel.item():
-            print(superpixel_foreground_id)
-            patches_list = data['pathes']
-            bboxes_list = data['bboxes']
-            print(patches_list)
-            print(bboxes_list)
-        break
-    print("Time to finish", time.time() - start, "second")
-    
+# if __name__ == '__main__':
+
             
              
     
