@@ -53,7 +53,9 @@ def main():
                 transform = transform
             )
             patch_dataloader = DataLoader(patch_dataset, batch_size=4, shuffle=True)
- 
+            for patches, bboxes in patch_dataloader: 
+                print(f"Batch of patches shape: {patches.shape}")
+                print(f"Batch of bounding boxes: {bboxes}") 
             # # loop through each patch image
             # for patch, bbox in patch_dataset:
             #     print(patch.shape) 
