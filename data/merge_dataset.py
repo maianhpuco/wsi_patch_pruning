@@ -82,7 +82,27 @@ class WSIDataset(Dataset):
                     }
                 )
         return patch_superpixels
+    
+    @staticmethod 
+    def extrapolate_superpixel_mask_segment(
+        superpixel_downsampling, 
+        superpixel_idx, 
+        bounding_boxes, 
+        downsample_factor):
+        mask = (superpixel_downsampling == superpixel_idx).astype(np.uint8)
+        xmin, ymin, xmax, ymax = bounding_boxes[superpixel_idx]
 
+        cropped_mask = mask[ymin:ymax, xmin:xmax]  # Corrected cropping
+
+        upscaled_mask = cv2.resize(
+            cropped_mask,
+            (int(cropped_mask.shape[1] / downsample_factor), int(cropped_mask.shape[0] / downsample_factor)),
+            interpolation=cv2.INTER_NEAREST  # Nearest-neighbor interpolation to keep binary mask intact
+        )
+
+        upscaled_mask_bool = (upscaled_mask > 0).astype(bool)  # Convert to boolean (True/False)
+
+        return upscaled_mask_bool 
         
     @staticmethod
     def _get_absolute_bbox_coordinate(bbox, downsample_factor):
