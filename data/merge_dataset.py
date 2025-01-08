@@ -67,21 +67,33 @@ class WSIDataset(Dataset):
             xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
              
             superpixel_downsampling = superpixel_labels == foreground_idx
-            superpixel_extrapolated = extrapolate_superpixel_mask_segment(
+            superpixel_extrapolated = self.extrapolate_superpixel_mask_segment(
                 superpixel_labels, foreground_idx, bounding_boxes, downsample_factor)
             
-            region_cropped = get_region_original_size(slide, xywh_abs_bbox)
+            region_cropped = self.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region_cropped) 
 
-            patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
+            patches, bboxes = self.extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
             patch_in_superpixels.update(
                 {
                     foreground_idx: 
-                        {'patches': patches, 
-                        'bboxes': bboxes}
+                        {
+                            'patches': patches, 
+                            'bboxes': bboxes
+                            }
                     }
                 )
         return patch_superpixels
+    
+    @staticmethod
+    def get_region_original_size(slide, xywh_abs_bbox):
+        xmin_original, ymin_original, width_original, height_original = xywh_abs_bbox
+        region = slide.read_region(
+            (xmin_original, ymin_original),  # Top-left corner (x, y)
+            0,  # Level 0
+            (width_original, height_original)  # Width and height
+        )
+        return region.convert('RGB')
     
     @staticmethod 
     def extrapolate_superpixel_mask_segment(
