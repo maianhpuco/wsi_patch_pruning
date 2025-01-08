@@ -168,6 +168,3 @@ def apply_patch(
         elif isinstance(module, PatchEmbed):
             module.__class__ = ToMePatchEmbed
          
-            
-if __name__ == '__main__':
-    
