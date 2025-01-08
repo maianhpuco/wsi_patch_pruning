@@ -10,7 +10,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
 import timm 
-
+import patch_merging
 
  # Define the image transformations
 transform = transforms.Compose([
@@ -34,6 +34,10 @@ sys.path.append(os.path.join(PROJECT_DIR))
 
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  # Set the model to evaluation mode 
+
+model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
+patch_merging.patch.timm(model)
+
 
 def main():
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
