@@ -39,8 +39,10 @@ class ToMeBlock(Block):
         # Note: this is copied from timm.models.vision_transformer.Block with modifications.
         # Compute and print the mean and standard deviation for x
         print("before processing ----------- ") 
-        print(f'Mean of x: {x.mean().item()}')
-        print(f'Std of x: {x.std().item()}')  
+        old_mean = x.mean().item()
+        old_std = x.mean().item() 
+        old_shape = x.shape[0]
+
         
         attn_size = self._tome_info["size"] if self._tome_info["prop_attn"] else None
         x_attn, metric = self.attn(self.norm1(x), attn_size)
@@ -63,8 +65,9 @@ class ToMeBlock(Block):
 
         x = x + self._drop_path2(self.mlp(self.norm2(x)))
         
-        print(f'Mean of x: {x.mean().item()}')
-        print(f'Std of x: {x.std().item()}')   
+        print(f'Mean of x: {old_mean} |  {x.mean().item()}')
+        print(f'Std of x: {old_std} | {x.std().item()}')   
+        print(f'Shape of x {old_shape} | {x.shape}')
         return x
 
 
