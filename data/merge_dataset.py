@@ -55,34 +55,34 @@ class WSIDataset(Dataset):
         json_path = os.path.join(self.json_folder, f'{basename}.json')
         sample = self.read_json_superpixel(json_path)
         
-        
-        sample = {
-            'wsi': slide,
-            'superpixel_labels': superpixel_labels,
-            'downscaled_region_array': downscaled_region_array,
-            'output_image_with_bboxes': output_image_with_bboxes,
-            'foreground_superpixels': foreground_superpixels,
-            'background_superpixels': background_superpixels,
-            'bounding_boxes': bounding_boxes,
-            'downsample_factor': downsample_factor,
-            'new_width': new_width,
-            'new_height': new_height
-        }
-        bbox = sample['bounding_boxes']
+        bounding_boxes = sample['bounding_boxes']
         downsample_factor = sample['downsample_factor']
+        foreground_superpixels = sample['foreground_superpixels']
+        patch_in_superpixels = {}
         
-        xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
-        
-        superpixel_downsampling = superpixel_labels == foreground_idx
-        superpixel_extrapolated = extrapolate_superpixel_mask_segment(
-            superpixel_labels, foreground_idx, bounding_boxes, downsample_factor)
-        
-        region_cropped = get_region_original_size(slide, xywh_abs_bbox)
-        region_np = np.array(region_cropped) 
-    
-        patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
+        for foreground_idx in foreground_superpixels:
+            
+            xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor) 
+            bbox = bounding_bboxes[foreground_idx]
+             
+            superpixel_downsampling = superpixel_labels == foreground_idx
+            superpixel_extrapolated = extrapolate_superpixel_mask_segment(
+                superpixel_labels, foreground_idx, bounding_boxes, downsample_factor)
+            
+            region_cropped = get_region_original_size(slide, xywh_abs_bbox)
+            region_np = np.array(region_cropped) 
 
-        return patches, bboxes
+            patches, bboxes = extract_patches(region_np, superpixel_extrapolated, patch_size=(256, 256))
+            patch_in_superpixels.update(
+                {
+                    foreground_idx: 
+                        {'patches': patches}, 
+                        {'bboxes': bboxes}
+                    }
+                )
+        return patch_superpixels
+
+        
     @staticmethod
     def _get_absolute_bbox_coordinate(bbox, downsample_factor):
         xmin, ymin, xmax, ymax = bbox
@@ -119,7 +119,6 @@ class WSIDataset(Dataset):
         
         # Return the sample (image, features, bounding boxes)
         sample = {
-            'wsi': slide,
             'superpixel_labels': superpixel_labels,
             'downscaled_region_array': downscaled_region_array,
             'output_image_with_bboxes': output_image_with_bboxes,
