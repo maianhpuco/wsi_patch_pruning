@@ -165,7 +165,8 @@ class WSIDataset(Dataset):
         }
             
         return sample
-    
+
+    @staticmethod
     def extract_patches(region, mask, patch_size=(256, 256), coverage_threshold=0.1):
         count = 0 
         region_height, region_width = region.shape[:2]
