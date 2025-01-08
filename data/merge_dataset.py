@@ -82,8 +82,6 @@ class PatchDataset(Dataset):
             with torch.no_grad():
                 features = self.model.forward_features(patch_tensor)
             class_token_features = features[:, 0, :]   
-            # with torch.no_grad():
-            #     features = self.model(patch_tensor)  # Pass through the model to extract features
             return class_token_features.squeeze(0), patch_pil, bbox  # Remove batch dimension and return features
         else:
             return _, patch_pil, bbox 

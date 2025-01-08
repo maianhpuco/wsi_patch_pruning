@@ -75,30 +75,20 @@ def main():
             patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
             all_features = [] 
             for features, patches, bboxes in patch_dataloader: 
-                # print(f"Batch of features shape: {features.shape}")
-                # print(f"Batch of patches shape: {patches.shape}")
-                # print(f"Batch of bounding boxes: {bboxes}")
-            
-                # Stack all features
-                # print(features.shape)
                 flattened_features = features.view(-1, features.shape[-1]) 
                 all_features.append(flattened_features)
                  
-            # stack of features of a superpixel 
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
 
             print(">> feature output size", ts_all_features_of_superpixel.shape)
-            model.r = 8 
+            model_merge.r = 8 
             out = model_merge(ts_all_features_of_superpixel) 
             print(f"r = {r} first 5 layers 's most likely class",out.topk(5).indices[0].tolist()) 
             print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
-      
-
-        # break
-
+        break
     
 if __name__ == '__main__':
     main()
