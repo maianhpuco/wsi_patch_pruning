@@ -120,7 +120,7 @@ def make_tome_class(transformer_class):
             """
             if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
                 x = x.unsqueeze(0)
-            print("updated")
+
             self._tome_info["r"] = parse_r(len(self.blocks), self.r)
             self._tome_info["size"] = None
             self._tome_info["source"] = None
@@ -169,5 +169,5 @@ def apply_patch(
             module.__class__ = ToMePatchEmbed
          
             
-            
-             
+if __name__ == '__main__':
+    
