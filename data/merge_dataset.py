@@ -14,11 +14,13 @@ import time
 
 
 class PatchDataset(Dataset):
-    def __init__(self, region, mask, patch_size=(256, 256), coverage_threshold=0.1):
+    def __init__(
+        self, region, mask, patch_size=(256, 256), coverage_threshold=0.1, transform=None):
         self.region_np = region
         self.mask = mask
         self.patch_size = patch_size
         self.coverage_threshold = coverage_threshold
+        self.transform = transform
         
         # Get region dimensions and patch size
         region_height, region_width = region.shape[:2]
@@ -55,42 +57,14 @@ class PatchDataset(Dataset):
         """Returns a patch and its corresponding bounding box."""
         patch = self.patches[idx]
         bbox = self.bboxes[idx]
-        
-        return patch, bbox
-    
-    @staticmethod  
-    def extract_patches(region, mask, patch_size=(256, 256), coverage_threshold=0.1):
-        """
-        This method extracts patches from a given region and its corresponding mask,
-        and applies a coverage threshold to only keep patches that meet the mask coverage condition.
-        """
-        patches = []
-        bboxes = []
+        # Convert patch to PIL image for torchvision transforms
+        patch_pil = Image.fromarray(patch.astype(np.uint8))  # Convert numpy array to PIL Image
 
-        count = 0
-        region_height, region_width = region.shape[:2]
-        patch_height, patch_width = patch_size
+        # Apply the transformations if provided
+        if self.transform:
+            patch_pil = self.transform(patch_pil)
 
-        for top in range(0, region_height, patch_height):
-            for left in range(0, region_width, patch_width):
-                # Ensure the patch is within bounds
-                bottom = min(top + patch_height, region_height)
-                right = min(left + patch_width, region_width)
-                
-                # Extract patch and corresponding mask region
-                patch = region[top:bottom, left:right]
-                patch_mask = mask[top:bottom, left:right]
-
-                patch_area = patch.size
-                mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of patch covered by mask
-                
-                # Only store patches that satisfy the coverage threshold
-                if mask_coverage >= coverage_threshold:
-                    bbox = (top, left, bottom, right)
-                    patches.append(patch)
-                    bboxes.append(bbox)
-
-        return patches, bboxes
+        return patch_pil, bbox 
 
 class SuperpixelDataset(Dataset):
     def __init__(self, slide_paths, json_folder):

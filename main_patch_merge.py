@@ -6,7 +6,16 @@ import pandas as pd
 import numpy as np
 import argparse
 from data.merge_dataset import SuperpixelDataset, PatchDataset
-
+from torchvision import transforms
+ 
+ # Define the image transformations
+transform = transforms.Compose([
+    transforms.Resize((256, 256)),  # Resize the patch to 256x256
+    transforms.ToTensor(),          # Convert the image to a PyTorch tensor
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
+    # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
+])
+ 
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
@@ -40,12 +49,15 @@ def main():
             patch_dataset = PatchDataset(
                 region_np,
                 superpixel_extrapolated,
-                patch_size = (256, 256),  
+                patch_size = (256, 256),
+                transform = transform
             )
-            # loop through each patch image
-            for patch, bbox in patch_dataset:
-                print(patch.shape) 
-                print(bbox.shape)
+            patch_dataloader = DataLoader(patch_dataset, batch_size=4, shuffle=True)
+ 
+            # # loop through each patch image
+            # for patch, bbox in patch_dataset:
+            #     print(patch.shape) 
+            #     print(bbox.)
         break
     print("Time to finish", time.time() - start, "second")
      
