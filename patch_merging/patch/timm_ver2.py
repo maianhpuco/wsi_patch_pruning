@@ -101,28 +101,6 @@ class ToMeAttention(Attention):
         # Return k as well here
         return x, k.mean(1)
 
-def make_tome_class(transformer_class):
-    class ToMeVisionTransformer(transformer_class):
-        """
-        Modifications:
-        - Initialize r, token size, and token sources.
-        """
-
-        def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
-            """
-            Override the forward pass to accept tokenized input directly.
-            """
-            # Ensure x has shape [batch_size, num_tokens, feature_size]
-            if len(x.shape) == 2:  # If input has shape [num_tokens, feature_size], add batch dimension
-                x = x.unsqueeze(0)  # Add batch dimension
-            
-            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
-            self._tome_info["size"] = None
-            self._tome_info["source"] = None
-
-            return super().forward(x, *args, **kwdargs)
-
-    return ToMeVisionTransformer 
 
 def make_tome_class(transformer_class):
     class ToMeVisionTransformer(transformer_class):
