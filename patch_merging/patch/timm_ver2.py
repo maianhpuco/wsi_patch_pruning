@@ -75,13 +75,9 @@ def make_tome_class(transformer_class):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            # Adding a linear layer for token processing (transforming feature_size if necessary)
-            self.token_embed = nn.Linear(self.embed_dim, self.embed_dim)  # Adjust `embed_dim` as needed
-
             # Skip patch embedding by setting it to None
-            self.patch_embed = None 
-            self._pos_embed = None 
-            
+            self.patch_embed = None
+
         def forward(self, x: torch.Tensor, *args, **kwdargs) -> torch.Tensor:
             """
             Override the forward pass to accept tokenized input directly (shape: [batch_size, num_tokens, feature_size]).
@@ -90,18 +86,7 @@ def make_tome_class(transformer_class):
             if len(x.shape) == 2:  # Shape [num_tokens, feature_size]
                 x = x.unsqueeze(0)  # Add batch dimension: shape becomes [batch_size, num_tokens, feature_size]
 
-            # Apply a linear transformation to the token features (if necessary)
-            x = self.token_embed(x)
-
-            # Skip the patch embedding and positional encoding, as the tokens are already embedded
-            self._tome_info["r"] = parse_r(len(self.blocks), self.r)
-            self._tome_info["size"] = None
-            self._tome_info["source"] = None
-
-            # Apply positional embedding (optional)
-            # x = self.pos_embed(x)
-
-            # Pass the tokens through transformer blocks
+            # Pass through transformer blocks directly without patch embedding or positional encoding
             x = self.blocks(x)
 
             # Final normalization
@@ -112,11 +97,7 @@ def make_tome_class(transformer_class):
             """
             Modified forward_features to accept tokenized input and apply necessary transformations.
             """
-            # Apply positional encoding to tokens
-            # x = self.pos_embed(x)
-
-            # Pass the tokens through transformer blocks
-            x = self.norm_pre(x)  # Normalization before blocks
+            # Directly pass the tokens through transformer blocks
             x = self.blocks(x)
 
             x = self.norm(x)  # Final normalization after blocks
