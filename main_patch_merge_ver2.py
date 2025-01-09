@@ -10,7 +10,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
 import timm 
-import patch_merging
+from patch_merging import tome 
 
  # Define the image transformations
 transform = transforms.Compose([
