@@ -37,7 +37,7 @@ model.eval()  # Set the model to evaluation mode
 
 def main(): 
     model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-    patch_merging.patch.timm(model_merge) 
+    tome.patch.timm(model_merge) 
     # tokens = torch.randn(1, 3030, 768)  
     model_merge.eval()
     # with torch.no_grad():
