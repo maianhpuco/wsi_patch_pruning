@@ -14,15 +14,6 @@ from PIL import Image
 from patch_merging import tome 
 from utils import utils  
 
- # Define the image transformations
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),  # Resize the patch to 256x256
-    transforms.ToTensor(),          # Convert the image to a PyTorch tensor
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
-    # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
-])
- 
-
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']

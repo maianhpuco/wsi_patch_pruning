@@ -17,7 +17,7 @@ sys.path.append(os.path.join(PROJECT_DIR, "datase_utils"))
 from src.camil import CAMIL  # Assuming CAMIL is the model class from camil.py
 from data.camelyon16_dataset import CustomDataset
 
-from utils.utils import train
+from camil_utils.utils import train
 
 
 def parse_arguments():
