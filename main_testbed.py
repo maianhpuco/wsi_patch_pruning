@@ -5,12 +5,13 @@ import glob
 import pandas as pd
 import numpy as np
 import argparse
+import time   
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
-import timm 
 from patch_merging import tome 
+from utils import utils  
 
  # Define the image transformations
 transform = transforms.Compose([
@@ -31,64 +32,32 @@ JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path
 
  
 sys.path.append(os.path.join(PROJECT_DIR))
-# Load a pre-trained ViT model from timm
 
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
-model.eval()  # Set the model to evaluation mode 
+model.eval()  
 
 def main(): 
-    model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-    tome.patch.timm(model_merge)
-    model_merge.eval() 
-        
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = JSON_PATH  
     
-    dataset = SuperpixelDataset(
-        slide_paths=wsi_paths,
-        json_folder=json_folder,
-        )
-    
-    import time 
-    
-    # llop though each WSI image 
-    for wsi_data in dataset:
-        #loop though each superpixel
-        superpixel_num = 0 
+    for wsi_path in wsi_paths: 
+        print(wsi_path) 
         
-        #loop thru each superpixel
-        for foreground_idx, region_np, superpixel_extrapolated in wsi_data:
-            start = time.time()
-            print("foreground_id", foreground_idx)
-            print("region shape", region_np.shape)
-            print("superpixel shape", superpixel_extrapolated.shape) 
-            patch_dataset = PatchDataset(
-                region_np,
-                superpixel_extrapolated,
-                patch_size = (224, 224),
-                transform = transform, 
-                return_feature=True,  # Enable feature extraction
-                model=model 
+        dataset = SuperpixelDataset(
+            slide_paths=wsi_path,
+            json_folder=json_folder,
             )
-            patch_dataloader = DataLoader(patch_dataset, batch_size=32, shuffle=True)
-            all_features = []
-            
-            # loop through each batch of patch to get the features
-            for features, patches, bboxes in patch_dataloader: 
-                flattened_features = features.view(-1, features.shape[-1]) 
-                all_features.append(flattened_features)
-                 
-            ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
-            ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
-
-            
-            print("Time to finish a superpixel", time.time() - start, "second")
-            superpixel_num += 1
-            if superpixel_num == 4:
-                break 
-        break
+        for (foreground_idx, xywh_abs_bbox, superpixel_extrapolated) in dataset:
+            print(foreground_idx)
+        break 
+        
+    
+    
+    
     
 if __name__ == '__main__':
     main()
- 
+    # TODO
+    # get argument: dry run only get 1 wsi, 1 superpixel, run thru from the start to the end 
+    
