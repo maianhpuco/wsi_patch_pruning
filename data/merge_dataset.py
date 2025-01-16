@@ -52,7 +52,7 @@ class PatchDataset(Dataset):
                 patch = region[top:bottom, left:right]
                 patch_mask = mask[top:bottom, left:right]
 
-                patch_area = patch.size
+                patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
                 
                 # Only include patches that satisfy the coverage threshold
@@ -84,7 +84,8 @@ class PatchDataset(Dataset):
             class_token_features = features[:, 0, :]   
             return class_token_features.squeeze(0), patch_pil, bbox  # Remove batch dimension and return features
         else:
-            return _, patch_pil, bbox 
+            return _, patch_pil, bbox
+
         
 
 class SuperpixelDataset(Dataset):

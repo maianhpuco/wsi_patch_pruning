@@ -23,11 +23,12 @@ transform = transforms.Compose([
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
-example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
+# example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
+example_list =['normal_072', 'normal_048', 'tumor_026', 'tumor_031'] 
 
 SLIDE_PATH = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
 JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
- 
+
  
 sys.path.append(os.path.join(PROJECT_DIR))
 # Load a pre-trained ViT model from timm
@@ -37,12 +38,8 @@ model.eval()  # Set the model to evaluation mode
 
 def main(): 
     model_merge = timm.create_model("vit_base_patch16_224", pretrained=True) 
-    tome.patch.timm(model_merge) 
-    # tokens = torch.randn(1, 3030, 768)  
-    model_merge.eval()
-    # with torch.no_grad():
-    #     output = model_merge(tokens)
- 
+    tome.patch.timm(model_merge)
+    model_merge.eval() 
         
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
@@ -85,10 +82,9 @@ def main():
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
 
-            print(">>--------feature output size", ts_all_features_of_superpixel.shape)
+            print(ts_all_features_of_superpixel.shape)
             model_merge.r = 100
             with torch.no_grad(): 
-                print("Printing attention to see how number of token reduce") 
                 out = model_merge(ts_all_features_of_superpixel) 
             print(out.shape) 
             
@@ -100,3 +96,4 @@ def main():
     
 if __name__ == '__main__':
     main()
+ 
