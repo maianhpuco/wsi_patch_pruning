@@ -82,15 +82,10 @@ def main():
             ts_all_features_of_superpixel = torch.cat(all_features, dim=0) 
             ts_all_features_of_superpixel=ts_all_features_of_superpixel[None, ...] 
 
-            print(ts_all_features_of_superpixel.shape)
-            model_merge.r = 100
-            with torch.no_grad(): 
-                out = model_merge(ts_all_features_of_superpixel) 
-            print(out.shape) 
             
             print("Time to finish a superpixel", time.time() - start, "second")
             superpixel_num += 1
-            if superpixel_num == 3:
+            if superpixel_num == 4:
                 break 
         break
     
