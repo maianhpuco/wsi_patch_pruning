@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import argparse
 import time   
+import timm 
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
