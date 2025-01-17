@@ -138,8 +138,9 @@ if __name__ == '__main__':
         args.pruning_function = PRUNING_FUNCTION_MAP.get(
             config.get('pruning_function') 
         )
-    
-    
+
+    args.scoring_function()
+    args.pruning_function()
     
     # config these via a config file 
     main(args) 
