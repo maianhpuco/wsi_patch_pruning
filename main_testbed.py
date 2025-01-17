@@ -76,7 +76,7 @@ def main(args):
             json_folder=json_folder,
             )
         
-        slide = openslide.open_slide(wsi_path)
+        # slide = openslide.open_slide(wsi_path)
         print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
         _all_slide_features = []
          
