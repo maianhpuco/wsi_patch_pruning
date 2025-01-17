@@ -124,7 +124,7 @@ class SuperpixelDataset(Dataset):
  
     def __len__(self):
         """Returns the total number of samples (WSI images)."""
-        return len(self.)
+        return len(self.foreground_superpixels)
 
     def __getitem__(self, index):
         """Returns a sample (WSI image and associated data) for a single WSI image."""
@@ -147,7 +147,7 @@ class SuperpixelDataset(Dataset):
             # })
 
         # Return a dictionary or can be adjusted to a tensor format if needed
-        return  foreground_idx, xywh_abs_bbox, superpixel_extrapolated
+            yield (foreground_idx, xywh_abs_bbox, superpixel_extrapolated)
     
     @staticmethod
     def extrapolate_superpixel_mask_segment(
