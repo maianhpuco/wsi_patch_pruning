@@ -101,7 +101,7 @@ def main(args):
                 return_feature=True,  # Enable feature extraction
                 model=model
             )
-            print(">> foreground in dataset", len(dataset)) 
+            print(">> foreground in dataset", len(patch_dataset)) 
             
             # patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
             
