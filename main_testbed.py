@@ -80,7 +80,7 @@ def main(args):
         print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
         _all_slide_features = []
          
-        for sample_idx  in range(dataset):
+        for sample_idx  in range(len(dataset)):
             superpixe_data = dataset[sample_idx]
             
             # print(np.sum(superpixel_extrapolated))
