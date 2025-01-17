@@ -81,27 +81,28 @@ def main(args):
         _all_slide_features = []
          
         for foreground_idx, xywh_abs_bbox, superpixel_extrapolated in dataset:
-            start = time.time()
-            # Create region from slide based on the bounding box
-            region = utils.get_region_original_size(slide, xywh_abs_bbox)
-            region_np = np.array(region)
+            print(np.sum(superpixel_extrapolated))
+            # start = time.time()
+            # # Create region from slide based on the bounding box
+            # region = utils.get_region_original_size(slide, xywh_abs_bbox)
+            # region_np = np.array(region)
             
-            print(f"Slicing time: {time.time() - start} seconds")
+            # print(f"Slicing time: {time.time() - start} seconds")
 
-            # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
-            # print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-            print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
+            # # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
+            # # print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
+            # print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
             
-            patch_dataset = PatchDataset(
-                region_np,
-                superpixel_extrapolated, 
-                patch_size=(224, 224),
-                transform=transform,
-                coverage_threshold=0.5,
-                return_feature=True,  # Enable feature extraction
-                model=model
-            )
-            print(">> foreground in dataset", len(patch_dataset)) 
+            # patch_dataset = PatchDataset(
+            #     region_np,
+            #     superpixel_extrapolated, 
+            #     patch_size=(224, 224),
+            #     transform=transform,
+            #     coverage_threshold=0.5,
+            #     return_feature=True,  # Enable feature extraction
+            #     model=model
+            # )
+            # print(">> foreground in dataset", len(patch_dataset)) 
             
             # patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
             
