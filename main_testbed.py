@@ -62,6 +62,7 @@ def main():
             print("slicing after", time.time()-start)
             print("shape of ssp", region_np.shape)
             print("superpixel:", superpixel_extrapolated.shape)
+            
             patch_dataset = PatchDataset(
                 region_np,
                 superpixel_extrapolated, 
@@ -70,7 +71,8 @@ def main():
                 coverage_threshold = 0.5,
                 return_feature=True,  # Enable feature extraction
                 model=model)
-            len(dataset, )
+            
+            print("len of dataset", len(dataset))
             patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
             
             _all_features_spixel = []
@@ -87,11 +89,7 @@ def main():
             spixel_foreground_idxes =  torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
             len(spixel_foreground_idxes)
             break 
-        break 
-            
-    
-    
-    
+        break
     
 if __name__ == '__main__':
     main()

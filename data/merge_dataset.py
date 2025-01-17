@@ -24,7 +24,6 @@ class PatchDataset(Dataset):
         return_feature=False,
         model=None
         ):
-        
         self.region_np = region
         self.mask = mask
         self.patch_size = patch_size
@@ -56,7 +55,8 @@ class PatchDataset(Dataset):
 
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
-
+                print(patch_area.shape)
+                
                 # Only include patches that satisfy the coverage threshold
                 if mask_coverage >= self.coverage_threshold:
                     bbox = (top, left, bottom, right)
@@ -67,7 +67,7 @@ class PatchDataset(Dataset):
                     _idx_dict = {idx: patch_original_idx}
                     self.patch_idx_dict.update(_idx_dict)
                     idx += 1
-
+                    print("counting", idx)                    
                 patch_original_idx += 1  # Increment the original index after processing each patch
                   # Increment the index after processing each patch
 
@@ -96,8 +96,8 @@ class PatchDataset(Dataset):
             class_token_features = features[:, 0, :]
             return class_token_features.squeeze(0), patch_pil, bbox, patch_idx  # Return original index
         else:
-            return _, patch_pil, bbox, patch_idx  # Return original index
- 
+            return _, patch_pil, bbox, patch_idx  # Return original index 
+
 
 class SuperpixelDataset(Dataset):
     def __init__(self, wsi_path, json_folder):
