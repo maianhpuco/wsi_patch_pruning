@@ -106,6 +106,7 @@ class SuperpixelDataset(Dataset):
             wsi_path: Path to the whole slide image (WSI).
             json_folder: Folder containing the corresponding JSON files.
         """
+        print("updated")
         self.wsi_path = wsi_path
         self.json_folder = json_folder
         
@@ -135,7 +136,6 @@ class SuperpixelDataset(Dataset):
         superpixel_downsampling = self.superpixel_labels == foreground_idx
         superpixel_extrapolated = self.extrapolate_superpixel_mask_segment(
             superpixel_downsampling, foreground_idx, bounding_boxes, downsample_factor)
-        print("down sampling check", superpixel_downsampling.shape)
         return (foreground_idx, xywh_abs_bbox, superpixel_downsampling)
 
     @staticmethod
