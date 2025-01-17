@@ -72,13 +72,16 @@ def main(args):
         slide_paths=wsi_paths,
         json_folder=json_folder,
         )
-    print("Number of superpixel in dataset:", len(superpixel_dataset)) 
+    print("Number of slide in dataset:", len(superpixel_dataset)) 
         
     for slide_index in range(len(superpixel_dataset)):
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
-        print(superpixel_datas)
-    
+        print(len(superpixel_datas))
+        for each_superpixel in superpixel_datas:
+            foreground_idx = each_superpixel['foreground_idx'] 
+            xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
+            superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
 
 
         
