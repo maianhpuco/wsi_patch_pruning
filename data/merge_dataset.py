@@ -55,6 +55,7 @@ class PatchDataset(Dataset):
 
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
+                print(patch.shape)
                 print(patch_area)
                 
                 # Only include patches that satisfy the coverage threshold
