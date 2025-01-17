@@ -1,5 +1,5 @@
 SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
 JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
-importance_score_function: do_nothing 
-pruning_function: do_nothing
+importance_score_function: get_scoring_do_nothing 
+pruning_function: get_scoring_do_nothing
 
