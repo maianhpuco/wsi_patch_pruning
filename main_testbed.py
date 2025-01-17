@@ -78,6 +78,7 @@ def main(args):
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
         print(superpixel_datas)
+    
 
 
         
@@ -133,9 +134,9 @@ def main(args):
             # spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
             # print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
              
-            if args.dry_run:
-                print("done dry run")
-                break
+            # if args.dry_run:
+            #     print("done dry run")
+            #     break
             
         # _all_slide_features.append(spixel_features)
         # print("---> Total time for a superpixel:", time.time()-start, " seconds")
@@ -143,8 +144,8 @@ def main(args):
         # print(slide_features.shape)
         # print(f"Complete processing a slide after {(time.time()-start_slide)/60.00}")
         
-        if args.dry_run: 
-            break 
+        # if args.dry_run: 
+        #     break 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
