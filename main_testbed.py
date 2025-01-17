@@ -76,6 +76,7 @@ def main():
             _all_idxes_spixel = []
             
             for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
+                print("batch features:", batch_features.shape)
                 _flatten_features = batch_features.view(-1, batch_features.shape[-1])
                 _all_features_spixel.append(_flatten_features)
                 _all_idxes_spixel.append(batch_idxes)
