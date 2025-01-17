@@ -133,14 +133,14 @@ if __name__ == '__main__':
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
         args.scoring_function = SCORING_FUNCTION_MAP.get(
-            config.get("importance_score_function")
+            config.get("scoring_function")
         )
         args.pruning_function = PRUNING_FUNCTION_MAP.get(
             config.get('pruning_function') 
         )
 
-    args.scoring_function(args)
-    args.pruning_function(args)
+        args.scoring_function(args)
+        args.pruning_function(args)
     
     # config these via a config file 
     main(args) 
