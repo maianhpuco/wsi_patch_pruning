@@ -76,7 +76,8 @@ def main(
         
         slide = openslide.open_slide(wsi_path)
         print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
-        
+        _all_slide_features = []
+         
         for foreground_idx, xywh_abs_bbox, superpixel_extrapolated in dataset:
             start = time.time()
             # Create region from slide based on the bounding box
@@ -114,12 +115,16 @@ def main(
             
             spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
             print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
-            
+             
             if args.dry_run:
                 break
+            _all_slide_features.append(spixel_features)
+        
         if args.dry_run: 
             break
-    
+        slide_features = torch.cat(_all_slide_features)
+        
+        print(slide_features.shape)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', action='store_true', default=True)
