@@ -49,46 +49,50 @@ def main():
             json_folder=json_folder,
             )
         slide = openslide.open_slide(wsi_path)
+        print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
         
-        print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image 
-        for (foreground_idx, xywh_abs_bbox, superpixel_extrapolated) in dataset:
-            # create a patch dataset for all the path in a superpixel: 
+        for foreground_idx, xywh_abs_bbox, superpixel_extrapolated in dataset:
             start = time.time()
-            region = utils.get_region_original_size(
-                slide, 
-                xywh_abs_bbox,
-            )
-            region_np = np.array(region)
-            print("slicing after", time.time()-start)
-            print("bbox", xywh_abs_bbox)
-            print("shape of ssp", region_np.shape, superpixel_extrapolated.shape)
-            print("superpixel:", np.sum(superpixel_extrapolated))
+            try:
+                # Create region from slide based on the bounding box
+                region = utils.get_region_original_size(slide, xywh_abs_bbox)
+                region_np = np.array(region)
+                print(f"Slicing time: {time.time() - start} seconds")
+
+                print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
+                print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
+                print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
+                
+                patch_dataset = PatchDataset(
+                    region_np,
+                    superpixel_extrapolated, 
+                    patch_size=(224, 224),
+                    transform=transform,
+                    coverage_threshold=0.5,
+                    return_feature=True,  # Enable feature extraction
+                    model=model
+                )
+                
+                patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
+                
+                _all_features_spixel = []
+                _all_idxes_spixel = []
             
-            patch_dataset = PatchDataset(
-                region_np,
-                superpixel_extrapolated, 
-                patch_size = (224, 224),
-                transform = transform,
-                coverage_threshold = 0.5,
-                return_feature=True,  # Enable feature extraction
-                model=model)
+                for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
+                    print(f"Batch Features Shape: {batch_features.shape}")
+                    _flatten_features = batch_features.view(-1, batch_features.shape[-1])
+                    _all_features_spixel.append(_flatten_features)
+                    _all_idxes_spixel.append(batch_idxes)
+                
+                spixel_features = torch.cat(_all_features_spixel)
+                print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape}")
+                
+                spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
+                print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
             
-            print("len of dataset", len(dataset), np.sum(superpixel_extrapolated))
-            patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
-            
-            _all_features_spixel = []
-            _all_idxes_spixel = []
-        
-            for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
-                print("batch features:", batch_features.shape)
-                _flatten_features = batch_features.view(-1, batch_features.shape[-1])
-                _all_features_spixel.append(_flatten_features)
-                _all_idxes_spixel.append(batch_idxes)
-            
-            spixel_features = torch.cat(_all_features_spixel)
-            print(spixel_features.shape)
-            spixel_foreground_idxes =  torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
-            len(spixel_foreground_idxes)
+            except Exception as e:
+                print(f"Error processing superpixel {foreground_idx} in WSI {wsi_path}: {e}")
+                continue  # Skip this superpixel and move to the next one
             break 
         break
     
