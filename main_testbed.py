@@ -129,7 +129,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', action='store_true', default=True)
     parser.add_argument('--config_file', default='ma_exp001')
-    parser.add_argument('--use_features', action='store_true', default=True) 
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
