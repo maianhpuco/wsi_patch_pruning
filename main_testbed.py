@@ -128,7 +128,7 @@ def main(
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=bool, default=True)
+    parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp001')
     args = parser.parse_args()
     
