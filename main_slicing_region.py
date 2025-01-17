@@ -52,24 +52,18 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
 
-def save_region_as_npy(region_np, slide_basename, superpixel_name):
-    # Create a directory for the slide if it doesn't exist
-    save_dir = os.path.join("read_folder", slide_basename)
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    # Define the file path for the numpy file
+def save_region_as_npy(region_np, save_dir, superpixel_name):
     npy_file_path = os.path.join(save_dir, f"{superpixel_name}.npy")
     
     # Save the region as a numpy file
     np.save(npy_file_path, region_np)
 
-    # Optionally, zip the file (if needed)
-    zip_file_path = npy_file_path + ".zip"
-    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        zipf.write(npy_file_path, os.path.basename(npy_file_path))
-        # Optionally remove the .npy file after zipping
-        os.remove(npy_file_path)
+    # # Optionally, zip the file (if needed)
+    # zip_file_path = npy_file_path + ".zip"
+    # with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    #     zipf.write(npy_file_path, os.path.basename(npy_file_path))
+    #     # Optionally remove the .npy file after zipping
+    #     os.remove(npy_file_path)
  
 
 def main(args):
@@ -101,7 +95,12 @@ def main(args):
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         print(slide_basename)
         
+        save_dir = os.path.join(args.spixel_path, slide_basename) 
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+ 
         slide = openslide.open_slide(wsi_path)  
+        
         print(len(superpixel_datas))
         for each_superpixel in superpixel_datas:
             foreground_idx = each_superpixel['foreground_idx'] 
@@ -111,10 +110,14 @@ def main(args):
             start = time.time()
             region = utils.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region)
+            
             print(f"Slicing time: {time.time() - start} seconds")  
 
             # Save the region as a NumPy file and zip it
-            save_region_as_npy(region_np, slide_basename, f"foreground_idx") 
+            save_region_as_npy(region_np, save_dir, f"foreground_idx")
+            
+        print(f"Done the slide: {slide_index}/{len(superpixel_dataset)}")
+            
             
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -127,6 +130,8 @@ if __name__ == '__main__':
         args.use_features = config.get('use_features', True)
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
+        args.spixel_path = config.get('SPIXEL_PATH')
+        
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
         )
