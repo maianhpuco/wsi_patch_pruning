@@ -41,7 +41,7 @@ PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list =['normal_048', 'normal_001', 'tumor_026', 'tumor_031'] 
-example_list=['normal_048']
+example_list=['normal_001']
 
 
  
@@ -102,7 +102,7 @@ def main(args):
                 model=model
             )
             
-            patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
+            patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
             
             _all_features_spixel = []
             _all_idxes_spixel = []
@@ -112,7 +112,7 @@ def main(args):
                 _all_features_spixel.append(_flatten_features)
                 _all_idxes_spixel.append(batch_idxes)
             
-            spixel_features = torch.cat(_all_features_spixel)
+            spixel_features = torch.cat(_all_features_spixel)  # of a 
             print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape})")
             
             spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
@@ -121,10 +121,9 @@ def main(args):
             if args.dry_run:
                 print("done dry run")
                 break
-            _all_slide_features.append(spixel_features)
-            print("---> Total time for a superpixel:", time.time()-start, " seconds")
             
-
+        _all_slide_features.append(spixel_features)
+        print("---> Total time for a superpixel:", time.time()-start, " seconds")
         slide_features = torch.cat(_all_slide_features)
         print(slide_features.shape)
         print(f"Complete processing a slide after {(time.time()-start_slide)/60.00}")
