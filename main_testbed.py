@@ -80,8 +80,12 @@ def main(args):
         print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
         _all_slide_features = []
          
-        for foreground_idx, xywh_abs_bbox, superpixel_extrapolated in dataset:
-            print(np.sum(superpixel_extrapolated))
+        for superpixe_data in dataset:
+            # print(np.sum(superpixel_extrapolated))
+            foreground_idx = superpixe_data['foreground_idx'] 
+            xywh_abs_bbox = superpixe_data['xywh_abs_bbox']
+            superpixel_extrapolated = superpixe_data['superpixel_extrapolated']
+            
             # start = time.time()
             # # Create region from slide based on the bounding box
             # region = utils.get_region_original_size(slide, xywh_abs_bbox)

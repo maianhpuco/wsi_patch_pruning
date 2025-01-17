@@ -140,14 +140,14 @@ class SuperpixelDataset(Dataset):
             superpixel_extrapolated = self.extrapolate_superpixel_mask_segment(
                 self.superpixel_labels, foreground_idx, self.bounding_boxes, self.downsample_factor)
 
-            # result.append({
-            #     'foreground_idx': foreground_idx,
-            #     'xywh_abs_bbox': xywh_abs_bbox,
-            #     'superpixel_extrapolated': superpixel_extrapolated
-            # })
+            result.append({
+                'foreground_idx': foreground_idx,
+                'xywh_abs_bbox': xywh_abs_bbox,
+                'superpixel_extrapolated': superpixel_extrapolated
+            })
 
         # Return a dictionary or can be adjusted to a tensor format if needed
-            yield (foreground_idx, xywh_abs_bbox, superpixel_extrapolated)
+        return  result #(foreground_idx, xywh_abs_bbox, superpixel_extrapolated)
     
     @staticmethod
     def extrapolate_superpixel_mask_segment(
