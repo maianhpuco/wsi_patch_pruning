@@ -90,7 +90,7 @@ def main(args):
 
             # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
             # print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-            # print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
+            print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
             
             patch_dataset = PatchDataset(
                 region_np,
@@ -101,11 +101,13 @@ def main(args):
                 return_feature=True,  # Enable feature extraction
                 model=model
             )
+            print("foreground in dataset", len(dataset)) 
             
             patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
             
             _all_features_spixel = []
             _all_idxes_spixel = []
+            
         
             for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
                 _flatten_features = batch_features.view(-1, batch_features.shape[-1])
