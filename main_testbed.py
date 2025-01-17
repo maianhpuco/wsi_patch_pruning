@@ -61,7 +61,7 @@ def main():
             region_np = np.array(region)
             print("slicing after", time.time()-start)
             print("shape of ssp", region_np.shape)
-            print("superpixel:", superpixel_extrapolated.shape)
+            print("superpixel:", np.sum(superpixel_extrapolated))
             
             patch_dataset = PatchDataset(
                 region_np,
