@@ -72,7 +72,7 @@ def main():
                 return_feature=True,  # Enable feature extraction
                 model=model)
             
-            print("len of dataset", len(dataset))
+            print("len of dataset", len(dataset), np.sum(superpixel_extrapolated))
             patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
             
             _all_features_spixel = []

@@ -55,7 +55,7 @@ class PatchDataset(Dataset):
 
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
-                print(mask_coverage)
+                # print(mask_coverage)
                 
                 # Only include patches that satisfy the coverage threshold
                 if mask_coverage >= self.coverage_threshold:
@@ -67,7 +67,7 @@ class PatchDataset(Dataset):
                     _idx_dict = {idx: patch_original_idx}
                     self.patch_idx_dict.update(_idx_dict)
                     idx += 1
-                    print("counting", idx)                    
+                    # print("counting", idx)                    
                 patch_original_idx += 1  # Increment the original index after processing each patch
                   # Increment the index after processing each patch
 
