@@ -61,7 +61,7 @@ def main():
 
                 print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
                 print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-                print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
+                print(f"Superpixel {foreground_idx} foreground count: {superpixel_extrapolated}")
                 
                 patch_dataset = PatchDataset(
                     region_np,
