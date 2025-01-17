@@ -112,7 +112,7 @@ def main(args):
             region = utils.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region)
             
-            print(f"Slicing time: {time.time() - start} seconds")  
+            # print(f"Slicing time: {time.time() - start} seconds")  
 
             # Save the region as a NumPy file and zip it
             save_region_as_npy(region_np, save_dir, f"foreground_idx")
