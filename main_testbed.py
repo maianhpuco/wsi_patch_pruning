@@ -82,7 +82,7 @@ def main(args):
             foreground_idx = each_superpixel['foreground_idx'] 
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
-
+            print(np.sum(superpixel_extrapolated))
 
         
         # # slide = openslide.open_slide(wsi_path)
