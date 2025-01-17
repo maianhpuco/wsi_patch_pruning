@@ -68,26 +68,32 @@ def main(args):
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = args.json_path
     
-    for wsi_path in wsi_paths: 
-        print(wsi_path) 
+    superpixel_dataset = SuperpixelDataset(
+        slide_path=wsi_paths,
+        json_folder=json_folder,
+        )
+    print("Number of superpixel in dataset:", len(superpixel_dataset)) 
         
-        dataset = SuperpixelDataset(
-            slide_path=wsi_path,
-            json_folder=json_folder,
-            )
+    for slide_index in range(len(superpixel_dataset)):
+        superpixel_datas, wsi_path = superpixel_dataset[slide_index]
+        print(wsi_path)
+        print(superpixel_datas)
+
+
         
-        # slide = openslide.open_slide(wsi_path)
-        print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image
-        _all_slide_features = []
+        # # slide = openslide.open_slide(wsi_path)
+        # print("number of ", len(dataset))   # list all the superpixel in the wsi image
+        # _all_slide_features = []
          
-        for sample_idx  in range(len(dataset)):
-            superpixe_data = dataset[sample_idx]
+        # for sample_idx  in range(len(dataset)):
+        #     superpixe_data = dataset[sample_idx]
             
-            # print(np.sum(superpixel_extrapolated))
-            foreground_idx = superpixe_data['foreground_idx'] 
-            xywh_abs_bbox = superpixe_data['xywh_abs_bbox']
-            superpixel_extrapolated = superpixe_data['superpixel_extrapolated']
-            print(np.sum(superpixel_extrapolated))
+        #     # print(np.sum(superpixel_extrapolated))
+        #     foreground_idx = superpixe_data['foreground_idx'] 
+        #     xywh_abs_bbox = superpixe_data['xywh_abs_bbox']
+        #     superpixel_extrapolated = superpixe_data['superpixel_extrapolated']
+        #     print(np.sum(superpixel_extrapolated))
+            
             # start = time.time()
             # # Create region from slide based on the bounding box
             # region = utils.get_region_original_size(slide, xywh_abs_bbox)
