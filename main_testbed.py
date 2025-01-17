@@ -56,6 +56,7 @@ def main():
             # Create region from slide based on the bounding box
             region = utils.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region)
+            
             # print(f"Slicing time: {time.time() - start} seconds")
 
             # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
@@ -83,7 +84,7 @@ def main():
                 _all_idxes_spixel.append(batch_idxes)
             
             spixel_features = torch.cat(_all_features_spixel)
-            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape}; {np.sum(spixel_features)}")
+            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape})")
             
             spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
             print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
