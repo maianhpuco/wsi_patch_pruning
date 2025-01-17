@@ -136,7 +136,8 @@ class SuperpixelDataset(Dataset):
         superpixel_downsampling = self.superpixel_labels == foreground_idx
         superpixel_extrapolated = self.extrapolate_superpixel_mask_segment(
             superpixel_downsampling, foreground_idx, bounding_boxes, downsample_factor)
-        return (foreground_idx, xywh_abs_bbox, self.superpixel_labels)
+        return (foreground_idx, xywh_abs_bbox, superpixel_extrapolated)
+
 
     @staticmethod
     def extrapolate_superpixel_mask_segment(
