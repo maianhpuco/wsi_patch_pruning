@@ -10,7 +10,8 @@ import timm
 import yaml 
 
 import openslide
-
+import zipfile
+ 
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -51,6 +52,26 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
 
+def save_region_as_npy(region_np, slide_basename, superpixel_name):
+    # Create a directory for the slide if it doesn't exist
+    save_dir = os.path.join("read_folder", slide_basename)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    # Define the file path for the numpy file
+    npy_file_path = os.path.join(save_dir, f"{superpixel_name}.npy")
+    
+    # Save the region as a numpy file
+    np.save(npy_file_path, region_np)
+
+    # Optionally, zip the file (if needed)
+    zip_file_path = npy_file_path + ".zip"
+    with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipf.write(npy_file_path, os.path.basename(npy_file_path))
+        # Optionally remove the .npy file after zipping
+        os.remove(npy_file_path)
+ 
+
 def main(args):
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the patch to 256x256
@@ -77,6 +98,9 @@ def main(args):
     for slide_index in range(len(superpixel_dataset)):
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
+        slide_basename = os.path.basename(wsi_path).split(".")[0]
+        print(slide_basename)
+        
         slide = openslide.open_slide(wsi_path)  
         print(len(superpixel_datas))
         for each_superpixel in superpixel_datas:
@@ -87,74 +111,11 @@ def main(args):
             start = time.time()
             region = utils.get_region_original_size(slide, xywh_abs_bbox)
             region_np = np.array(region)
-            print(f"Slicing time: {time.time() - start} seconds")
+            print(f"Slicing time: {time.time() - start} seconds")  
 
-
-        
-        # # slide = openslide.open_slide(wsi_path)
-        # print("number of ", len(dataset))   # list all the superpixel in the wsi image
-        # _all_slide_features = []
-         
-        # for sample_idx  in range(len(dataset)):
-        #     superpixe_data = dataset[sample_idx]
+            # Save the region as a NumPy file and zip it
+            save_region_as_npy(region_np, slide_basename, f"foreground_idx") 
             
-        #     # print(np.sum(superpixel_extrapolated))
-        #     foreground_idx = superpixe_data['foreground_idx'] 
-        #     xywh_abs_bbox = superpixe_data['xywh_abs_bbox']
-        #     superpixel_extrapolated = superpixe_data['superpixel_extrapolated']
-        #     print(np.sum(superpixel_extrapolated))
-            
-            # start = time.time()
-            # # Create region from slide based on the bounding box
-            # region = utils.get_region_original_size(slide, xywh_abs_bbox)
-            # region_np = np.array(region)
-            
-            # print(f"Slicing time: {time.time() - start} seconds")
-
-            # # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
-            # # print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-            # print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
-            
-            # patch_dataset = PatchDataset(
-            #     region_np,
-            #     superpixel_extrapolated, 
-            #     patch_size=(224, 224),
-            #     transform=transform,
-            #     coverage_threshold=0.5,
-            #     return_feature=True,  # Enable feature extraction
-            #     model=model
-            # )
-            # print(">> foreground in dataset", len(patch_dataset)) 
-            
-            # patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
-            
-            # _all_features_spixel = []
-            # _all_idxes_spixel = []
-            
-        
-            # for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
-            #     _flatten_features = batch_features.view(-1, batch_features.shape[-1])
-            #     _all_features_spixel.append(_flatten_features)
-            #     _all_idxes_spixel.append(batch_idxes)
-            
-            # spixel_features = torch.cat(_all_features_spixel)  # of a 
-            # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape})")
-            
-            # spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
-            # print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
-             
-            # if args.dry_run:
-            #     print("done dry run")
-            #     break
-            
-        # _all_slide_features.append(spixel_features)
-        # print("---> Total time for a superpixel:", time.time()-start, " seconds")
-        # slide_features = torch.cat(_all_slide_features)
-        # print(slide_features.shape)
-        # print(f"Complete processing a slide after {(time.time()-start_slide)/60.00}")
-        
-        # if args.dry_run: 
-        #     break 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
@@ -177,4 +138,4 @@ if __name__ == '__main__':
         args.pruning_function("")
     
     main(args) 
-    
+     
