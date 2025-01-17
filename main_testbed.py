@@ -120,7 +120,7 @@ def main(
                 print("done dry run")
                 break
             _all_slide_features.append(spixel_features)
-            print("---> Total time for a superpixel": time.time()-start, " seconds")
+            print("---> Total time for a superpixel:", time.time()-start, " seconds")
         if args.dry_run: 
             break
         slide_features = torch.cat(_all_slide_features)
