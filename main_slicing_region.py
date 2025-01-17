@@ -115,7 +115,7 @@ def main(args):
             # print(f"Slicing time: {time.time() - start} seconds")  
 
             # Save the region as a NumPy file and zip it
-            save_region_as_npy(region_np, save_dir, f"foreground_idx")
+            save_region_as_npy(region_np, save_dir, f"{foreground_idx}")
             
         print(f"Done the slide: {slide_index}/{len(superpixel_dataset)}")
             
