@@ -61,6 +61,7 @@ def main():
             region_np = np.array(region)
             print("slicing after", time.time()-start)
             print("shape of ssp", region_np.shape)
+            print("superpixel:", superpixel_extrapolated.shape)
             patch_dataset = PatchDataset(
                 region_np,
                 superpixel_extrapolated, 
@@ -69,12 +70,12 @@ def main():
                 coverage_threshold = 0.5,
                 return_feature=True,  # Enable feature extraction
                 model=model)
-            
+            len(dataset, )
             patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
             
             _all_features_spixel = []
             _all_idxes_spixel = []
-            
+        
             for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
                 print("batch features:", batch_features.shape)
                 _flatten_features = batch_features.view(-1, batch_features.shape[-1])
