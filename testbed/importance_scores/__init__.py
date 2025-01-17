@@ -1,1 +1,1 @@
-from .scoring_do_nothing import scoreing_do_nothing 
+from .scoring_do_nothing import get_scoring_do_nothing 
