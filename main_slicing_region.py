@@ -11,7 +11,8 @@ import yaml
 
 import openslide
 import zipfile
- 
+from tqdm import tqdm 
+
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -102,7 +103,7 @@ def main(args):
         slide = openslide.open_slide(wsi_path)  
         
         print(len(superpixel_datas))
-        for each_superpixel in superpixel_datas:
+        for each_superpixel in tqdm(superpixel_datas):
             foreground_idx = each_superpixel['foreground_idx'] 
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
