@@ -142,6 +142,5 @@ if __name__ == '__main__':
         args.scoring_function("")
         args.pruning_function("")
     
-    # config these via a config file 
     main(args) 
     
