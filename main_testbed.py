@@ -41,7 +41,7 @@ PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list =['normal_048', 'normal_001', 'tumor_026', 'tumor_031'] 
-
+example_list=['normal_048']
 
 
  
@@ -51,17 +51,19 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
 
-def main(
-    dry_run=False, 
-    use_features=True, 
-    ): 
+def main(args):
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the patch to 256x256
         transforms.ToTensor(),          # Convert the image to a PyTorch tensor
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
-
+    if args.dry_run:
+        print("Running the dry run")
+    else:
+        print("Running on full data")
+    start_slide = time.time()
+    
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = args.json_path
@@ -121,11 +123,14 @@ def main(
                 break
             _all_slide_features.append(spixel_features)
             print("---> Total time for a superpixel:", time.time()-start, " seconds")
-        if args.dry_run: 
-            break
+            
+
         slide_features = torch.cat(_all_slide_features)
         print(slide_features.shape)
+        print(f"Complete processing a slide after {(time.time()-start_slide)/60.00}")
         
+        if args.dry_run: 
+            break 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
