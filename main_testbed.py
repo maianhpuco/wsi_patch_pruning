@@ -60,6 +60,7 @@ def main():
             )
             region_np = np.array(region)
             print("slicing after", time.time()-start)
+            print("bbox", xywh_abs_bbox)
             print("shape of ssp", region_np.shape)
             print("superpixel:", np.sum(superpixel_extrapolated))
             
