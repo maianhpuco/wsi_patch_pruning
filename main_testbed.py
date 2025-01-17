@@ -117,14 +117,15 @@ def main(
             print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
              
             if args.dry_run:
+                print("done dry run")
                 break
             _all_slide_features.append(spixel_features)
-        
+            print("---> Total time for a superpixel": time.time()-start, " seconds")
         if args.dry_run: 
             break
         slide_features = torch.cat(_all_slide_features)
-        
         print(slide_features.shape)
+        
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=True)
