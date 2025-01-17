@@ -72,7 +72,7 @@ def main(args):
         print(wsi_path) 
         
         dataset = SuperpixelDataset(
-            wsi_path=wsi_path,
+            slide_path=wsi_path,
             json_folder=json_folder,
             )
         
