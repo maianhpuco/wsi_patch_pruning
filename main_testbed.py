@@ -83,7 +83,7 @@ def main():
                 _all_idxes_spixel.append(batch_idxes)
             
             spixel_features = torch.cat(_all_features_spixel)
-            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape}")
+            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape}; {np.sum(spixel_features)}")
             
             spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
             print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
