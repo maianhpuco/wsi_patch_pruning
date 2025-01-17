@@ -18,7 +18,7 @@ from utils import utils
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
-example_list =['normal_072', 'normal_048', 'tumor_026', 'tumor_031'] 
+example_list =['normal_048', 'tumor_026', 'tumor_031'] 
 
 SLIDE_PATH = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
 JSON_PATH = '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
@@ -61,7 +61,7 @@ def main():
 
                 print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
                 print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-                print(f"Superpixel {foreground_idx} foreground count: {superpixel_extrapolated}")
+                print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
                 
                 patch_dataset = PatchDataset(
                     region_np,
