@@ -69,7 +69,7 @@ def main(args):
     json_folder = args.json_path
     
     superpixel_dataset = SuperpixelDataset(
-        slide_path=wsi_paths,
+        slide_paths=wsi_paths,
         json_folder=json_folder,
         )
     print("Number of superpixel in dataset:", len(superpixel_dataset)) 
