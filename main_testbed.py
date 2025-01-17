@@ -37,7 +37,7 @@ def main():
         print(wsi_path) 
         
         dataset = SuperpixelDataset(
-            slide_paths=wsi_path,
+            slide_path=wsi_path,
             json_folder=json_folder,
             )
         for (foreground_idx, xywh_abs_bbox, superpixel_extrapolated) in dataset:
