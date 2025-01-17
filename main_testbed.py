@@ -128,7 +128,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
-        config = load_config(args.config_file)
+        config = load_config(f'./testbest_config/{args.config_file}.yaml')
         args.use_features = config.get('use_features', True)
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
