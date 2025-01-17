@@ -7,6 +7,7 @@ import numpy as np
 import argparse
 import time   
 import timm 
+import openslide
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -29,6 +30,13 @@ model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can ch
 model.eval()  
 
 def main(): 
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize the patch to 256x256
+        transforms.ToTensor(),          # Convert the image to a PyTorch tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
+        # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
+    ])
+
     wsi_paths = glob.glob(os.path.join(SLIDE_PATH, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = JSON_PATH  
@@ -40,9 +48,41 @@ def main():
             wsi_path=wsi_path,
             json_folder=json_folder,
             )
-        print(len(dataset))   # list all the superpixel in the wsi image 
+        slide = openslide.open_slide(wsi_path)
+        
+        print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image 
         for (foreground_idx, xywh_abs_bbox, superpixel_extrapolated) in dataset:
-            print(foreground_idx)
+            # create a patch dataset for all the path in a superpixel: 
+            start = time.time()
+            region = utils.get_region_original_size(
+                slide, 
+                xywh_abs_bbox,
+            )
+            region_np = np.array(region)
+            print("slide after", time.time()-start)
+            
+            patch_dataset = PatchDataset(
+                region_np,
+                superpixel_extrapolated, 
+                patch_size = (224, 224),
+                transform = transform,
+                coverage_threshold = 0.5,
+                return_feature=True,  # Enable feature extraction
+                model=model)
+            patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=True)
+            
+            _all_features_spixel = []
+            _all_idxes_spixel = []
+            
+            for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
+                _flatten_features = batch_features.view(-1, batch_features.shape[-1])
+                _all_features_spixel.append(_flatten_features)
+                _all_idxes_spixel.append(batch_idxes)
+            
+            spixel_features = torch.cat(_all_features_spixel)
+            print(spixel_features.shape)
+            spixel_foreground_idxes =  torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
+            len(spixel_foreground_idxes)
             break 
         break 
             
