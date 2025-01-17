@@ -59,7 +59,7 @@ def main():
                 xywh_abs_bbox,
             )
             region_np = np.array(region)
-            print("slide after", time.time()-start)
+            print("slicing after", time.time()-start)
             
             patch_dataset = PatchDataset(
                 region_np,
@@ -69,7 +69,8 @@ def main():
                 coverage_threshold = 0.5,
                 return_feature=True,  # Enable feature extraction
                 model=model)
-            patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=True)
+            
+            patch_dataloader = DataLoader(patch_dataset, batch_size=64, shuffle=False)
             
             _all_features_spixel = []
             _all_idxes_spixel = []
