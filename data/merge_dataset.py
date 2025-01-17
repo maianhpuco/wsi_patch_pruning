@@ -99,24 +99,15 @@ class PatchDataset(Dataset):
             return _, patch_pil, bbox, patch_idx  # Return original index 
 
 class SuperpixelDataset(Dataset):
-    def __init__(self, slide_paths, json_folder):
+    def __init__(self, slide_path, json_folder):
         """
         Args:
         slide_paths (list of str): List of paths to the WSI images.
         json_folder (str): Path to the folder containing the corresponding JSON files.
         """
-        self.slide_paths = slide_paths
+        self.slide_path = slide_path
         self.json_folder = json_folder
-
-    def __len__(self):
-        """Returns the total number of samples (WSI images)."""
-        return len(self.slide_paths)
-
-    def __getitem__(self, index):
-        """Returns a sample (WSI image and associated data) for a single WSI image."""
-        # Get the WSI path and basename
-        wsi_path = self.slide_paths[index]
-        basename = os.path.basename(wsi_path).split(".")[0]
+        basename = os.path.basename(slide_path).split(".")[0]
         print(f"Processing {basename}...")
 
         # Slide opening (Assuming you're using openslide for WSI files)
@@ -124,32 +115,40 @@ class SuperpixelDataset(Dataset):
 
         # Load corresponding JSON data
         json_path = os.path.join(self.json_folder, f'{basename}.json')
+        print(json_path)
         sample = self.read_json_superpixel(json_path)
+        self.bounding_boxes = sample['bounding_boxes']
+        self.downsample_factor = sample['downsample_factor']
+        self.foreground_superpixels = sample['foreground_superpixels']
+        self.superpixel_labels = sample['superpixel_labels']
+ 
+    def __len__(self):
+        """Returns the total number of samples (WSI images)."""
+        return len(self.)
 
-        bounding_boxes = sample['bounding_boxes']
-        downsample_factor = sample['downsample_factor']
-        foreground_superpixels = sample['foreground_superpixels']
-        superpixel_labels = sample['superpixel_labels']
-
+    def __getitem__(self, index):
+        """Returns a sample (WSI image and associated data) for a single WSI image."""
+        # Get the WSI path and basename
+        
         result = []
+        
+        for foreground_idx in self.foreground_superpixels:
+            bbox = self.bounding_boxes[foreground_idx]
+            xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, self.downsample_factor)
 
-        for foreground_idx in foreground_superpixels:
-            bbox = bounding_boxes[foreground_idx]
-            xywh_abs_bbox = self._get_absolute_bbox_coordinate(bbox, downsample_factor)
-
-            superpixel_downsampling = superpixel_labels == foreground_idx
+            superpixel_downsampling = self.superpixel_labels == foreground_idx
             superpixel_extrapolated = self.extrapolate_superpixel_mask_segment(
-                superpixel_labels, foreground_idx, bounding_boxes, downsample_factor)
+                self.superpixel_labels, foreground_idx, self.bounding_boxes, self.downsample_factor)
 
-            result.append({
-                'foreground_idx': foreground_idx,
-                'xywh_abs_bbox': xywh_abs_bbox,
-                'superpixel_extrapolated': superpixel_extrapolated
-            })
+            # result.append({
+            #     'foreground_idx': foreground_idx,
+            #     'xywh_abs_bbox': xywh_abs_bbox,
+            #     'superpixel_extrapolated': superpixel_extrapolated
+            # })
 
         # Return a dictionary or can be adjusted to a tensor format if needed
-        return result
-
+        return  foreground_idx, xywh_abs_bbox, superpixel_extrapolated
+    
     @staticmethod
     def extrapolate_superpixel_mask_segment(
         superpixel_downsampling,
