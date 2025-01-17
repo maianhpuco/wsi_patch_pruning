@@ -52,6 +52,7 @@ def main():
         
         print("number of superpixel", len(dataset))   # list all the superpixel in the wsi image 
         for (foreground_idx, xywh_abs_bbox, superpixel_extrapolated) in dataset:
+            print("loop thru superpixel")
             # create a patch dataset for all the path in a superpixel: 
             start = time.time()
             region = utils.get_region_original_size(
