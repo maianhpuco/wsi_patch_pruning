@@ -139,8 +139,8 @@ if __name__ == '__main__':
             config.get('pruning_function') 
         )
 
-    args.scoring_function()
-    args.pruning_function()
+    args.scoring_function(args)
+    args.pruning_function(args)
     
     # config these via a config file 
     main(args) 
