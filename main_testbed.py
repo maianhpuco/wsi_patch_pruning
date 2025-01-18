@@ -80,7 +80,7 @@ def main(args):
         save_dir = os.path.join(args.spixel_path, slide_basename) 
         start_slide = time.time()
         total = 0 
-        for each_superpixel in superpixel_datas:
+        for each_superpixel in tqdm(superpixel_datas):
             start_spixel = time.time()
             foreground_idx = each_superpixel['foreground_idx'] 
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']

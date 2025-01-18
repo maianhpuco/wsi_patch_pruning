@@ -69,7 +69,7 @@ class PatchDataset(Dataset):
                 # print(edge_mean)
                 
                 # Only include patches that satisfy the coverage threshold
-                if mask_coverage >= self.coverage_threshold and edge_mean >= self.edge_threshold:
+                if mask_coverage >= self.coverage_threshold and edge_mean > self.edge_threshold:
                     bbox = (top, left, bottom, right)
                     self.patches.append(patch)
                     self.bboxes.append(bbox)
