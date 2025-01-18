@@ -124,7 +124,7 @@ def main(args):
         # print('Complete an Slide after: ', time.time()-start_slide)
 
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp001')
