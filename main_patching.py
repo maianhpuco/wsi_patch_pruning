@@ -1,3 +1,4 @@
+#run after superpixel (json) >> processing patch and save patches  
 import os
 import sys 
 import torch
@@ -183,7 +184,7 @@ def main(args):
         
         for each_superpixel in tqdm(superpixel_datas):
             foreground_idx = each_superpixel['foreground_idx'] 
-            print("Processing foreground:", foreground_idx)
+            # print("Processing foreground:", foreground_idx)
             
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
@@ -226,7 +227,9 @@ if __name__ == '__main__':
         args.json_path = config.get('JSON_PATH')
         args.spixel_path = config.get('SPIXEL_PATH')
         args.patch_path = config.get('PATCH_PATH')
+        
         os.makedirs(args.patch_path, exist_ok=True) 
+        
         args.patch_size = config.get('patch_size')
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
