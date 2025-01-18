@@ -15,7 +15,13 @@ from PIL import Image
 from scipy import ndimage
 from PIL import Image, ImageFilter
 from PIL import ImageStat 
- 
+
+class PreprocessPatchesDataset(Dataset):
+    def __init__():
+        pass 
+    def __get__():
+        pass 
+    
 class PatchDataset(Dataset):
     def __init__(
         self,
@@ -48,6 +54,7 @@ class PatchDataset(Dataset):
         # Loop through the region and extract patches
         patch_original_idx = 0  # Initialize the patch index
         idx = 0
+        
         for top in range(0, region_height, patch_height):
             for left in range(0, region_width, patch_width):
                 # Ensure the patch is within bounds
@@ -60,16 +67,12 @@ class PatchDataset(Dataset):
 
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
-                # print(mask_coverage)
-                
-                # print(edge_mean)
                 
                 # Only include patches that satisfy the coverage threshold
                 if mask_coverage > self.coverage_threshold :
                     edge_mean = self.filter_by_edge_detection(
                         patch, 
                         patch_area
-                    
                     ) 
                     if edge_mean > self.edge_threshold: 
                         bbox = (top, left, bottom, right)
@@ -79,9 +82,8 @@ class PatchDataset(Dataset):
 
                         _idx_dict = {idx: patch_original_idx}
                         self.patch_idx_dict.update(_idx_dict)
-                        idx += 1           
-                    patch_original_idx += 1  # Increment the original index after processing each patch
-
+                        idx += 1        
+                patch_original_idx += 1  # Increment the original index after processing each patch
 
     @staticmethod
     def filter_by_edge_detection(patch, patch_area):

@@ -93,8 +93,6 @@ def main(args):
                 foreground_idx
                 )
 
-            
-
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 
@@ -104,8 +102,9 @@ def main(args):
                 edge_threshold=20, 
                 return_feature=True,  # Enable feature extraction
                 model=model
-            ) 
+            )
             total += len(patch_dataset) 
+            
             # print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
