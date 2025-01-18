@@ -121,9 +121,9 @@ def main(args):
             # spixel_patch_features = torch.cat(_all_features_spixel)
             
             # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
-            print("Complete processing a superpixel after :", time.time()-start_spixel)
+        #     print("Complete processing a superpixel after :", time.time()-start_spixel)
             
-        print('Complete an Slide after: ', time.time()-start_slide)
+        # print('Complete an Slide after: ', time.time()-start_slide)
 
 
 if __name__ == '__main__':
