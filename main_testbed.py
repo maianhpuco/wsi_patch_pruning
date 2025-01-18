@@ -87,7 +87,7 @@ def main(args):
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
             
             start_spixel = time.time()
-            
+            print(foreground_idx) 
             # superpixel_np = utils.read_region_from_npy(
             #     args.spixel_path, 
             #     slide_basename, 
