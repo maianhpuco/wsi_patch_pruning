@@ -21,9 +21,9 @@ class PatchDataset(Dataset):
         self,
         region,
         mask,
-        patch_size=(224, 224),
+        patch_size=(256, 256),
         coverage_threshold=0.1,
-        edge_threshold = 10, #similar to Camil method 
+        edge_threshold = 15, #similar to Camil method 
         transform=None,
         return_feature=False,
         model=None
@@ -65,7 +65,7 @@ class PatchDataset(Dataset):
                 # print(edge_mean)
                 
                 # Only include patches that satisfy the coverage threshold
-                if mask_coverage >= self.coverage_threshold :
+                if mask_coverage > self.coverage_threshold :
                     edge_mean = self.filter_by_edge_detection(
                         patch, 
                         patch_area

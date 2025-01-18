@@ -44,12 +44,12 @@ sys.path.append(os.path.join(PROJECT_DIR))
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 
-model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
+model = timm.create_model('vit_base_patch16_256', pretrained=True)  # You can choose any model
 model.eval()  
 
 def main(args):
     transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # Resize the patch to 256x256
+        transforms.Resize((256, 256)),  # Resize the patch to 256x256
         transforms.ToTensor(),          # Convert the image to a PyTorch tensor
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
@@ -98,10 +98,10 @@ def main(args):
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 
-                patch_size=(224, 224),
+                patch_size=(256, 256),
                 transform=transform,
                 coverage_threshold=0.5,
-                edge_threshold=10, 
+                edge_threshold=20, 
                 return_feature=True,  # Enable feature extraction
                 model=model
             ) 
