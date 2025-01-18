@@ -1,5 +1,5 @@
 import os
-
+import sys 
 import torch
 import glob
 import pandas as pd
@@ -35,7 +35,7 @@ def load_config(config_file):
         config = yaml.safe_load(f)
     return config
 
-
+sys.path.append(os.path.join(PROJECT_DIR)) 
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
@@ -47,7 +47,7 @@ example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026']
 
  
  
-sys.path.append(os.path.join(PROJECT_DIR))
+
 
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
