@@ -66,7 +66,7 @@ class PatchDataset(Dataset):
                     patch_area
                 
                 )
-                print(edge_mean)
+                # print(edge_mean)
                 
                 # Only include patches that satisfy the coverage threshold
                 if mask_coverage >= self.coverage_threshold and edge_mean >= self.edge_threshold:
