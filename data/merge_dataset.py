@@ -118,10 +118,8 @@ class SuperpixelDataset(Dataset):
         # Get the WSI path and basename
         wsi_path = self.slide_paths[index]
         basename = os.path.basename(wsi_path).split(".")[0]
-        print(basename)
 
         # slide = openslide.open_slide(wsi_path)
-        print("complete reading WSIs")
         # Load corresponding JSON data
         json_path = os.path.join(self.json_folder, f'{basename}.json')
         sample = self.read_json_superpixel(json_path)

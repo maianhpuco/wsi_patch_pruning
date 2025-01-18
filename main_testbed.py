@@ -95,7 +95,16 @@ def main(args):
                 slide_basename, 
                 foreground_idx
                 )
-            print(superpixel_np.shape)
+            print(superpixel_np.shape, np.sum(superpixel_extrapolated))
+            patch_dataset = PatchDataset(
+                superpixel_np,
+                superpixel_extrapolated, 
+                patch_size=(224, 224),
+                transform=transform,
+                coverage_threshold=0.5,
+                return_feature=True,  # Enable feature extraction
+                model=model
+            )  
 
 
 
