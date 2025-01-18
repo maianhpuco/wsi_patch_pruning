@@ -13,7 +13,8 @@ import cv2
 import time 
 from PIL import Image 
 from scipy import ndimage
- 
+from PIL import Image, ImageFilter
+from PIL import ImageStat 
  
 class PatchDataset(Dataset):
     def __init__(
@@ -82,10 +83,22 @@ class PatchDataset(Dataset):
 
     @staticmethod
     def filter_by_edge_detection(patch, patch_area):
-        patch_edge = cv2.Canny(patch.astype(np.uint8), 100, 200)  # Applying Canny edge detection
-        edge_stat = np.sum(patch_edge)  # Sum of edges in the patch
-        edge_mean = edge_stat / patch_area  
-        return edge_mean
+        # Convert the NumPy array (patch) to a PIL image
+        patch_pil = Image.fromarray(patch.astype(np.uint8))
+
+        # Apply edge detection using PIL's ImageFilter.FIND_EDGES
+        edge = patch_pil.filter(ImageFilter.FIND_EDGES)
+
+        # Compute the sum of the edge values using ImageStat
+        edge_stat = ImageStat.Stat(edge).sum
+        edge_mean = np.mean(edge_stat) / patch_area  # Normalize by patch area
+
+        return edge_mean 
+    # def filter_by_edge_detection(patch, patch_area):
+    #     patch_edge = cv2.Canny(patch.astype(np.uint8), 100, 200)  # Applying Canny edge detection
+    #     edge_stat = np.sum(patch_edge)  # Sum of edges in the patch
+    #     edge_mean = edge_stat / patch_area  
+    #     return edge_mean
     
     def __len__(self):
         """Returns the total number of patches."""
