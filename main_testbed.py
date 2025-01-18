@@ -85,31 +85,27 @@ def main(args):
             foreground_idx = each_superpixel['foreground_idx'] 
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
+
             
-            start_spixel = time.time()
-            print(foreground_idx) 
-            # superpixel_np = utils.read_region_from_npy(
-            #     args.spixel_path, 
-            #     slide_basename, 
-            #     foreground_idx
-            #     )
-            total +=1
-            
-            # num_patch_each_spixel = int(superpixel_np.shape[0] * superpixel_np.shape[1] / (224*224) )
-            # total += count  
-        print("-------->", total)
-            # print("- Complete reading after: ", time.time()-start_spixel)
+            superpixel_np = utils.read_region_from_npy(
+                args.spixel_path, 
+                slide_basename, 
+                foreground_idx
+                )
+
             
 
-            # patch_dataset = PatchDataset(
-            #     superpixel_np,
-            #     superpixel_extrapolated, 
-            #     patch_size=(224, 224),
-            #     transform=transform,
-            #     coverage_threshold=0.5,
-            #     return_feature=True,  # Enable feature extraction
-            #     model=model
-            # ) 
+            patch_dataset = PatchDataset(
+                superpixel_np,
+                superpixel_extrapolated, 
+                patch_size=(224, 224),
+                transform=transform,
+                coverage_threshold=0.5,
+                return_feature=True,  # Enable feature extraction
+                model=model
+            ) 
+            total += len(patch_dataset) 
+            print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
             # _all_features_spixel = []
@@ -123,12 +119,12 @@ def main(args):
             # spixel_patch_features = torch.cat(_all_features_spixel)
             
             # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
-        #     print("Complete processing a superpixel after :", time.time()-start_spixel)
-            
+            # print("Complete processing a superpixel after :", time.time()-start_spixel)
+        print(">>>>>> total", total)
         # print('Complete an Slide after: ', time.time()-start_slide)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__'
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp001')
