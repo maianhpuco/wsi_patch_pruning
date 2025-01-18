@@ -88,13 +88,15 @@ def main(args):
             
             start_spixel = time.time()
             
-            superpixel_np = utils.read_region_from_npy(
-                args.spixel_path, 
-                slide_basename, 
-                foreground_idx
-                )
-            num_patch_each_spixel = int(superpixel_np.shape[0] * superpixel_np.shape[1] / (224*224) )
-            total += num_patch_each_spixel 
+            # superpixel_np = utils.read_region_from_npy(
+            #     args.spixel_path, 
+            #     slide_basename, 
+            #     foreground_idx
+            #     )
+            total +=1
+            
+            # num_patch_each_spixel = int(superpixel_np.shape[0] * superpixel_np.shape[1] / (224*224) )
+            # total += count  
         print("-------->", total)
             # print("- Complete reading after: ", time.time()-start_spixel)
             
