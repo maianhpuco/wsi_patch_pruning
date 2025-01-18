@@ -1,6 +1,7 @@
 import os
 import sys 
 import torch
+from tqdm import tqdm 
 import glob
 import pandas as pd
 import numpy as np
@@ -42,14 +43,6 @@ sys.path.append(os.path.join(PROJECT_DIR))
 
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
-example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026'] 
-# example_list =['normal_048', 'normal_001', 'tumor_026', 'tumor_031'] 
-# example_list=['normal_072']
-
-
- 
- 
-
 
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
@@ -99,8 +92,7 @@ def main(args):
                 slide_basename, 
                 foreground_idx
                 )
-            print(superpixel_np.shape, np.sum(superpixel_extrapolated))
-            
+            print("- Complete reading after: ", time.time()-start_spixel)
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 
@@ -114,14 +106,14 @@ def main(args):
             
             _all_features_spixel = []
             _all_idxes_spixel = []
-            for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
+            for batch_features, batch_patches, batch_bboxes, batch_idxes in tqdm(patch_dataloader):
                 _flatten_features = batch_features.view(-1, batch_features.shape[-1])
                 _all_features_spixel.append(_flatten_features)
                 _all_idxes_spixel.append(batch_idxes)
                 
             spixel_patch_features = torch.cat(_all_features_spixel)  # of a 
             print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
-            print("Complete a superpixel after :", time.time()-start_spixel)
+            print("Complete processing a superpixel after :", time.time()-start_spixel)
         print('Complete an Slide after: ', time.time()-start_slide)
             
         # # slide = openslide.open_slide(wsi_path)
