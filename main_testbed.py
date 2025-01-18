@@ -104,11 +104,19 @@ def main(args):
                 coverage_threshold=0.5,
                 return_feature=True,  # Enable feature extraction
                 model=model
-            )  
+            ) 
+            patch_dataloader = DataLoader(patch_dataset, batch_size=512, shuffle=False) 
 
-
-
-
+            
+            _all_features_spixel = []
+            _all_idxes_spixel = []
+            for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
+                _flatten_features = batch_features.view(-1, batch_features.shape[-1])
+                _all_features_spixel.append(_flatten_features)
+                _all_idxes_spixel.append(batch_idxes)
+                
+            spixel_patch_features = torch.cat(_all_features_spixel)  # of a 
+            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
 
             
         # # slide = openslide.open_slide(wsi_path)
