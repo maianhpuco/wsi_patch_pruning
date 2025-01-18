@@ -61,24 +61,26 @@ class PatchDataset(Dataset):
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
                 # print(mask_coverage)
-                edge_mean = self.filter_by_edge_detection(
-                    patch, 
-                    patch_area
                 
-                )
                 # print(edge_mean)
                 
                 # Only include patches that satisfy the coverage threshold
-                if mask_coverage >= self.coverage_threshold and edge_mean > self.edge_threshold:
-                    bbox = (top, left, bottom, right)
-                    self.patches.append(patch)
-                    self.bboxes.append(bbox)
-                    self.patch_indices.append(patch_original_idx)  # Save the original index for each patch
+                if mask_coverage >= self.coverage_threshold :
+                    edge_mean = self.filter_by_edge_detection(
+                        patch, 
+                        patch_area
+                    
+                    ) 
+                    if edge_mean > self.edge_threshold: 
+                        bbox = (top, left, bottom, right)
+                        self.patches.append(patch)
+                        self.bboxes.append(bbox)
+                        self.patch_indices.append(patch_original_idx)  # Save the original index for each patch
 
-                    _idx_dict = {idx: patch_original_idx}
-                    self.patch_idx_dict.update(_idx_dict)
-                    idx += 1           
-                patch_original_idx += 1  # Increment the original index after processing each patch
+                        _idx_dict = {idx: patch_original_idx}
+                        self.patch_idx_dict.update(_idx_dict)
+                        idx += 1           
+                    patch_original_idx += 1  # Increment the original index after processing each patch
 
 
     @staticmethod
@@ -137,7 +139,6 @@ class SuperpixelDataset(Dataset):
 
     def __len__(self):
         """Returns the total number of samples (WSI images)."""
-        print("Return the numbe of slide in the datatset")
         return len(self.slide_paths)
 
     def __getitem__(self, index):
