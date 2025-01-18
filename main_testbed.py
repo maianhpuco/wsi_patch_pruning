@@ -93,6 +93,7 @@ def main(args):
                 foreground_idx
                 )
             print("- Complete reading after: ", time.time()-start_spixel)
+            
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 
@@ -102,10 +103,11 @@ def main(args):
                 return_feature=True,  # Enable feature extraction
                 model=model
             ) 
-            patch_dataloader = DataLoader(patch_dataset, batch_size=512, shuffle=False) 
+            patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
             _all_features_spixel = []
             _all_idxes_spixel = []
+            
             for batch_features, batch_patches, batch_bboxes, batch_idxes in tqdm(patch_dataloader):
                 _flatten_features = batch_features.view(-1, batch_features.shape[-1])
                 _all_features_spixel.append(_flatten_features)
@@ -115,71 +117,8 @@ def main(args):
             print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
             print("Complete processing a superpixel after :", time.time()-start_spixel)
         print('Complete an Slide after: ', time.time()-start_slide)
-            
-        # # slide = openslide.open_slide(wsi_path)
-        # print("number of ", len(dataset))   # list all the superpixel in the wsi image
-        # _all_slide_features = []
-         
-        # for sample_idx  in range(len(dataset)):
-        #     superpixe_data = dataset[sample_idx]
-            
-        #     # print(np.sum(superpixel_extrapolated))
-        #     foreground_idx = superpixe_data['foreground_idx'] 
-        #     xywh_abs_bbox = superpixe_data['xywh_abs_bbox']
-        #     superpixel_extrapolated = superpixe_data['superpixel_extrapolated']
-        #     print(np.sum(superpixel_extrapolated))
-            
-            # start = time.time()
-            # # Create region from slide based on the bounding box
-            # region = utils.get_region_original_size(slide, xywh_abs_bbox)
-            # region_np = np.array(region)
-            
-            # print(f"Slicing time: {time.time() - start} seconds")
 
-            # # print(f"Bounding Box (XYWH): {xywh_abs_bbox}")
-            # # print(f"Shape of Superpixel: {region_np.shape}, Extrapolated Mask Shape: {superpixel_extrapolated.shape}")
-            # print(f"Superpixel {foreground_idx} foreground count: {np.sum(superpixel_extrapolated)}")
-            
-            # patch_dataset = PatchDataset(
-            #     region_np,
-            #     superpixel_extrapolated, 
-            #     patch_size=(224, 224),
-            #     transform=transform,
-            #     coverage_threshold=0.5,
-            #     return_feature=True,  # Enable feature extraction
-            #     model=model
-            # )
-            # print(">> foreground in dataset", len(patch_dataset)) 
-            
-            # patch_dataloader = DataLoader(patch_dataset, batch_size=256, shuffle=False)
-            
-            # _all_features_spixel = []
-            # _all_idxes_spixel = []
-            
-        
-            # for batch_features, batch_patches, batch_bboxes, batch_idxes in patch_dataloader:
-            #     _flatten_features = batch_features.view(-1, batch_features.shape[-1])
-            #     _all_features_spixel.append(_flatten_features)
-            #     _all_idxes_spixel.append(batch_idxes)
-            
-            # spixel_features = torch.cat(_all_features_spixel)  # of a 
-            # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_features.shape})")
-            
-            # spixel_foreground_idxes = torch.cat(_all_idxes_spixel, dim=0).detach().cpu().numpy().tolist()
-            # print(f"Foreground Indices Count: {len(spixel_foreground_idxes)}")
-             
-            # if args.dry_run:
-            #     print("done dry run")
-            #     break
-            
-        # _all_slide_features.append(spixel_features)
-        # print("---> Total time for a superpixel:", time.time()-start, " seconds")
-        # slide_features = torch.cat(_all_slide_features)
-        # print(slide_features.shape)
-        # print(f"Complete processing a slide after {(time.time()-start_slide)/60.00}")
-        
-        # if args.dry_run: 
-        #     break 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
@@ -200,7 +139,7 @@ if __name__ == '__main__':
         args.pruning_function = PRUNING_FUNCTION_MAP.get(
             config.get('pruning_function') 
         )
-
+        args.batch_size = config.get('batch_size')
         args.scoring_function("")
         args.pruning_function("")
     
