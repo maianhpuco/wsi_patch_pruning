@@ -11,12 +11,6 @@ import numpy as np
 from sklearn.metrics import roc_auc_score 
 
 
-
-
-
-
-
-
 # Helper function to save checkpoints
 def save_checkpoint(model, optimizer, epoch, loss, filename='checkpoint.pth'):
     print(f"Saving checkpoint at epoch {epoch}...")
@@ -76,6 +70,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     for features, sparse_matrix, labels in train_dataset:
         
         features = features.to(device)
+        print(">>>>>> number of features:", features)
         sparse_matrix = sparse_matrix.to(device)
         labels = labels.to(device)
 
