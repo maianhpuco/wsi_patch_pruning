@@ -79,6 +79,7 @@ def main(args):
         print("Basename:", slide_basename)
         save_dir = os.path.join(args.spixel_path, slide_basename) 
         start_slide = time.time()
+        total = 0 
         for each_superpixel in superpixel_datas:
             start_spixel = time.time()
             foreground_idx = each_superpixel['foreground_idx'] 
@@ -92,9 +93,12 @@ def main(args):
                 slide_basename, 
                 foreground_idx
                 )
-            print("- Complete reading after: ", time.time()-start_spixel)
+            num_patch_each_spixel = int(superpixel_np.shape[0] * superpixel_np.shape[1] / (224*224) )
+            total += num_patch_each_spixel 
+        print("-------->", total)
+            # print("- Complete reading after: ", time.time()-start_spixel)
             
-            
+
             # patch_dataset = PatchDataset(
             #     superpixel_np,
             #     superpixel_extrapolated, 
