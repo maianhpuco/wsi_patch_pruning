@@ -35,9 +35,11 @@ def load_config(config_file):
         config = yaml.safe_load(f)
     return config
 
-sys.path.append(os.path.join(PROJECT_DIR)) 
+
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
+sys.path.append(os.path.join(PROJECT_DIR))  
+
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026'] 
