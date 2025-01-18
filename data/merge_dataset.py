@@ -21,7 +21,7 @@ class PatchDataset(Dataset):
         self,
         region,
         mask,
-        patch_size=(256, 256),
+        patch_size=(224, 224),
         coverage_threshold=0.1,
         edge_threshold = 15, #similar to Camil method 
         transform=None,
@@ -96,11 +96,6 @@ class PatchDataset(Dataset):
         edge_mean = np.mean(edge_stat) / patch_area  # Normalize by patch area
 
         return edge_mean 
-    # def filter_by_edge_detection(patch, patch_area):
-    #     patch_edge = cv2.Canny(patch.astype(np.uint8), 100, 200)  # Applying Canny edge detection
-    #     edge_stat = np.sum(patch_edge)  # Sum of edges in the patch
-    #     edge_mean = edge_stat / patch_area  
-    #     return edge_mean
     
     def __len__(self):
         """Returns the total number of patches."""

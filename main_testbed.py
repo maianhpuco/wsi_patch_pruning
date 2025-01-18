@@ -106,7 +106,7 @@ def main(args):
                 model=model
             ) 
             total += len(patch_dataset) 
-            print("num patch", len(patch_dataset))
+            # print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
             # _all_features_spixel = []
