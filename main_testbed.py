@@ -1,5 +1,5 @@
 import os
-import sys 
+
 import torch
 import glob
 import pandas as pd
@@ -83,19 +83,22 @@ def main(args):
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         print("Basename:", slide_basename)
         save_dir = os.path.join(args.spixel_path, slide_basename) 
-        
+        start_slide = time.time()
         for each_superpixel in superpixel_datas:
+            start_spixel = time.time()
             foreground_idx = each_superpixel['foreground_idx'] 
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
             
-            start = time.time()
+            start_spixel = time.time()
+            
             superpixel_np = utils.read_region_from_npy(
                 args.spixel_path, 
                 slide_basename, 
                 foreground_idx
                 )
             print(superpixel_np.shape, np.sum(superpixel_extrapolated))
+            
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 
@@ -106,7 +109,6 @@ def main(args):
                 model=model
             ) 
             patch_dataloader = DataLoader(patch_dataset, batch_size=512, shuffle=False) 
-
             
             _all_features_spixel = []
             _all_idxes_spixel = []
@@ -117,7 +119,8 @@ def main(args):
                 
             spixel_patch_features = torch.cat(_all_features_spixel)  # of a 
             print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
-
+            print("Complete a superpixel after :", time.time()-start_spixel)
+        print('Complete an Slide after: ', time.time()-start_slide)
             
         # # slide = openslide.open_slide(wsi_path)
         # print("number of ", len(dataset))   # list all the superpixel in the wsi image
