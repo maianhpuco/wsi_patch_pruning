@@ -53,19 +53,31 @@ sys.path.append(os.path.join(PROJECT_DIR))
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()  
 
-def save_region_as_npy(region_np, save_dir, superpixel_name):
-    npy_file_path = os.path.join(save_dir, f"{superpixel_name}.npy")
+# def save_region_as_npy(region_np, save_dir, superpixel_name):
+#     npy_file_path = os.path.join(save_dir, f"{superpixel_name}.npy")
     
-    # Save the region as a numpy file
-    np.save(npy_file_path, region_np)
+#     # Save the region as a numpy file
+#     np.save(npy_file_path, region_np)
 
-    # # Optionally, zip the file (if needed)
-    # zip_file_path = npy_file_path + ".zip"
-    # with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-    #     zipf.write(npy_file_path, os.path.basename(npy_file_path))
-    #     # Optionally remove the .npy file after zipping
-    #     os.remove(npy_file_path)
- 
+#     # # Optionally, zip the file (if needed)
+#     # zip_file_path = npy_file_path + ".zip"
+#     # with zipfile.ZipFile(zip_file_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+#     #     zipf.write(npy_file_path, os.path.basename(npy_file_path))
+#     #     # Optionally remove the .npy file after zipping
+#     #     os.remove(npy_file_path)
+
+def save_region_as_npy(region_np, save_dir, superpixel_name):
+    # Ensure the save directory exists
+    os.makedirs(save_dir, exist_ok=True)
+
+    # Construct the .npz file path
+    npz_file_path = os.path.join(save_dir, f"{superpixel_name}.npz")
+
+    # Save the NumPy array as a compressed .npz file
+    np.savez_compressed(npz_file_path, region=region_np)
+
+    print(f"Saved the region as a compressed .npz file to {npz_file_path}") 
+     
 
 def main(args):
     transform = transforms.Compose([
