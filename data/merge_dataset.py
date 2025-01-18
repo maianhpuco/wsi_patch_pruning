@@ -12,7 +12,9 @@ import json
 import cv2 
 import time 
 from PIL import Image 
-
+from scipy import ndimage
+ 
+ 
 class PatchDataset(Dataset):
     def __init__(
         self,
@@ -20,6 +22,7 @@ class PatchDataset(Dataset):
         mask,
         patch_size=(224, 224),
         coverage_threshold=0.1,
+        edge_threshold = 10, #similar to Camil method 
         transform=None,
         return_feature=False,
         model=None
@@ -28,6 +31,7 @@ class PatchDataset(Dataset):
         self.mask = mask
         self.patch_size = patch_size
         self.coverage_threshold = coverage_threshold
+        self.edge_threshold = edge_threshold
         self.transform = transform
         self.model = model
         self.return_feature = return_feature
@@ -56,9 +60,13 @@ class PatchDataset(Dataset):
                 patch_area = patch.shape[0] * patch.shape[1]
                 mask_coverage = np.sum(patch_mask) / patch_area  # Proportion of the patch covered by the mask
                 # print(mask_coverage)
+                edge_mean = self.filter_by_edge_detection(
+                    patch, 
+                    patch_area
+                )
                 
                 # Only include patches that satisfy the coverage threshold
-                if mask_coverage >= self.coverage_threshold:
+                if mask_coverage >= self.coverage_threshold and edge_mean >= self.edge_threshold:
                     bbox = (top, left, bottom, right)
                     self.patches.append(patch)
                     self.bboxes.append(bbox)
@@ -66,13 +74,17 @@ class PatchDataset(Dataset):
 
                     _idx_dict = {idx: patch_original_idx}
                     self.patch_idx_dict.update(_idx_dict)
-                    idx += 1
-                    # print("counting", idx)                    
+                    idx += 1           
                 patch_original_idx += 1  # Increment the original index after processing each patch
-                  # Increment the index after processing each patch
 
-        # print(self.patch_idx_dict)
 
+    @staticmethod
+    def filter_by_edge_detection(patch, patch_area):
+        patch_edge = cv2.Canny(patch.astype(np.uint8), 100, 200)  # Applying Canny edge detection
+        edge_stat = np.sum(patch_edge)  # Sum of edges in the patch
+        edge_mean = edge_stat / patch_area  
+        return edge_mean
+    
     def __len__(self):
         """Returns the total number of patches."""
         return len(self.patches)

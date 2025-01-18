@@ -101,6 +101,7 @@ def main(args):
                 patch_size=(224, 224),
                 transform=transform,
                 coverage_threshold=0.5,
+                edge_threshold=10, 
                 return_feature=True,  # Enable feature extraction
                 model=model
             ) 
