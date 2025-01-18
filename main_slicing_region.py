@@ -151,6 +151,10 @@ if __name__ == '__main__':
         args.pruning_function = PRUNING_FUNCTION_MAP.get(
             config.get('pruning_function') 
         )
+        
+        if os.path.isdir(args.spixel_path): 
+            print("create the colder:", args.spixel_path)
+            os.makedirs(args.spixel_path, exist_ok=True) 
 
         args.scoring_function("")
         args.pruning_function("")
