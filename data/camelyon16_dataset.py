@@ -109,8 +109,13 @@ class CustomDataset(Dataset):
         # features_tensor = features_tensor.unsqueeze(0)  # Adding the batch dimension
         # sparse_matrix = sparse_matrix.unsqueeze(0)  # Adding the batch dimension to sparse matrix
         print(">>>>>> print shape")
-        print(features_tensor.shape)
-        print(sparse_matrix.shape)
-        print(label_tensor.shape)
-        return features_tensor, sparse_matrix, label_tensor 
+        # print(features_tensor.shape)
+        # print(sparse_matrix.shape)
+        # print(label_tensor.shape)
+        k = 200000
+        new_features = torch.rand(k, 512)
+        new_matrix = torch.rand(k, k)
+         
+        return new_features, new_matrix, label_tensor  
+        # return features_tensor, sparse_matrix, label_tensor 
 
