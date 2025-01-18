@@ -91,7 +91,7 @@ def main(args):
             
             start = time.time()
             superpixel_np = utils.read_region_from_npy(
-                args.spixel_folder, 
+                args.spixel_path, 
                 slide_basename, 
                 foreground_idx
                 )
