@@ -182,9 +182,9 @@ def main(args):
         total = 0 
         
         for each_superpixel in tqdm(superpixel_datas):
-            print("Processing foreground:", foreground_idx)
-            start_spixel = time.time()
             foreground_idx = each_superpixel['foreground_idx'] 
+            print("Processing foreground:", foreground_idx)
+            
             xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
 
