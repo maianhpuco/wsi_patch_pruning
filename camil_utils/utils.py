@@ -70,7 +70,7 @@ def train_one_epoch(model, train_dataset, val_dataset, optimizer, loss_fn, devic
     for features, sparse_matrix, labels in train_dataset:
         
         features = features.to(device)
-        print(">>>>>> number of features:", features)
+        print(">>>>>> number of features:", features.shape)
         sparse_matrix = sparse_matrix.to(device)
         labels = labels.to(device)
 
