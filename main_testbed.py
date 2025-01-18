@@ -94,28 +94,29 @@ def main(args):
                 )
             print("- Complete reading after: ", time.time()-start_spixel)
             
-            patch_dataset = PatchDataset(
-                superpixel_np,
-                superpixel_extrapolated, 
-                patch_size=(224, 224),
-                transform=transform,
-                coverage_threshold=0.5,
-                return_feature=True,  # Enable feature extraction
-                model=model
-            ) 
-            patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
-            _all_features_spixel = []
-            _all_idxes_spixel = []
+            # patch_dataset = PatchDataset(
+            #     superpixel_np,
+            #     superpixel_extrapolated, 
+            #     patch_size=(224, 224),
+            #     transform=transform,
+            #     coverage_threshold=0.5,
+            #     return_feature=True,  # Enable feature extraction
+            #     model=model
+            # ) 
+            # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
-            for batch_features, batch_patches, batch_bboxes, batch_idxes in tqdm(patch_dataloader):
-                _flatten_features = batch_features.view(-1, batch_features.shape[-1])
-                _all_features_spixel.append(_flatten_features)
-                _all_idxes_spixel.append(batch_idxes)
+            # _all_features_spixel = []
+            # _all_idxes_spixel = []
+            
+            # for batch_features, batch_patches, batch_bboxes, batch_idxes in tqdm(patch_dataloader):
+            #     _flatten_features = batch_features.view(-1, batch_features.shape[-1])
+            #     _all_features_spixel.append(_flatten_features)
+            #     _all_idxes_spixel.append(batch_idxes)
                 
-            spixel_patch_features = torch.cat(_all_features_spixel)
+            # spixel_patch_features = torch.cat(_all_features_spixel)
             
-            print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
+            # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
             print("Complete processing a superpixel after :", time.time()-start_spixel)
             
         print('Complete an Slide after: ', time.time()-start_slide)
