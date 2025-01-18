@@ -113,9 +113,11 @@ def main(args):
                 _all_features_spixel.append(_flatten_features)
                 _all_idxes_spixel.append(batch_idxes)
                 
-            spixel_patch_features = torch.cat(_all_features_spixel)  # of a 
+            spixel_patch_features = torch.cat(_all_features_spixel)
+            
             print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
             print("Complete processing a superpixel after :", time.time()-start_spixel)
+            
         print('Complete an Slide after: ', time.time()-start_slide)
 
 
