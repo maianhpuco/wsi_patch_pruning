@@ -112,7 +112,7 @@ class CustomDataset(Dataset):
         # print(features_tensor.shape)
         # print(sparse_matrix.shape)
         # print(label_tensor.shape)
-        k = 200000
+        k = 100000
         new_features = torch.rand(k, 512)
         new_matrix = torch.rand(k, k)
          
