@@ -74,6 +74,7 @@ def main(args):
     print("Number of slide in dataset:", len(superpixel_dataset)) 
     
     for slide_index in range(len(superpixel_dataset)):
+        
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
         #slide = openslide.open_slide(wsi_path)  
@@ -83,6 +84,10 @@ def main(args):
         save_dir = os.path.join(args.spixel_path, slide_basename) 
         start_slide = time.time()
         total = 0 
+        
+        _spixel_features = []
+        _spixel_patch_idxes = []
+        
         for each_superpixel in tqdm(superpixel_datas):
             start_spixel = time.time()
             foreground_idx = each_superpixel['foreground_idx'] 
@@ -104,7 +109,10 @@ def main(args):
 
             # Create DataLoader
             dataloader = DataLoader(spixel_patches_dataset, batch_size=args.batch_size, shuffle=True)
-
+            
+            _slide_features = []
+            _patch_idxes = []
+            
             for batch in dataloader:
                 batch_image = batch['image']
                 batch_patch_info = batch['patch_info']
@@ -120,9 +128,21 @@ def main(args):
                         'patch_idx': batch_patch_info['patch_idx'][i].item()
                     }
                     parsed_batch_info.append(parsed_info)
+                batch_idxes = [info['patch_idx'] for info in parsed_batch_info]  
+                with torch.no_grad():  # Disable gradient calculation for inference
+                    features = model.forward_features(batch_image) 
+                # 0. apply feature extraction here on batch_image
+                    # input: batch_image
+                    # output: slide_features (remember to cat them into a slide's features)
                     
+                _flatten_features = features.view(features.shape[0], -1)  
+                _slide_features.append(features)
+                _patch_idxes.append(batch_idxes) 
+              
                 print("Parsed Batch Info of a sample:", parsed_batch_info[0])
                 print("Batch Image Shape:", batch_image.shape) 
+            slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
+            patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0)  
             print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
             
         print(f"--> Finish a slide after: {(time.time()-start_slide)/60.0000} mins") 

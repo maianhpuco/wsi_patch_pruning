@@ -44,21 +44,26 @@ sys.path.append(os.path.join(PROJECT_DIR))
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 
-model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
-model.eval()  
+
 
 def main(args):
+    
+    if args.dry_run:
+        print("Running the dry run")
+    else:
+        print("Running on full data") 
+    
+    model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
+    model.eval()   
+    
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the patch to 224x224
         transforms.ToTensor(),          # Convert the image to a PyTorch tensor
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
-    if args.dry_run:
-        print("Running the dry run")
-    else:
-        print("Running on full data")
-    start_slide = time.time()
+
+    start_slide = time.time()    
     
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
@@ -78,7 +83,10 @@ def main(args):
             transform = transform
         )
         dataloader = DataLoader(slide_patch_dataset, batch_size=args.batch_size, shuffle=True)
-
+        
+        _slide_features = []
+        _patch_idxes = []
+        
         for batch in dataloader:
             batch_image = batch['image']
             batch_patch_info = batch['patch_info']
@@ -94,22 +102,32 @@ def main(args):
                     'patch_idx': batch_patch_info['patch_idx'][i].item()
                 }
                 parsed_batch_info.append(parsed_info)
-
+                
+            batch_idxes = [info['patch_idx'] for info in parsed_batch_info] 
             # Print the parsed batch info
-            print("Parsed Batch Info of a sample:", parsed_batch_info[0])
-            print("Batch Image Shape:", batch_image.shape) 
+            # print("Parsed Batch Info of a sample:", parsed_batch_info[0])
+            # print("Batch Image Shape:", batch_image.shape) 
             
+            with torch.no_grad():  # Disable gradient calculation for inference
+                features = model.forward_features(batch_image) 
             # 0. apply feature extraction here on batch_image
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
-            # 1. adding scoring + pruning here; 
-                # input: slide_features 
-                # output: reduced_slide_features
-            # 2. SSL apply on reduced_slide_features 
-            # 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
-            # 4. Compute metric: GLOP, AUC, Acc, etc. 
+            _flatten_features = features.view(features.shape[0], -1)  
+            _slide_features.append(features)
+            _patch_idxes.append(batch_idxes)
             
+        slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
+        patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
+
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
+# 1. adding scoring + pruning here; 
+    # input: slide_features 
+    # output: reduced_slide_features
+# 2. SSL apply on reduced_slide_features 
+# 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
+# 4. Compute metric: GLOP, AUC, Acc, etc. 
+         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)

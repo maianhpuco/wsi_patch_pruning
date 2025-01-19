@@ -5,4 +5,5 @@ PATCH_PATH: '/project/hnguyen2/mvu9/camelyon16/patch_paths'
 scoring_function: get_scoring_do_nothing 
 pruning_function: get_pruning_do_nothing
 batch_size: 256
-patch_size: 224 
+patch_size: 224
+feature_extraction_model: 'vit_base_patch16_224' 
