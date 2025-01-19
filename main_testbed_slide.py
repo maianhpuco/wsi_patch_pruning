@@ -98,7 +98,7 @@ def main(args):
             # Print the parsed batch info
             # print("Parsed Batch Info:", parsed_batch_info)
             print("Batch Image Shape:", batch_image.shape)
-            print(type(batch_patch_info), len(batch_patch_info), len(batch_patch_info['y_min']))
+            print(type(batch_patch_info), len(batch_patch_info), len(batch_patch_info['ymin']))
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
