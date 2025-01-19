@@ -92,7 +92,7 @@ def main(args):
                 slide_basename, 
                 foreground_idx
                 )
-
+        
             patch_dataset = PatchDataset(
                 superpixel_np,
                 superpixel_extrapolated, 

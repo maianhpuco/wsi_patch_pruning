@@ -12,7 +12,7 @@ import yaml
 
 import openslide
 
-from data.merge_dataset import SuperpixelDataset, PatchDataset
+from data.merge_dataset import SuperpixelDataset, PatchDataset, SlidePatchesDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
@@ -62,72 +62,37 @@ def main(args):
     
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
-    json_folder = args.json_path
     
-    superpixel_dataset = SuperpixelDataset(
-        slide_paths=wsi_paths,
-        json_folder=json_folder,
-        )
-    print("Number of slide in dataset:", len(superpixel_dataset)) 
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize the image to 224x224
+        transforms.ToTensor(),          # Convert the image to tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
+    ]) 
     
-    for slide_index in range(len(superpixel_dataset)):
-        superpixel_datas, wsi_path = superpixel_dataset[slide_index]
-        print(wsi_path)
-        #slide = openslide.open_slide(wsi_path)  
-        print(len(superpixel_datas))
-        slide_basename = os.path.basename(wsi_path).split(".")[0]
-        print("Basename:", slide_basename)
-        save_dir = os.path.join(args.spixel_path, slide_basename) 
+    for wsi_path in wsi_paths:
         start_slide = time.time()
-        total = 0 
-        for each_superpixel in tqdm(superpixel_datas):
-            start_spixel = time.time()
-            foreground_idx = each_superpixel['foreground_idx'] 
-            xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
-            superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
+        slide_basename = os.path.basename(wsi_path).split(".")[0]
+        slide_patch_dataset = SlidePatchesDataset(
+            patch_dir = os.path.join(args.patch_path, slide_basename)
+            transform = transform
+        )
+        dataloader = DataLoader(slide_patch_dataset, batch_size=args.batch_size, shuffle=True)
 
-            
-            superpixel_np = utils.read_region_from_npy(
-                args.spixel_path, 
-                slide_basename, 
-                foreground_idx
-                )
+        for batch in dataloader:
+            batch_image = batch['image']
+            batch_patch_info = batch['patch_info']
 
-            patch_dataset = PatchDataset(
-                superpixel_np,
-                superpixel_extrapolated, 
-                patch_size=(224, 224),
-                transform=transform,
-                coverage_threshold=0.5,
-                edge_threshold=20, 
-                return_feature=True,  # Enable feature extraction
-                model=model
-            )
-            total += len(patch_dataset) 
-            
-            # print("num patch", len(patch_dataset))
-            # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
-            
-            # _all_features_spixel = []
-            # _all_idxes_spixel = []
-            
-            # for batch_features, batch_patches, batch_bboxes, batch_idxes in tqdm(patch_dataloader):
-            #     _flatten_features = batch_features.view(-1, batch_features.shape[-1])
-            #     _all_features_spixel.append(_flatten_features)
-            #     _all_idxes_spixel.append(batch_idxes)
-                
-            # spixel_patch_features = torch.cat(_all_features_spixel)
-            
-            # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
-            # print("Complete processing a superpixel after :", time.time()-start_spixel)
-        print(">>>>>> total", total)
-        # print('Complete an Slide after: ', time.time()-start_slide)
+            print(batch_image.shape)
+            print(batch_patch_info)
+        print("Finish reading 1 slide after: ", time.time()-start_slide)
+        
+        break 
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
-    parser.add_argument('--config_file', default='ma_exp001')
+    parser.add_argument('--config_file', default='ma_exp002')
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -137,6 +102,7 @@ if __name__ == '__main__':
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
         args.spixel_path = config.get('SPIXEL_PATH')
+        args.patch_path = config.get('PATCH_PATH')
         
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
