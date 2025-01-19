@@ -73,6 +73,9 @@ def main(args):
         )
     print("Number of slide in dataset:", len(superpixel_dataset)) 
     
+    _slide_features = []
+    _slide_patch_idxes = []
+    
     for slide_index in range(len(superpixel_dataset)):
         
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
@@ -110,8 +113,8 @@ def main(args):
             # Create DataLoader
             dataloader = DataLoader(spixel_patches_dataset, batch_size=args.batch_size, shuffle=True)
             
-            _slide_features = []
-            _patch_idxes = []
+            _spixel_features = []
+            _spixel_patch_idxes = []
             
             for batch in dataloader:
                 batch_image = batch['image']
@@ -138,17 +141,20 @@ def main(args):
                     # input: batch_image
                     # output: slide_features (remember to cat them into a slide's features)
                     
-                _flatten_features = features.view(features.shape[0], -1)  
-                _slide_features.append(features)
-                _patch_idxes.append(batch_idxes) 
-              
-                print("Parsed Batch Info of a sample:", parsed_batch_info[0])
-                print("Batch Image Shape:", batch_image.shape) 
+                _spixel_features.append(class_token_features)
+                _spixel_patch_idxes.append(batch_idxes) 
                 
-            slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
-            patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0)  
+                # print("Parsed Batch Info of a sample:", parsed_batch_info[0])
+                # print("Batch Image Shape:", batch_image.shape) 
+                
+            spixel_features = torch.cat(_spixel_features, dim=0)  # Concatenate all features for the slide on GPU
+            spixel_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _spixel_patch_idxes], dim=0)
+            _slide_features.append(spixel_features)
+            _slide_patch_idxes.append(spixel_patch_idxes)
             print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
-            
+        
+        slide_feature = torch.cat(_slide_features, dim=0)
+        slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _slide_patch_idxes], dim=0)       
         print(f"--> Finish a slide after: {(time.time()-start_slide)/60.0000} mins") 
         
             # print("num patch", len(patch_dataset))
