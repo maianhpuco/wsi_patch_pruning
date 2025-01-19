@@ -109,13 +109,14 @@ def main(args):
             # print("Batch Image Shape:", batch_image.shape) 
             
             with torch.no_grad():  # Disable gradient calculation for inference
-                features = model.forward_features(batch_image) 
+                _batch_features = model.forward_features(batch_image)
+                class_token_features = _batch_features[:, 0, :]  
             # 0. apply feature extraction here on batch_image
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
             
-            _flatten_features = features.view(features.shape[0], -1)  
-            print(features.shape, _flatten_features.shape)
+            _flatten_features = batch_features.view(-1, class_token_features.shape[-1])  
+            print(class_token_features.shape, _flatten_features.shape)
             _slide_features.append(_flatten_features)
             _patch_idxes.append(batch_idxes)
             

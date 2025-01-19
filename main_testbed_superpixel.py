@@ -143,6 +143,7 @@ def main(args):
               
                 print("Parsed Batch Info of a sample:", parsed_batch_info[0])
                 print("Batch Image Shape:", batch_image.shape) 
+                
             slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
             patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0)  
             print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
