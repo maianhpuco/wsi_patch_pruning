@@ -73,7 +73,7 @@ def main(args):
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         slide_patch_dataset = SlidePatchesDataset(
-            patch_dir = os.path.join(args.patch_path, slide_basename)
+            patch_dir = os.path.join(args.patch_path, slide_basename),
             transform = transform
         )
         dataloader = DataLoader(slide_patch_dataset, batch_size=args.batch_size, shuffle=True)
