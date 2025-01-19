@@ -83,22 +83,22 @@ def main(args):
             batch_patch_info = batch['patch_info']
 
             # Parse the batch info into the dictionary format
-            parsed_batch_info = []
-            for patch_info in batch_patch_info:
-                parsed_info = {
-                    'ymin': patch_info['ymin'],
-                    'ymax': patch_info['ymax'],
-                    'xmin': patch_info['xmin'],
-                    'xmax': patch_info['xmax'],
-                    'spixel_idx': patch_info['spixel_idx'],
-                    'patch_idx': patch_info['patch_idx']
-                }
-                parsed_batch_info.append(parsed_info)
+            # parsed_batch_info = []
+            # for patch_info in batch_patch_info:
+            #     parsed_info = {
+            #         'ymin': patch_info['ymin'],
+            #         'ymax': patch_info['ymax'],
+            #         'xmin': patch_info['xmin'],
+            #         'xmax': patch_info['xmax'],
+            #         'spixel_idx': patch_info['spixel_idx'],
+            #         'patch_idx': patch_info['patch_idx']
+            #     }
+            #     parsed_batch_info.append(parsed_info)
 
             # Print the parsed batch info
-            print("Parsed Batch Info:", parsed_batch_info)
+            # print("Parsed Batch Info:", parsed_batch_info)
             print("Batch Image Shape:", batch_image.shape)
-
+            print(batch_patch_info[:2])
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
