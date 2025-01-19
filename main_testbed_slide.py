@@ -115,8 +115,9 @@ def main(args):
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
             
-            _flatten_features = batch_features.view(-1, class_token_features.shape[-1])  
+            _flatten_features = class_token_features.view(-1, class_token_features.shape[-1])  
             print(class_token_features.shape, _flatten_features.shape)
+            
             _slide_features.append(_flatten_features)
             _patch_idxes.append(batch_idxes)
             
