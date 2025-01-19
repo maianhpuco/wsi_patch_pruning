@@ -95,7 +95,7 @@ def main(args):
                 parsed_batch_info.append(parsed_info)
 
             # Print the parsed batch info
-            print("Parsed Batch Info:", parsed_batch_info)
+            print("Parsed Batch Info:", parsed_batch_info[0])
             print("Batch Image Shape:", batch_image.shape) 
     
     
