@@ -12,7 +12,10 @@ import yaml
 
 import openslide
 
-from data.merge_dataset import SuperpixelDataset, PatchDataset
+from data.merge_dataset import (
+    SuperpixelDataset, 
+    PatchDataset, 
+    SuperpixelPatchesDataset)
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
@@ -87,24 +90,42 @@ def main(args):
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
 
             
-            superpixel_np = utils.read_region_from_npy(
-                args.spixel_path, 
-                slide_basename, 
-                foreground_idx
-                )
-        
-            patch_dataset = PatchDataset(
-                superpixel_np,
-                superpixel_extrapolated, 
-                patch_size=(224, 224),
+            # superpixel_np = utils.read_region_from_npy(
+            #     args.spixel_path, 
+            #     slide_basename, 
+            #     foreground_idx
+            #     )
+
+            spixel_patches_dataset = SuperpixelPatchesDataset(
+                patch_dir=os.path.join(args.patch_path, slide_basename),
                 transform=transform,
-                coverage_threshold=0.5,
-                edge_threshold=20, 
-                return_feature=True,  # Enable feature extraction
-                model=model
+                preferred_spixel_idx=foreground_idx
             )
-            total += len(patch_dataset) 
+
+            # Create DataLoader
+            dataloader = DataLoader(spixel_patches_dataset, batch_size=args.batch_size, shuffle=True)
+
+            for batch in dataloader:
+                batch_image = batch['image']
+                batch_patch_info = batch['patch_info']
+                
+                parsed_batch_info = [] 
+                for i in range(args.batch_size):
+                    parsed_info = {
+                        'ymin': batch_patch_info['ymin'][i].item(),
+                        'ymax': batch_patch_info['ymax'][i].item(),
+                        'xmin': batch_patch_info['xmin'][i].item(),
+                        'xmax': batch_patch_info['xmax'][i].item(),
+                        'spixel_idx': batch_patch_info['spixel_idx'][i].item(),
+                        'patch_idx': batch_patch_info['patch_idx'][i].item()
+                    }
+                    parsed_batch_info.append(parsed_info)
+                    
+                print("Parsed Batch Info of a sample:", parsed_batch_info[0])
+                print("Batch Image Shape:", batch_image.shape) 
+            print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
             
+        print(f"--> Finish a slide after: {(time.time()-start_slide)/60.0000} mins") 
             # print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
@@ -120,14 +141,13 @@ def main(args):
             
             # print(f"Final feature shape for superpixel {foreground_idx}: {spixel_patch_features.shape})")
             # print("Complete processing a superpixel after :", time.time()-start_spixel)
-        print(">>>>>> total", total)
-        # print('Complete an Slide after: ', time.time()-start_slide)
 
+        # print('Complete an Slide after: ', time.time()-start_slide)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
-    parser.add_argument('--config_file', default='ma_exp001')
+    parser.add_argument('--config_file', default='ma_exp002')
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -137,6 +157,7 @@ if __name__ == '__main__':
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
         args.spixel_path = config.get('SPIXEL_PATH')
+        args.patch_path = config.get('PATCH_PATH')
         
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
@@ -149,4 +170,4 @@ if __name__ == '__main__':
         args.pruning_function("")
     
     main(args) 
-    
+     

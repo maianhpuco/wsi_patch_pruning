@@ -72,6 +72,7 @@ def main(args):
     for wsi_path in wsi_paths:
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
+        
         slide_patch_dataset = SlidePatchesDataset(
             patch_dir = os.path.join(args.patch_path, slide_basename),
             transform = transform
@@ -95,10 +96,20 @@ def main(args):
                 parsed_batch_info.append(parsed_info)
 
             # Print the parsed batch info
-            print("Parsed Batch Info:", parsed_batch_info[0])
+            print("Parsed Batch Info of a sample:", parsed_batch_info[0])
             print("Batch Image Shape:", batch_image.shape) 
-    
-    
+            
+            # 0. apply feature extraction here on batch_image
+                # input: batch_image
+                # output: slide_features (remember to cat them into a slide's features)
+            # 1. adding scoring + pruning here; 
+                # input: slide_features 
+                # output: reduced_slide_features
+            # 2. SSL apply on reduced_slide_features 
+            # 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
+            # 4. Compute metric: GLOP, AUC, Acc, etc. 
+            
+        print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)

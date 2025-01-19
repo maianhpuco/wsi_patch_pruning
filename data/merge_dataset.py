@@ -54,7 +54,61 @@ class SlidePatchesDataset(Dataset):
             patch_image = self.transform(patch_image)  # Apply transformations if any
 
         return {'image': patch_image, 'patch_info': patch_info} 
+
+class SuperpixelPatchesDataset(Dataset):
+    """Read all the patches within the slide for a specific superpixel"""
+    def __init__(self, patch_dir, transform, preferred_spixel_idx):
+        """
+        Args:
+            patch_dir (str): Directory where patches are saved.
+            transform (callable, optional): Optional transform to be applied on a sample.
+            preferred_spixel_idx (int): The superpixel index that you want to filter patches by.
+        """
+        self.patch_dir = patch_dir
+        self.transform = transform
+        self.preferred_spixel_idx = preferred_spixel_idx
+        
+        # Only load patches whose spixel_idx matches preferred_spixel_idx
+        self.patch_files = [
+            os.path.join(patch_dir, f) for f in os.listdir(patch_dir) 
+            if f.endswith('.png') and self._is_matching_spixel(f)
+        ]
     
+    def __len__(self):
+        return len(self.patch_files)
+    
+    def _is_matching_spixel(self, patch_filename):
+        """Check if the patch's spixel_idx matches the preferred spixel_idx"""
+        patch_info = self.parse_patch_name(patch_filename)
+        return patch_info['spixel_idx'] == self.preferred_spixel_idx
+    
+    @staticmethod
+    def parse_patch_name(patch_filename):
+        """Parse the patch filename to extract the bounding box and other information"""
+        patch_name = os.path.splitext(patch_filename)[0]
+        parts = patch_name.split('_')
+        
+        return {
+            'ymin': int(parts[0]),
+            'ymax': int(parts[1]),
+            'xmin': int(parts[2]),
+            'xmax': int(parts[3]),
+            'spixel_idx': int(parts[4]),
+            'patch_idx': int(parts[5])
+        }
+    
+    def __getitem__(self, idx):
+        patch_path = self.patch_files[idx]
+        patch_image = Image.open(patch_path).convert('RGB')  # Open and convert to RGB
+        patch_name = os.path.basename(patch_path)
+        
+        patch_info = self.parse_patch_name(patch_name)
+        
+        if self.transform:
+            patch_image = self.transform(patch_image)  # Apply transformations if any
+        
+        return {'image': patch_image, 'patch_info': patch_info}
+
 class PatchDataset(Dataset):
     def __init__(
         self,
