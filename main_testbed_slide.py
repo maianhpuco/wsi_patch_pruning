@@ -81,24 +81,24 @@ def main(args):
         for batch in dataloader:
             batch_image = batch['image']
             batch_patch_info = batch['patch_info']
-
-            # Parse the batch info into the dictionary format
-            # parsed_batch_info = []
-            # for patch_info in batch_patch_info:
-            #     parsed_info = {
-            #         'ymin': patch_info['ymin'],
-            #         'ymax': patch_info['ymax'],
-            #         'xmin': patch_info['xmin'],
-            #         'xmax': patch_info['xmax'],
-            #         'spixel_idx': patch_info['spixel_idx'],
-            #         'patch_idx': patch_info['patch_idx']
-            #     }
-            #     parsed_batch_info.append(parsed_info)
+            
+            parsed_batch_info = [] 
+            for i in range(args.batch_size):
+                parsed_info = {
+                    'ymin': batch_patch_info['ymin'][i],
+                    'ymax': batch_patch_info['ymax'][i],
+                    'xmin': batch_patch_info['xmin'][i],
+                    'xmax': batch_patch_info['xmax'][i],
+                    'spixel_idx': batch_patch_info['spixel_idx'][i],
+                    'patch_idx': batch_patch_info['patch_idx'][i]
+                }
+                parsed_batch_info.append(parsed_info)
 
             # Print the parsed batch info
-            # print("Parsed Batch Info:", parsed_batch_info)
-            print("Batch Image Shape:", batch_image.shape)
-            print(type(batch_patch_info), len(batch_patch_info), len(batch_patch_info['ymin']))
+            print("Parsed Batch Info:", parsed_batch_info)
+            print("Batch Image Shape:", batch_image.shape) 
+    
+    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
