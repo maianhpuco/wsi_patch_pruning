@@ -85,12 +85,12 @@ def main(args):
             parsed_batch_info = [] 
             for i in range(args.batch_size):
                 parsed_info = {
-                    'ymin': batch_patch_info['ymin'][i],
-                    'ymax': batch_patch_info['ymax'][i],
-                    'xmin': batch_patch_info['xmin'][i],
-                    'xmax': batch_patch_info['xmax'][i],
-                    'spixel_idx': batch_patch_info['spixel_idx'][i],
-                    'patch_idx': batch_patch_info['patch_idx'][i]
+                    'ymin': batch_patch_info['ymin'][i].item(),
+                    'ymax': batch_patch_info['ymax'][i].item(),
+                    'xmin': batch_patch_info['xmin'][i].item(),
+                    'xmax': batch_patch_info['xmax'][i].item(),
+                    'spixel_idx': batch_patch_info['spixel_idx'][i].item(),
+                    'patch_idx': batch_patch_info['patch_idx'][i].item()
                 }
                 parsed_batch_info.append(parsed_info)
 
