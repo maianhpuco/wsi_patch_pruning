@@ -150,6 +150,8 @@ if __name__ == '__main__':
             config.get('pruning_function') 
         )
         args.batch_size = config.get('batch_size')
+        args.feature_extraction_model = config.get('feature_extraction_model')
+        
         args.scoring_function("")
         args.pruning_function("")
     
