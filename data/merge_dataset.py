@@ -22,12 +22,12 @@ class SlidePatchesDataset(Dataset):
         self.patch_dir = patch_dir
         self.transform = transform
         self.patch_files = [os.path.join(patch_dir, f) for f in os.listdir(patch_dir) if f.endswith('.png')]
-        self.patch_name
+    
     def __len__(self):
         return len(self.patch_files)
     
     @staticmethod
-    def parse_patch_name(self, patch_filename):
+    def parse_patch_name(patch_filename):
         # Remove the file extension
         patch_name = os.path.splitext(patch_filename)[0]
         
