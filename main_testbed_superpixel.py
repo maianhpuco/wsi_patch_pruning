@@ -131,7 +131,8 @@ def main(args):
                     
                 batch_idxes = [info['patch_idx'] for info in parsed_batch_info]  
                 with torch.no_grad():  # Disable gradient calculation for inference
-                    features = model.forward_features(batch_image) 
+                    _batch_features = model.forward_features(batch_image)
+                    class_token_features = _batch_features[:, 0, :]   
                     
                 # 0. apply feature extraction here on batch_image
                     # input: batch_image
