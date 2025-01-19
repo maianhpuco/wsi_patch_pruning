@@ -113,14 +113,17 @@ def main(args):
             # 0. apply feature extraction here on batch_image
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
+            
             _flatten_features = features.view(features.shape[0], -1)  
-            _slide_features.append(features)
+            print(features.shape, _flatten_features.shape)
+            _slide_features.append(_flatten_features)
             _patch_idxes.append(batch_idxes)
             
         slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
         patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
 
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
+
 # 1. adding scoring + pruning here; 
     # input: slide_features 
     # output: reduced_slide_features

@@ -128,9 +128,11 @@ def main(args):
                         'patch_idx': batch_patch_info['patch_idx'][i].item()
                     }
                     parsed_batch_info.append(parsed_info)
+                    
                 batch_idxes = [info['patch_idx'] for info in parsed_batch_info]  
                 with torch.no_grad():  # Disable gradient calculation for inference
                     features = model.forward_features(batch_image) 
+                    
                 # 0. apply feature extraction here on batch_image
                     # input: batch_image
                     # output: slide_features (remember to cat them into a slide's features)
@@ -146,6 +148,7 @@ def main(args):
             print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
             
         print(f"--> Finish a slide after: {(time.time()-start_slide)/60.0000} mins") 
+        
             # print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
