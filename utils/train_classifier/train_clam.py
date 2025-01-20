@@ -68,77 +68,25 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
 
     error = calculate_error(Y_hat, label)
     print("error", error)
-    # train_error += error  
-
-# def train_loop_clam(
-#     epoch, model, loader, optimizer, n_classes, bag_weight, writer = None, loss_fn = None, device=None):
-#     model.train()
-    
-#     train_loss = 0.
-#     train_error = 0.
-#     train_inst_loss = 0.
-#     inst_count = 0
-
-#     print('\n')
-#     for batch_idx, (data, label) in enumerate(loader):
-#         data, label = data.to(device), label.to(device)
-#         logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True)
-        
-#         loss = loss_fn(logits, label)
-#         loss_value = loss.item()
-
-#         instance_loss = instance_dict['instance_loss']
-#         inst_count+=1
-#         instance_loss_value = instance_loss.item()
-#         train_inst_loss += instance_loss_value
-        
-#         total_loss = bag_weight * loss + (1-bag_weight) * instance_loss 
-
-#         inst_preds = instance_dict['inst_preds']
-#         inst_labels = instance_dict['inst_labels']
-
-#         train_loss += loss_value
-#         if (batch_idx + 1) % 20 == 0:
-#             print('batch {}, loss: {:.4f}, instance_loss: {:.4f}, weighted_loss: {:.4f}, '.format(batch_idx, loss_value, instance_loss_value, total_loss.item()) + 
-#                 'label: {}, bag_size: {}'.format(label.item(), data.size(0)))
-
-#         error = calculate_error(Y_hat, label)
-#         train_error += error
-        
-#         # backward pass
-#         total_loss.backward()
-#         # step
-#         optimizer.step()
-#         optimizer.zero_grad()
-
-
-#     # calculate loss and error for epoch
-#     train_loss /= len(loader)
-#     train_error /= len(loader)
-    
-#     # if inst_count > 0:
-#     #     train_inst_loss /= inst_count
-#     #     print('\n')
-#     #     for i in range(2):
-#     #         acc, correct, count = inst_logger.get_summary(i)
-#     #         print('class {} clustering acc {}: correct {}/{}'.format(i, acc, correct, count))
-
-#     print('Epoch: {}, train_loss: {:.4f}, train_clustering_loss:  {:.4f}, train_error: {:.4f}'.format(epoch, train_loss, train_inst_loss,  train_error))
-#     # for i in range(n_classes):
-    #     acc, correct, count = acc_logger.get_summary(i)
-    #     print('class {}: acc {}, correct {}/{}'.format(i, acc, correct, count))
-    #     if writer and acc is not None:
-    #         writer.add_scalar('train/class_{}_acc'.format(i), acc, epoch)
-
-    # if writer:
-    #     writer.add_scalar('train/loss', train_loss, epoch)
-    #     writer.add_scalar('train/error', train_error, epoch)
-    #     writer.add_scalar('train/clustering_loss', train_inst_loss, epoch)
-def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logger = None, loss_fn = None):
+def train_loop_clam(
+    epoch, 
+    model, 
+    features, 
+    label, 
+    optimizer, 
+    n_classes, 
+    bag_weight, 
+    logger=None, 
+    loss_fn=None
+):
+    # Set model to training mode
     model.train()
+    
+    # Initialize accuracy loggers for both overall and instance-level accuracy
     acc_logger = Accuracy_Logger(n_classes=n_classes)
     inst_logger = Accuracy_Logger(n_classes=n_classes)
     
+    # Initialize loss and error accumulators
     train_loss = 0.
     train_error = 0.
     train_inst_loss = 0.
@@ -147,48 +95,57 @@ def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logg
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
 
-    for batch_idx, (data, label) in enumerate(loader):
-        data, label = data.to(device), label.to(device)
-        logits, Y_prob, Y_hat, _, instance_dict = model(data, label=label, instance_eval=True)
+    # Move data to device (GPU or CPU)
+    features, label = features.to(device), label.to(device)
 
-        acc_logger.log(Y_hat, label)
-        loss = loss_fn(logits, label)
-        loss_value = loss.item()
+    # Perform forward pass through the model
+    logits, Y_prob, Y_hat, _, instance_dict = model(features, label=label, instance_eval=True)
 
-        instance_loss = instance_dict['instance_loss']
-        inst_count += 1
-        instance_loss_value = instance_loss.item()
-        train_inst_loss += instance_loss_value
-        
-        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
+    # Log overall accuracy
+    acc_logger.log(Y_hat, label)
+    
+    # Calculate loss
+    loss = loss_fn(logits, label)
+    loss_value = loss.item()
 
-        inst_preds = instance_dict['inst_preds']
-        inst_labels = instance_dict['inst_labels']
-        inst_logger.log_batch(inst_preds, inst_labels)
+    # Instance-level loss
+    instance_loss = instance_dict['instance_loss']
+    inst_count += 1
+    instance_loss_value = instance_loss.item()
+    train_inst_loss += instance_loss_value
 
-        train_loss += loss_value
+    # Total loss is a weighted combination of the bag-level and instance-level losses
+    total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
 
-        if (batch_idx + 1) % 20 == 0:
-            # Log information every 20 batches
-            logger.info(f"Batch {batch_idx}, Loss: {loss_value:.4f}, Instance Loss: {instance_loss_value:.4f}, "
-                        f"Weighted Loss: {total_loss.item():.4f}, Label: {label.item()}, Bag Size: {data.size(0)}")
+    # Log instance-level accuracy
+    inst_preds = instance_dict['inst_preds']
+    inst_labels = instance_dict['inst_labels']
+    print("------get the instance result")
+    print(len(inst_preds))
+    print(len(inst_labels))
+    print("------")
+    inst_logger.log_batch(inst_preds, inst_labels)
 
-        error = calculate_error(Y_hat, label)
-        train_error += error
-        
-        # Backward pass and optimizer step
-        total_loss.backward()
-        optimizer.step()
-        optimizer.zero_grad()
+    # Accumulate the loss
+    train_loss += loss_value
+
+    # Calculate training error
+    error = calculate_error(Y_hat, label)
+    train_error += error
+    
+    # Perform backward pass and optimizer step
+    total_loss.backward()
+    optimizer.step()
+    optimizer.zero_grad()
 
     # Calculate and log the average loss and error for the epoch
-    train_loss /= len(loader)
-    train_error /= len(loader)
+    train_loss /= 1  # Since we're not dealing with batches, we just use the single example
+    train_error /= 1
     
     if inst_count > 0:
         train_inst_loss /= inst_count
         # Log instance accuracy for each class
-        for i in range(2):
+        for i in range(n_classes):
             acc, correct, count = inst_logger.get_summary(i)
             logger.info(f"Class {i} Clustering Accuracy: {acc}, Correct: {correct}/{count}")
 
@@ -202,6 +159,10 @@ def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logg
         writer.add_scalar('train/loss', train_loss, epoch)
         writer.add_scalar('train/error', train_error, epoch)
         writer.add_scalar('train/clustering_loss', train_inst_loss, epoch) 
+    
+    # Print all logs captured during training epoch
+    print(">>> All logs captured during training epoch:")
+    print(logger.handlers[0].stream.getvalue())
 
 if __name__=='__main__':
     logger = setup_logger("./logs/training_log.txt")
