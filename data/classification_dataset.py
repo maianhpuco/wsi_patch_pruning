@@ -23,17 +23,9 @@ class CustomDataset(Dataset):
             label_file (str): Path to the CSV file containing labels for each sample.
             shuffle (bool): Whether to shuffle the data or not. Default is False.
         """
-        assert train_or_test_or_val in ['train','test', 'val'], f"Invalid argument: {train_or_test_or_val}. Must be 'train', 'val', or 'tstv'."
-        self.train_or_test_or_val = train_or_test_or_val 
         self.feature_folder = feature_folder
-        self.split_filepath = split_filepath 
-        self.label_file = label_file
         self.shuffle = shuffle
         self.feature_file_end = feature_file_end
-        
-        df = pd.read_csv(self.split_filepath)
-        print(df.head(5))
-        df.dropna(subset=[self.train_or_test_or_val, f'{self.train_or_test_or_val}_label'], inplace=True)
   
         self.name_label_dict = df.set_index(self.train_or_test_or_val)[
             f'{self.train_or_test_or_val}_label'].to_dict()

@@ -139,7 +139,7 @@ def main(args):
         
          # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
         label = 0 if slide_basename.split("_")[0] == "normal" else 1
-        label = label.unsqueeze(0)
+        # label = label.unsqueeze(0)
         # Create or open the HDF5 file for saving data
         output_file = os.path.join(args.results_dir, f"{slide_basename}.h5")
         
