@@ -102,7 +102,7 @@ def main(args):
             batch_patch_info = batch['patch_info']
             
             parsed_batch_info = [] 
-            for i in range(args.batch_size):
+            for i in range(len(batch_patch_info['ymin'])):
                 parsed_info = {
                     'ymin': batch_patch_info['ymin'][i].item(),
                     'ymax': batch_patch_info['ymax'][i].item(),
@@ -149,8 +149,7 @@ def main(args):
         
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
-   
-   
+        break
    
    
     
