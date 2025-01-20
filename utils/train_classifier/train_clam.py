@@ -241,8 +241,6 @@ def train_loop_clam(
     #     writer.add_scalar('train/clustering_loss', train_inst_loss, epoch) 
     
     # Print all logs captured during training epoch
-    print(">>> All logs captured during training epoch:")
-    print(logger.handlers[0].stream.getvalue())
 
 if __name__=='__main__':
     logger = setup_logger("./logs/training_log.txt")
