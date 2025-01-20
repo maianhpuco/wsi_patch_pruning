@@ -150,9 +150,22 @@ def main(args):
         
         n_classes = 2 
         bag_weight = 0.5  
-        
-        temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
-        
+        epoch = 0
+        logger = setup_logger('./logs/test_clam.txt')
+        # temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
+        print('>>> Ready to test 1 epoch')
+        train_loop_clam(
+            epoch, 
+            model_clam, 
+            loader, 
+            optimizer, 
+            n_classes, 
+            bag_weight, 
+            logger, 
+            loss_fn
+            ) 
+
+         
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
         break

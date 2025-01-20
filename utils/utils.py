@@ -70,74 +70,74 @@ class SimpleModel(nn.Module):
         return self.fc(x)
 
 # Example function to simulate training and validation
-def train_and_validate(logger):
-    # Simple dataset
-    inputs = torch.randn(100, 10)
-    labels = torch.randint(0, 2, (100,))
+# def train_and_validate(logger):
+#     # Simple dataset
+#     inputs = torch.randn(100, 10)
+#     labels = torch.randint(0, 2, (100,))
 
-    dataset = TensorDataset(inputs, labels)
-    train_loader = DataLoader(dataset, batch_size=10)
+#     dataset = TensorDataset(inputs, labels)
+#     train_loader = DataLoader(dataset, batch_size=10)
     
-    # Model, Loss and Optimizer
-    model = SimpleModel(10, 2)
-    loss_fn = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.01)
+#     # Model, Loss and Optimizer
+#     model = SimpleModel(10, 2)
+#     loss_fn = nn.CrossEntropyLoss()
+#     optimizer = optim.SGD(model.parameters(), lr=0.01)
     
-    # Training loop
-    for epoch in range(5):  # 5 epochs
-        model.train()  # Set the model to training mode
-        train_loss = 0.0
-        train_error = 0.0
+#     # Training loop
+#     for epoch in range(5):  # 5 epochs
+#         model.train()  # Set the model to training mode
+#         train_loss = 0.0
+#         train_error = 0.0
         
-        for batch_idx, (data, target) in enumerate(train_loader):
-            optimizer.zero_grad()
+#         for batch_idx, (data, target) in enumerate(train_loader):
+#             optimizer.zero_grad()
             
-            # Forward pass
-            output = model(data)
-            loss = loss_fn(output, target)
+#             # Forward pass
+#             output = model(data)
+#             loss = loss_fn(output, target)
             
-            # Backward pass and optimization
-            loss.backward()
-            optimizer.step()
+#             # Backward pass and optimization
+#             loss.backward()
+#             optimizer.step()
             
-            # Calculate error (just a simple example of using loss)
-            pred = output.argmax(dim=1, keepdim=True)
-            correct = pred.eq(target.view_as(pred)).sum().item()
-            train_loss += loss.item()
-            train_error += (data.size(0) - correct)  # Count the incorrect predictions
+#             # Calculate error (just a simple example of using loss)
+#             pred = output.argmax(dim=1, keepdim=True)
+#             correct = pred.eq(target.view_as(pred)).sum().item()
+#             train_loss += loss.item()
+#             train_error += (data.size(0) - correct)  # Count the incorrect predictions
             
-            if batch_idx % 5 == 0:  # Log every 5 batches
-                logger.info(f"Epoch {epoch+1} Batch {batch_idx} - Loss: {loss.item():.4f}, Train Error: {train_error / (batch_idx+1):.4f}")
+#             if batch_idx % 5 == 0:  # Log every 5 batches
+#                 logger.info(f"Epoch {epoch+1} Batch {batch_idx} - Loss: {loss.item():.4f}, Train Error: {train_error / (batch_idx+1):.4f}")
         
-        # Log the epoch results
-        train_loss /= len(train_loader)
-        train_error /= len(train_loader.dataset)
-        logger.info(f"Epoch {epoch+1} - Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
+#         # Log the epoch results
+#         train_loss /= len(train_loader)
+#         train_error /= len(train_loader.dataset)
+#         logger.info(f"Epoch {epoch+1} - Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
         
-        # Validation (here, we use the same data for simplicity)
-        model.eval()  # Set the model to evaluation mode
-        val_loss = 0.0
-        val_error = 0.0
+#         # Validation (here, we use the same data for simplicity)
+#         model.eval()  # Set the model to evaluation mode
+#         val_loss = 0.0
+#         val_error = 0.0
         
-        with torch.no_grad():
-            for data, target in train_loader:
-                output = model(data)
-                loss = loss_fn(output, target)
-                pred = output.argmax(dim=1, keepdim=True)
-                correct = pred.eq(target.view_as(pred)).sum().item()
+#         with torch.no_grad():
+#             for data, target in train_loader:
+#                 output = model(data)
+#                 loss = loss_fn(output, target)
+#                 pred = output.argmax(dim=1, keepdim=True)
+#                 correct = pred.eq(target.view_as(pred)).sum().item()
                 
-                val_loss += loss.item()
-                val_error += (data.size(0) - correct)
+#                 val_loss += loss.item()
+#                 val_error += (data.size(0) - correct)
         
-        val_loss /= len(train_loader)
-        val_error /= len(train_loader.dataset)
-        logger.info(f"Epoch {epoch+1} - Validation Loss: {val_loss:.4f}, Validation Error: {val_error:.4f}")
+#         val_loss /= len(train_loader)
+#         val_error /= len(train_loader.dataset)
+#         logger.info(f"Epoch {epoch+1} - Validation Loss: {val_loss:.4f}, Validation Error: {val_error:.4f}")
         
-        logger.info("-" * 40)
+#         logger.info("-" * 40)
 
 if __name__ == "__main__":
     # Set up logger
-    logger = setup_logger("./logs/training_log.txt")
+    # logger = setup_logger("./logs/training_log.txt")
     
     # Run training and validation
-    train_and_validate(logger) 
+    # train_and_validate(logger) 
