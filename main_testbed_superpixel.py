@@ -21,8 +21,8 @@ from torch.utils.data import DataLoader
 from PIL import Image
 from patch_merging import tome 
 from utils import utils  
-from testbed.importance_scores import get_scoring_do_nothing
-from testbed.pruning import get_pruning_do_nothing
+from src.importance_scores import get_scoring_do_nothing
+from src.pruning import get_pruning_do_nothing
 
 SCORING_FUNCTION_MAP = {
     "get_scoring_do_nothing": get_scoring_do_nothing,
