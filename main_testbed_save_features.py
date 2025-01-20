@@ -8,7 +8,7 @@ import argparse
 import time   
 import timm 
 import yaml 
-
+import h5py 
 import openslide
 
 import torch

@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import normalize
-
+import glob 
 class CustomDataset(Dataset):
     def __init__(
         self, 
@@ -21,7 +21,8 @@ class CustomDataset(Dataset):
         """
         self.feature_folder = feature_folder
         self.shuffle = shuffle
-        
+        self.paths = glob.glob()
+        self.indices = np.arange(len(self.names))
         
         if self.shuffle:
             np.random.shuffle(self.indices)
