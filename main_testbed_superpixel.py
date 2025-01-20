@@ -160,7 +160,7 @@ def main(args):
             spixel_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _spixel_patch_idxes], dim=0)
             _slide_features.append(spixel_features)
             _slide_patch_idxes.append(spixel_patch_idxes)
-            print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
+            # print(f"> Finish a Superpixel after: {(time.time()-start_spixel)/60.0000} mins")
         
         slide_feature = torch.cat(_slide_features, dim=0)
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _slide_patch_idxes], dim=0)       
