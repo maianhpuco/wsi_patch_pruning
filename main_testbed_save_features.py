@@ -136,10 +136,10 @@ def main(args):
         slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0).to(args.device) 
                 
-        label = label.unsqueeze(0)
+        
          # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
         label = 0 if slide_basename.split("_")[0] == "normal" else 1
-        
+        label = label.unsqueeze(0)
         # Create or open the HDF5 file for saving data
         output_file = os.path.join(args.results_dir, f"{slide_basename}.h5")
         
