@@ -115,6 +115,7 @@ def main(args):
                 parsed_batch_info.append(parsed_info)
                 
             batch_idxes = [info['patch_idx'] for info in parsed_batch_info] 
+            
             # Print the parsed batch info
             # print("Parsed Batch Info of a sample:", parsed_batch_info[0])
             # print("Batch Image Shape:", batch_image.shape) 
@@ -127,56 +128,64 @@ def main(args):
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
          
-         
+
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
          
         slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0).to(args.device) 
-        
-        if slide_basename.split("_")[0] == "normal":
-            label = torch.tensor(0)
-        else:
-            label = torch.tensor(0)
-            
+                
         label = label.unsqueeze(0)
+         # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
+        label = 0 if slide_basename.split("_")[0] == "normal" else 1
         
-        print("label shape: ", label.shape)
+        # Create or open the HDF5 file for saving data
+        output_file = os.path.join(args.results_dir, f"{slide_basename}.h5")
         
-        label = label.to(args.device)
+        with h5py.File(output_file, 'w') as f:
+            # Save the features, patch indices, and label into the HDF5 file
+            f.create_dataset('features', data=slide_features.numpy())  # Save features as dataset
+            f.create_dataset('patch_indices', data=slide_patch_idxes.numpy())  # Save patch indices
+            f.create_dataset('label', data=np.array([label]))  # Save label as dataset
+            
+        print(f"Saved features for {slide_basename} to {output_file}")
+      
+        # print("label shape: ", label.shape)
         
-        loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-        optimizer = optim.Adam(model.parameters(), lr=0.001) 
-        model_clam = CLAM_MB(
-            gate=True, size_arg="small", 
-            dropout=0.25, k_sample=100, n_classes=3, 
-            subtyping=False, embed_dim=768)
+        # label = label.to(args.device)
         
-        model_clam = model_clam.to(args.device) 
+        # loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
+        # optimizer = optim.Adam(model.parameters(), lr=0.001) 
+        # model_clam = CLAM_MB(
+        #     gate=True, size_arg="small", 
+        #     dropout=0.25, k_sample=100, n_classes=3, 
+        #     subtyping=False, embed_dim=768)
         
-        n_classes = 2 
-        bag_weight = 0.5  
-        epoch = 0
-        logger = setup_logger('./logs/test_clam.txt')
-        # temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
-        print('>>> Ready to test 1 epoch')
+        # model_clam = model_clam.to(args.device) 
         
-        train_loop_clam(
-            epoch, 
-            model_clam, 
-            slide_features,
-            label,  
-            optimizer, 
-            n_classes, 
-            bag_weight, 
-            logger, 
-            loss_fn
-            ) 
+        # n_classes = 2 
+        # bag_weight = 0.5  
+        # epoch = 0
+        # logger = setup_logger('./logs/test_clam.txt')
+        # # temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
+        # print('>>> Ready to test 1 epoch')
+        
+        # train_loop_clam(
+        #     epoch, 
+        #     model_clam, 
+        #     slide_features,
+        #     label,  
+        #     optimizer, 
+        #     n_classes, 
+        #     bag_weight, 
+        #     logger, 
+        #     loss_fn
+        #     ) 
 
          
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
-        break
+    
    
    
     
@@ -203,7 +212,8 @@ if __name__ == '__main__':
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
         args.spixel_path = config.get('SPIXEL_PATH')
-        args.patch_path = config.get('PATCH_PATH')
+        args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
+        args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features 
         
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
