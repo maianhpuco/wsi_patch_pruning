@@ -63,6 +63,7 @@ def main(args):
         print("Running on full data") 
     
     model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
+    model = model.to(args.device) 
     model.eval()   
     
     transform = transforms.Compose([
@@ -97,7 +98,7 @@ def main(args):
         _patch_idxes = []
         
         for batch in dataloader:
-            batch_image = batch['image']
+            batch_image = batch['image'].to(args.device) 
             batch_patch_info = batch['patch_info']
             
             parsed_batch_info = [] 
@@ -129,8 +130,8 @@ def main(args):
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
             
-        slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
-        slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
+        slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
+        slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0).to(args.device) 
         
         if slide_basename.split("_")[0] == "normal":
             label = 0
@@ -139,10 +140,12 @@ def main(args):
         
         loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
         optimizer = optim.Adam(model.parameters(), lr=0.001) 
-        model = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=1024)
+        model_clam = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=1024)
+        
         n_classes = 2 
         bag_weight = 0.5  
-        temp_train_loop(slide_features, label, model, optimizer, n_classes, bag_weight, loss_fn=None, device=None) 
+        
+        temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
         
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
@@ -187,6 +190,8 @@ if __name__ == '__main__':
         
         args.scoring_function("")
         args.pruning_function("")
+        
+    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     main(args) 
     
