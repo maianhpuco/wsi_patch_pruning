@@ -135,7 +135,7 @@ def setup_logger(log_file="training_log.txt"):
         
 #         logger.info("-" * 40)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # Set up logger
     # logger = setup_logger("./logs/training_log.txt")
     
