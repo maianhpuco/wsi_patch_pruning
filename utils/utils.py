@@ -5,7 +5,9 @@ import logging
 import torch
 import torch.nn as nn 
 from torch.utils.data import DataLoader, TensorDataset
- 
+import torch.optim as optim 
+
+
 def get_region_original_size(slide, xywh_abs_bbox):
     xmin_original, ymin_original, width_original, height_original = xywh_abs_bbox
     region = slide.read_region(
