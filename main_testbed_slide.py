@@ -82,6 +82,7 @@ def main(args):
             patch_dir = os.path.join(args.patch_path, slide_basename),
             transform = transform
         )
+
         dataloader = DataLoader(slide_patch_dataset, batch_size=args.batch_size, shuffle=True)
         
         _slide_features = []
@@ -126,6 +127,7 @@ def main(args):
 
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
+        
 # 1. adding scoring + pruning here; 
     # input: slide_features 
     # output: reduced_slide_features

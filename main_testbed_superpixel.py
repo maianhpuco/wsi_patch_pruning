@@ -109,6 +109,13 @@ def main(args):
                 transform=transform,
                 preferred_spixel_idx=foreground_idx
             )
+            valid_spixels= []
+            
+            if len(spixel_patches_dataset) == 0:
+                continue
+            
+            valid_spixels.append(foreground_idx)
+             
             print("len: ",len(spixel_patches_dataset))
             # Create DataLoader
             dataloader = DataLoader(spixel_patches_dataset, batch_size=args.batch_size, shuffle=True)
@@ -158,7 +165,7 @@ def main(args):
         slide_feature = torch.cat(_slide_features, dim=0)
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _slide_patch_idxes], dim=0)       
         print(f"--> Finish a slide after: {(time.time()-start_slide)/60.0000} mins") 
-        
+        print(f"Total number of superpixel in slide {len(valid_spixels)}") 
             # print("num patch", len(patch_dataset))
             # patch_dataloader = DataLoader(patch_dataset, batch_size=args.batch_size, shuffle=False) 
             
