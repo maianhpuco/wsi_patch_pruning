@@ -35,9 +35,11 @@ def read_region_from_npy(dir_folder, slide_basename, foreground_idx):
 # Function to set up the logger
 def setup_logger(log_file="training_log.txt"):
     log_dir = os.path.dirname(log_file)
+    
     if log_dir and not os.path.exists(log_dir):
         os.makedirs(log_dir)  # Create directory if it doesn't exist 
-        
+    print("completed create a log file at: ", log_dir)
+     
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)  # Set the log level to INFO to capture all log messages
     

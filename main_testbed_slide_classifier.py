@@ -24,7 +24,7 @@ from src.importance_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
 
 from src.bag_classifier.clam import CLAM_MB
-from utils.train_classifier.train_clam import temp_train_loop 
+from utils.train_classifier.train_clam import * 
 from utils.utils import setup_logger
 
 
@@ -209,8 +209,8 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         
-        args.scoring_function("")
-        args.pruning_function("")
+        # args.scoring_function("")
+        # args.pruning_function("")
         
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
