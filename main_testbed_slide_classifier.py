@@ -138,7 +138,8 @@ def main(args):
         else:
             label = torch.tensor(0)
             
-        label = label.unsqueeze(1)
+        label = label.unsqueeze(0)
+        print("label shape: ", label.shape)
         label = label.to(args.device)
         
         loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
