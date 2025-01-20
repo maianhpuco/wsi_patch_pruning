@@ -19,7 +19,7 @@ from data.merge_dataset import (
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
-from patch_merging import tome 
+# from patch_merging import tome 
 from utils import utils  
 from src.importance_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
