@@ -48,12 +48,13 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
 
     inst_preds = instance_dict['inst_preds']
     inst_labels = instance_dict['inst_labels'] 
-    train_loss += loss_value
+    # train_loss += loss_value
     print('loss: {:.4f}, instance_loss: {:.4f}, weighted_loss: {:.4f}, '.format(loss_value, instance_loss_value, total_loss.item()) + 
         'label: {}, bag_size: {}'.format(label.item(), features.size(0)))
 
     error = calculate_error(Y_hat, label)
-    train_error += error  
+    print("error", error)
+    # train_error += error  
 
 
 # train function for CLAM 
