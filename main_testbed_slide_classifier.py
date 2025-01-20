@@ -19,7 +19,6 @@ from data.merge_dataset import SuperpixelDataset, PatchDataset, SlidePatchesData
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
-from patch_merging import tome 
 from utils import utils  
 from src.importance_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
@@ -141,17 +140,26 @@ def main(args):
         loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
         optimizer = optim.Adam(model.parameters(), lr=0.001) 
         model = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=1024)
-        n_classes = 2  
+        n_classes = 2 
+        bag_weight = 0.5  
         temp_train_loop(slide_features, label, model, optimizer, n_classes, bag_weight, loss_fn=None, device=None) 
         
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
+   
+   
+   
+   
+    
 # 1. adding scoring + pruning here; 
     # input: slide_features 
     # output: reduced_slide_features
 # 2. SSL apply on reduced_slide_features 
 # 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
 # 4. Compute metric: GLOP, AUC, Acc, etc. 
+   
+   
+   
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
