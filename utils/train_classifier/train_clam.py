@@ -147,6 +147,7 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
 
     error = calculate_error(Y_hat, label)
     print("error", error)
+    
 def train_loop_clam(
     epoch, 
     model, 
@@ -234,10 +235,10 @@ def train_loop_clam(
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
 
-    if writer:
-        writer.add_scalar('train/loss', train_loss, epoch)
-        writer.add_scalar('train/error', train_error, epoch)
-        writer.add_scalar('train/clustering_loss', train_inst_loss, epoch) 
+    # if writer:
+    #     writer.add_scalar('train/loss', train_loss, epoch)
+    #     writer.add_scalar('train/error', train_error, epoch)
+    #     writer.add_scalar('train/clustering_loss', train_inst_loss, epoch) 
     
     # Print all logs captured during training epoch
     print(">>> All logs captured during training epoch:")

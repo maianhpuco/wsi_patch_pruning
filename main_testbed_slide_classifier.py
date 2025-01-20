@@ -147,7 +147,10 @@ def main(args):
         
         loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
         optimizer = optim.Adam(model.parameters(), lr=0.001) 
-        model_clam = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=768)
+        model_clam = CLAM_MB(
+            gate=True, size_arg="small", 
+            dropout=0.25, k_sample=100, n_classes=3, 
+            subtyping=False, embed_dim=768)
         
         model_clam = model_clam.to(args.device) 
         
@@ -157,6 +160,7 @@ def main(args):
         logger = setup_logger('./logs/test_clam.txt')
         # temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
         print('>>> Ready to test 1 epoch')
+        
         train_loop_clam(
             epoch, 
             model_clam, 
