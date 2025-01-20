@@ -1,6 +1,5 @@
 import os
 import sys 
-import torch
 from tqdm import tqdm 
 import glob
 import pandas as pd
@@ -12,6 +11,10 @@ import yaml
 
 import openslide
 
+import torch
+import torch.nn as nn
+import torch.optim as optim 
+
 from data.merge_dataset import SuperpixelDataset, PatchDataset, SlidePatchesDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -20,6 +23,13 @@ from patch_merging import tome
 from utils import utils  
 from src.importance_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
+
+from src.bag_classifier.clam import CLAM_MB
+from utils.train_classifier.train_clam import temp_train_loop 
+
+
+#TODO
+# clean the code of the main function -> make it cleaner
 
 SCORING_FUNCTION_MAP = {
     "get_scoring_do_nothing": get_scoring_do_nothing,
@@ -122,7 +132,18 @@ def main(args):
             
         slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
-
+        
+        if slide_basename.split("_")[0] == "normal":
+            label = 0
+        else:
+            label = 1 
+        
+        loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
+        optimizer = optim.Adam(model.parameters(), lr=0.001) 
+        model = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=1024)
+        n_classes = 2  
+        temp_train_loop(slide_features, label, model, optimizer, n_classes, bag_weight, loss_fn=None, device=None) 
+        
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
 # 1. adding scoring + pruning here; 
@@ -130,8 +151,6 @@ def main(args):
     # output: reduced_slide_features
 # 2. SSL apply on reduced_slide_features 
 # 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
-    # let output go thru CLAM model 
-        
 # 4. Compute metric: GLOP, AUC, Acc, etc. 
          
 if __name__ == '__main__':
