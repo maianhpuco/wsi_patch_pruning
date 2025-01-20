@@ -40,7 +40,7 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
     loss_value = loss.item() 
     
     instance_loss = instance_dict['instance_loss']
-    inst_count+=1
+    # inst_count+=1
     instance_loss_value = instance_loss.item()
     train_inst_loss += instance_loss_value
     
