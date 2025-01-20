@@ -73,6 +73,9 @@ class SuperpixelPatchesDataset(Dataset):
             os.path.join(patch_dir, f) for f in os.listdir(patch_dir) 
             # if f.endswith('.png') and self._is_matching_spixel(f)
         ]
+        print(preferred_spixel_idx)
+        spixel_list = set([self.parse_patch_name(i).get('spixel_idx') for i in self.patch_files])
+        print("spixel list", spixel_list)
         print("self.patch_files", len(self.patch_files))
          
     def __len__(self):
