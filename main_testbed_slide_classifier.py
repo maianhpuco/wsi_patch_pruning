@@ -25,6 +25,7 @@ from src.pruning import get_pruning_do_nothing
 
 from src.bag_classifier.clam import CLAM_MB
 from utils.train_classifier.train_clam import temp_train_loop 
+from utils.utils import setup_logger 
 
 
 #TODO

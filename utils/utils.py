@@ -61,13 +61,13 @@ def setup_logger(log_file="training_log.txt"):
     return logger 
 
 # Define the simple model
-class SimpleModel(nn.Module):
-    def __init__(self, input_size, output_size):
-        super(SimpleModel, self).__init__()
-        self.fc = nn.Linear(input_size, output_size)
+# class SimpleModel(nn.Module):
+#     def __init__(self, input_size, output_size):
+#         super(SimpleModel, self).__init__()
+#         self.fc = nn.Linear(input_size, output_size)
     
-    def forward(self, x):
-        return self.fc(x)
+#     def forward(self, x):
+#         return self.fc(x)
 
 # Example function to simulate training and validation
 # def train_and_validate(logger):
