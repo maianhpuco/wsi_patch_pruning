@@ -21,8 +21,8 @@ class CustomDataset(Dataset):
         """
         self.feature_folder = feature_folder
         self.shuffle = shuffle
-        self.paths = glob.glob()
-        self.indices = np.arange(len(self.names))
+        self.paths = glob.glob(os.path.join(self.feature_folder, '*.h5'))
+        self.indices = np.arange(len(self.paths))
         
         if self.shuffle:
             np.random.shuffle(self.indices)
@@ -46,6 +46,7 @@ class CustomDataset(Dataset):
         """
         # Get the index of the file
         file_idx = self.indices[index]
+        file_path = self.paths[]
         file_basename = self.names[file_idx]
         file_path = self.get_feature_path(file_basename)
         # Load the HDF5 file

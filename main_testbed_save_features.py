@@ -145,8 +145,8 @@ def main(args):
         
         with h5py.File(output_file, 'w') as f:
             # Save the features, patch indices, and label into the HDF5 file
-            f.create_dataset('features', data=slide_features.numpy())  # Save features as dataset
-            f.create_dataset('patch_indices', data=slide_patch_idxes.numpy())  # Save patch indices
+            f.create_dataset('features', data=slide_features.cpu().numpy())  # Save features as dataset
+            f.create_dataset('patch_indices', data=slide_patch_idxes.cpu().numpy())  # Save patch indices
             f.create_dataset('label', data=np.array([label]))  # Save label as dataset
             
         print(f"Saved features for {slide_basename} to {output_file}")
