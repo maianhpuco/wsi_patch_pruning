@@ -215,6 +215,7 @@ if __name__ == '__main__':
         args.spixel_path = config.get('SPIXEL_PATH')
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features 
+        print(args.features_h5_path)
         
         os.makedirs(args.features_h5_path, exist_ok=True)  
         
