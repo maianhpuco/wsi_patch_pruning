@@ -10,13 +10,9 @@ from sklearn.preprocessing import normalize
 class CustomDataset(Dataset):
     def __init__(
         self, 
-        train_or_test_or_val,
-        split_filepath, 
-        label_file,
         feature_folder, 
         feature_file_end ='h5',  
         shuffle=True, 
-        dry_run=False, 
         ):
         """
         Args:
@@ -25,16 +21,6 @@ class CustomDataset(Dataset):
         """
         self.feature_folder = feature_folder
         self.shuffle = shuffle
-        self.feature_file_end = feature_file_end
-  
-        self.name_label_dict = df.set_index(self.train_or_test_or_val)[
-            f'{self.train_or_test_or_val}_label'].to_dict()
-        self.names = [k for k, v in self.name_label_dict.items()]
-        if dry_run is True: 
-            import random 
-            self.names = random.sample(self.names, 10 )
-        # print(self.names)
-        self.indices = np.arange(len(self.names))
         
         
         if self.shuffle:
@@ -42,7 +28,7 @@ class CustomDataset(Dataset):
         
     def get_feature_path(self, basename):
         return os.path.join(self.feature_folder, 
-                            f'{basename}.{self.feature_file_end}')
+                            f'{basename}.h5')
     
     def __len__(self):
         """Returns the total number of samples."""

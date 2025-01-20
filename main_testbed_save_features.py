@@ -141,7 +141,7 @@ def main(args):
         label = 0 if slide_basename.split("_")[0] == "normal" else 1
         # label = label.unsqueeze(0)
         # Create or open the HDF5 file for saving data
-        output_file = os.path.join(args.results_dir, f"{slide_basename}.h5")
+        output_file = os.path.join(args.features_h5_path, f"{slide_basename}.h5")
         
         with h5py.File(output_file, 'w') as f:
             # Save the features, patch indices, and label into the HDF5 file
