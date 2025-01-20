@@ -134,10 +134,10 @@ def main(args):
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0).to(args.device) 
         
         if slide_basename.split("_")[0] == "normal":
-            label = 0
+            label = torch.tensor(0)
         else:
-            label = 1 
-        
+            label = torch.tensor(0)
+        label = label.to(args.device)
         loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
         optimizer = optim.Adam(model.parameters(), lr=0.001) 
         model_clam = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=768)
