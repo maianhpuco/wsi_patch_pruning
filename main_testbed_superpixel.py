@@ -109,7 +109,7 @@ def main(args):
                 transform=transform,
                 preferred_spixel_idx=foreground_idx
             )
-
+            print("len: ",len(spixel_patches_dataset))
             # Create DataLoader
             dataloader = DataLoader(spixel_patches_dataset, batch_size=args.batch_size, shuffle=True)
             
