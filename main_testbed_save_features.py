@@ -86,6 +86,7 @@ def main(args):
     ]) 
     
     for wsi_path in wsi_paths:
+        print("Processinging: ", wsi_path)
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         
@@ -149,7 +150,7 @@ def main(args):
             f.create_dataset('label', data=np.array([label]))  # Save label as dataset
             
         print(f"Saved features for {slide_basename} to {output_file}")
-      
+
         # print("label shape: ", label.shape)
         
         # label = label.to(args.device)
@@ -214,6 +215,8 @@ if __name__ == '__main__':
         args.spixel_path = config.get('SPIXEL_PATH')
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features 
+        
+        os.makedirs(args.features_h5_path, exist_ok=True)  
         
         args.scoring_function = SCORING_FUNCTION_MAP.get(
             config.get("scoring_function")
