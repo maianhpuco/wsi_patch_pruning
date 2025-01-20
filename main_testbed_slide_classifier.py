@@ -142,6 +142,8 @@ def main(args):
         optimizer = optim.Adam(model.parameters(), lr=0.001) 
         model_clam = CLAM_MB(gate=True, size_arg="small", dropout=0.25, k_sample=8, n_classes=3, subtyping=False, embed_dim=1024)
         
+        model_clam = model_clam.to(args.device) 
+        
         n_classes = 2 
         bag_weight = 0.5  
         
