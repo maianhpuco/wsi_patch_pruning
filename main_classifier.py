@@ -77,6 +77,20 @@ def main(args):
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
     )
+    loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
+    optimizer = optim.Adam(model.parameters(), lr=0.001) 
+    model_clam = CLAM_MB(
+        gate=True, size_arg="small", 
+        dropout=0.25, k_sample=100, n_classes=3, 
+        subtyping=False, embed_dim=768)
+    
+    model_clam = model_clam.to(args.device) 
+    n_classes = 2 
+    bag_weight = 0.5  
+    epoch = 0
+    logger = setup_logger('./logs/test_clam.txt')
+    print('>>> Ready to test 1 epoch') 
+    
     train_loop_clam(
         epoch, 
         model_clam, 
@@ -87,46 +101,6 @@ def main(args):
         logger, 
         loss_fn
         )  
-
-    
-    for features, patch_indices, label  in features_dataset:
-        print("features", features.shape)
-        print("indices", patch_indices)
-        print("label shape: ", label.shape)
-        
-        label = label.to(args.device)
-        
-        loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-        optimizer = optim.Adam(model.parameters(), lr=0.001) 
-        model_clam = CLAM_MB(
-            gate=True, size_arg="small", 
-            dropout=0.25, k_sample=100, n_classes=3, 
-            subtyping=False, embed_dim=768)
-        
-        model_clam = model_clam.to(args.device) 
-        
-        n_classes = 2 
-        bag_weight = 0.5  
-        epoch = 0
-        logger = setup_logger('./logs/test_clam.txt')
-        # temp_train_loop(slide_features, label, model_clam, optimizer, n_classes, bag_weight, loss_fn=loss_fn, device=args.device) 
-        print('>>> Ready to test 1 epoch')
-        
-        train_loop_clam(
-            epoch, 
-            model_clam, 
-            features,
-            label,  
-            optimizer, 
-            n_classes, 
-            bag_weight, 
-            logger, 
-            loss_fn
-            ) 
-        
-
-          
-        
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
