@@ -138,8 +138,8 @@ def get_bounding_boxes_for_foreground_segments(original_image, superpixel_labels
     return bounding_boxes, output_image 
 
 def processing_superpixel(slide_path, JSON_SAVE_PATH):
-    slide_path = wsi_path
-    print(slide_path)
+    
+    print("Start processing: ", slide_path)
     basename = os.path.basename(slide_path).split('.')[0]
     os.makedirs(os.path.dirname(JSON_SAVE_PATH), exist_ok=True)
     print(os.listdir(os.path.dirname(JSON_SAVE_PATH)))
