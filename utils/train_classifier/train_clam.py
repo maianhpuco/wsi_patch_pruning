@@ -204,14 +204,14 @@ def train_all_epochs(datasets, cur, logger):
         
         # stop = validate_epoch(cur, epoch, model, val_loader, args.n_classes, early_stopping, logger, loss_fn, args.results_dir)
 
-        if stop:
-            break
+        # if stop:
+        #     break
 
     # Save the final model state
-    if args.early_stopping:
-        model.load_state_dict(torch.load(os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt")))
-    else:
-        torch.save(model.state_dict(), os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt"))
+    # if args.early_stopping:
+    #     model.load_state_dict(torch.load(os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt")))
+    # else:
+    #     torch.save(model.state_dict(), os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt"))
 
     # # Print the validation results
     # val_error, val_auc = print_results(model, val_loader, args.n_classes)
