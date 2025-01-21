@@ -116,7 +116,8 @@ def main(args):
             bag_weight, 
             logger, 
             loss_fn
-            ) 
+            )
+    # adding testing set here!  
         
          
 if __name__ == '__main__':
