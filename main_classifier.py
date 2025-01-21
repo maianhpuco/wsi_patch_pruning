@@ -95,7 +95,7 @@ def main(args):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.5  
-    epoch_num = 200
+    epoch_num = 100
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
