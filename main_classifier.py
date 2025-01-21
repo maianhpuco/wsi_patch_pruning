@@ -74,10 +74,10 @@ def main(args):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
-    dataset = FeaturesDataset(
+    features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
     )
-    for features, patch_indices, label  in train_dataset:
+    for features, patch_indices, label  in features_dataset:
         print(features.shape)
         print(patch_indices)
         
