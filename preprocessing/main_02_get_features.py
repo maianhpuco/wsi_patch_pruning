@@ -11,6 +11,9 @@ import yaml
 import h5py 
 import openslide
 from tqdm import tqdm 
+PROJECT_DIR = os.environ.get('PROJECT_DIR')
+print("PROJECT DIR", PROJECT_DIR)
+sys.path.append(PROJECT_DIR) 
 
 
 import torch
