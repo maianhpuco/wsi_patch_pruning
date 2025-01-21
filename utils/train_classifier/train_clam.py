@@ -174,6 +174,7 @@ def train_loop_clam(
 
     # Move data to device (GPU or CPU)a
     for features, label, patch_indices  in dataset: 
+        label = label.long()
         print("features", features.shape)
         print("indices", patch_indices)
         print("label shape: ", label.shape) 
