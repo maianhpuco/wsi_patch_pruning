@@ -26,15 +26,13 @@ def main(args):
         print(item)
 
     # Find items in slide_items that are not in json_items
-    items_not_in_json = [item for item in slide_items if item not in json_items]
-    
-    # Randomly sample 20 items from those not in json
+    items_not_in_json = [item for item in items_not_in_json if not item.startswith("test_")]
+
     sampled_items = random.sample(items_not_in_json, min(20, len(items_not_in_json)))
 
-    print("Randomly sampled items not in json path:")
+    print("Randomly sampled items not in json path (excluding 'test_' items):")
     for item in sampled_items:
-        print(item) 
-        
+        print(item)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
