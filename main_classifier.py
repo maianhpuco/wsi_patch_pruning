@@ -83,10 +83,10 @@ def main(args):
     optimizer = optim.Adam(model.parameters(), lr=0.001) 
     
     model_clam = CLAM_SB(
-        gate=True, 
+        gate=False, 
         size_arg="small", 
         dropout=0.25, 
-        k_sample=200, 
+        k_sample=100, 
         n_classes=2, 
         subtyping=False, 
         embed_dim=768

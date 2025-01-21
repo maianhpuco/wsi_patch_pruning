@@ -249,7 +249,8 @@ def train_epoch(
 
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
-
+    train_losses = []
+    
     # Move data to device (GPU or CPU)a
     for features, label, patch_indices  in dataset: 
         label = label.long()
@@ -278,7 +279,9 @@ def train_epoch(
 
         # Total loss is a weighted combination of the bag-level and instance-level losses
         total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
-
+       
+        train_losses.append(total_loss.item())
+        
         # Log instance-level accuracy
         inst_preds = instance_dict['inst_preds']
         inst_labels = instance_dict['inst_labels']
@@ -296,7 +299,7 @@ def train_epoch(
         total_loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
+    
     # Calculate and log the average loss and error for the epoch
     train_loss /= 1  # Since we're not dealing with batches, we just use the single example
     train_error /= 1
@@ -313,7 +316,8 @@ def train_epoch(
     for i in range(n_classes):
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
-
+    
+    print("train loss:", train_losses)
 
 if __name__=='__main__':
     logger = setup_logger("./logs/training_log.txt")
