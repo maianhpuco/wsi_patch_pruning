@@ -13,7 +13,11 @@ import json
 import glob 
 import h5py 
 import openslide
-
+import numpy as np
+from skimage import segmentation
+from skimage import color 
+from skimage.segmentation import slic
+from skimage.segmentation import mark_boundaries 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 print("PROJECT DIR", PROJECT_DIR)
 sys.path.append(PROJECT_DIR) 
@@ -35,6 +39,29 @@ def load_config(config_file):
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
     return config
+
+def rescaling_stat_for_segmentation(obj, downsampling_size=1024):
+    """
+    Rescale the image to a new size and return the downsampling factor.
+    """
+    if hasattr(obj, 'shape'):
+        original_width, original_height = obj.shape[:2]
+    elif hasattr(obj, 'size'):  # If it's an image (PIL or similar)
+        original_width, original_height = obj.size
+    elif hasattr(obj, 'dimensions'):  # If it's a slide (e.g., a TIFF object)
+        original_width, original_height = obj.dimensions
+    else:
+        raise ValueError("The object must have either 'size' (image) or 'dimensions' (slide) attribute.")
+
+    if original_width > original_height:
+        downsample_factor = int(downsampling_size * 100000 / original_width) / 100000
+    else:
+        downsample_factor = int(downsampling_size * 100000 / original_height) / 100000
+
+    new_width = int(original_width * downsample_factor)
+    new_height = int(original_height * downsample_factor)
+
+    return downsample_factor, new_width, new_height, original_width, original_height 
 
 def superpixel_segmenting(obj, downsample_size = 1096, n_segments=2000, compactness=10.0, start_label=0):
     # start = time.time()
