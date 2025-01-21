@@ -80,7 +80,7 @@ def main(args):
     )
     
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-        optimizer = optim.Adam(model.parameters(), lr=0.001) 
+    optimizer = optim.Adam(model.parameters(), lr=0.001) 
     
     model_clam = CLAM_MB(
         gate=True, 
