@@ -129,7 +129,6 @@ def main(args):
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
          
-
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
          
