@@ -74,21 +74,30 @@ def main(args):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
+    
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
     )
+    
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-    optimizer = optim.Adam(model.parameters(), lr=0.001) 
+        optimizer = optim.Adam(model.parameters(), lr=0.001) 
+    
     model_clam = CLAM_MB(
-        gate=True, size_arg="small", 
-        dropout=0.25, k_sample=100, n_classes=3, 
-        subtyping=False, embed_dim=768)
+        gate=True, 
+        size_arg="small", 
+        dropout=0.25, 
+        k_sample=100, 
+        n_classes=3, 
+        subtyping=False, 
+        embed_dim=768
+        )
     
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.5  
     epoch = 0
     logger = setup_logger('./logs/test_clam.txt')
+    
     print('>>> Ready to test 1 epoch') 
     
     train_loop_clam(

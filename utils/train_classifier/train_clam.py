@@ -120,8 +120,6 @@ class EarlyStopping:
         self.val_loss_min = val_loss
  
 
-
-
 def calculate_error(Y_hat, Y):
 	error = 1. - Y_hat.float().eq(Y.float()).float().mean().item()
 
@@ -175,7 +173,7 @@ def train_loop_clam(
     logger.info(f"Starting epoch {epoch}...")
 
     # Move data to device (GPU or CPU)a
-    for features, patch_indices, label  in dataset: 
+    for features, label, patch_indices  in dataset: 
         print("features", features.shape)
         print("indices", patch_indices)
         print("label shape: ", label.shape) 
