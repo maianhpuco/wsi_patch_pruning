@@ -47,4 +47,13 @@ if __name__ == '__main__':
     args.slide_path = config.get('SLIDE_PATH')
     args.json_path = config.get('JSON_PATH')    
     
-    main(args)     
+    main(args)    
+    
+    
+    
+    # slide_items = [i.split(".")[0] for i in os.listdir(args.slide_path) if i.endswith('tif')]
+    # json_items = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('json')]
+    # items_not_in_json = [item for item in slide_items if item not in json_items] 
+    # sampled_items = items_not_in_json  
+    # items_not_in_json = [item for item in items_not_in_json if not item.startswith("test_")]
+      
