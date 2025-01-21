@@ -28,7 +28,7 @@ def main(args):
     # Find items in slide_items that are not in json_items
     items_not_in_json = [item for item in items_not_in_json if not item.startswith("test_")]
 
-    sampled_items = random.sample(items_not_in_json, min(20, len(items_not_in_json)))
+    sampled_items = random.sample(items_not_in_json, min(30, len(items_not_in_json)))
 
     print("Randomly sampled items not in json path (excluding 'test_' items):")
     for item in sampled_items:
