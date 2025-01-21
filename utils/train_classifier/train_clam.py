@@ -321,11 +321,11 @@ def train_epoch(
     return train_loss 
     # print("train loss:", train_losses)
 
-if __name__=='__main__':
-    logger = setup_logger("./logs/training_log.txt")
-    epoch = 0
-    model = CLAM_SB()
-    train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logger, loss_fn)
+# if __name__=='__main__':
+#     logger = setup_logger("./logs/training_log.txt")
+#     epoch = 0
+#     model = CLAM_SB()
+#     train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logger, loss_fn)
  
  
 
