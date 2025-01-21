@@ -14,6 +14,7 @@ import glob
 import h5py 
 import openslide
 import numpy as np
+import cv2
 from skimage import segmentation
 from skimage import color 
 from skimage.segmentation import slic
