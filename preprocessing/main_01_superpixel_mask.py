@@ -200,7 +200,7 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
 def main(args):
     for wsi_basename in wsi_basenames:
         print(wsi_basename)
-        slide_path = glob.glob(args.slide_path, f'{wsi_basename}*')
+        slide_path = glob.glob(os.path.join(args.slide_path, f'{wsi_basename}*'))
         print(slide_path)
         # processing_superpixel(slide_path, JSON_SAVE_PATH) 
 
