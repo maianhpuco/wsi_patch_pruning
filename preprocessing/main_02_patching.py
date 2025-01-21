@@ -13,6 +13,11 @@ import yaml
 import shutil
 import openslide
 
+PROJECT_DIR = os.environ.get('PROJECT_DIR')
+print("PROJECT DIR", PROJECT_DIR)
+sys.path.append(PROJECT_DIR) 
+ 
+ 
 from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
