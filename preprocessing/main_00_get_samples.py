@@ -12,10 +12,9 @@ def main(args):
     json_items = os.listdir(args.json_path)
     print("Items in json path:")
     for item in json_items:
-        print(item) 
+        print(item)
 
-
-if __name__ ==__'__main__': 
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp002')
