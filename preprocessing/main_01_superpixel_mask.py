@@ -32,12 +32,9 @@ from utils import utils
 
 from torchvision import transforms 
 
-wsi_basenames = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+# wsi_basenames = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
 
-slide_items = [i.split(".")[0] for i in os.listdir(args.slide_path) if i.endswith('tif')]
-json_items = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('json')]
-items_not_in_json = [item for item in slide_items if item not in json_items] 
-wsi_basenames = items_not_in_json   
+
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
@@ -303,6 +300,13 @@ if __name__=='__main__':
     
     args.slide_path = config.get('SLIDE_PATH')
     args.json_path = config.get('JSON_PATH') 
+   
+    slide_items = [i.split(".")[0] for i in os.listdir(args.slide_path) if i.endswith('tif')]
+    json_items = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('json')]
+    items_not_in_json = [item for item in slide_items if item not in json_items] 
+    wsi_basenames = items_not_in_json     
+    
+    
     
     main(args)
     print("list all path in json path")
