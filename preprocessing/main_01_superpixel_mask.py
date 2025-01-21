@@ -218,5 +218,5 @@ if __name__=='__main__':
     args.slide_path = config.get('SLIDE_PATH')
     args.json_path = config.get('JSON_PATH') 
     
+    main(args)
     
-   
