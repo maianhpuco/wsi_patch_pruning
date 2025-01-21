@@ -16,7 +16,7 @@ import torch.nn as nn
 import torch.optim as optim 
 
 from data.merge_dataset import SuperpixelDataset, PatchDataset, SlidePatchesDataset
-from data.classificaion_data import FeaturesDataset 
+from data.classificaion_dataset import FeaturesDataset 
 
 from torchvision import transforms
 from torch.utils.data import DataLoader
