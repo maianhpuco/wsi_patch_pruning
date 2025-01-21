@@ -28,13 +28,13 @@ import numpy as np
 from scipy import ndimage
 from PIL import Image, ImageFilter, ImageStat
 
-SCORING_FUNCTION_MAP = {
-    "get_scoring_do_nothing": get_scoring_do_nothing,
-}
+# SCORING_FUNCTION_MAP = {
+#     "get_scoring_do_nothing": get_scoring_do_nothing,
+# }
 
-PRUNING_FUNCTION_MAP = {
-    "get_pruning_do_nothing": get_pruning_do_nothing,
-}   
+# PRUNING_FUNCTION_MAP = {
+#     "get_pruning_do_nothing": get_pruning_do_nothing,
+# }   
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 sys.path.append(os.path.join(PROJECT_DIR))  
