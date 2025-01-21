@@ -222,7 +222,7 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
     print("Start processing: ", slide_path)
     basename = os.path.basename(slide_path).split('.')[0]
     os.makedirs(os.path.dirname(JSON_SAVE_PATH), exist_ok=True)
-    print(os.listdir(os.path.dirname(JSON_SAVE_PATH)))
+    # print(os.listdir(os.path.dirname(JSON_SAVE_PATH)))
 
     ############################segment ############################################
     start  = time.time()
@@ -269,10 +269,11 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
         'output_image_with_bboxes': output_image_with_bboxes.tolist(),   # Convert numpy array to list
         'superpixels_plot': sp_plot.tolist()
     }
+    
 
-    # Save the dictionary to a single JSON file
-    # with open(JSON_SAVE_PATH, 'w') as json_file:
-    #     json.dump(data_to_save, json_file)
+    Save the dictionary to a single JSON file
+    with open(JSON_SAVE_PATH, 'w') as json_file:
+        json.dump(data_to_save, json_file)
 
     # Print confirmation
     print("All results saved successfully in one JSON file!")
@@ -300,4 +301,5 @@ if __name__=='__main__':
     args.json_path = config.get('JSON_PATH') 
     
     main(args)
-    
+    print("list all path in json path")
+    print(os.listdir(args.json_path))
