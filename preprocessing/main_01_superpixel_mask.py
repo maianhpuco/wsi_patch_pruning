@@ -195,6 +195,28 @@ def get_bounding_boxes_for_foreground_segments(original_image, superpixel_labels
 
     return bounding_boxes, output_image 
 
+def plot_foreground_boundaries_on_original_image(original_image, superpixel_labels, foreground_superpixels):
+    # Create a mask for foreground superpixels
+    foreground_mask = np.isin(superpixel_labels, foreground_superpixels)
+
+    # Find the superpixel boundaries for the entire image
+    boundaries = segmentation.find_boundaries(superpixel_labels, connectivity=2)
+
+    # Highlight the boundaries for foreground superpixels only (in yellow)
+    boundary_image = np.zeros_like(original_image)
+
+    # Create a mask for only the foreground superpixels' boundaries
+    foreground_boundaries = boundaries & foreground_mask
+
+    # Set the pixels of the foreground boundaries to yellow (RGB: [1, 1, 0])
+    boundary_image[foreground_boundaries] = [1, 1, 0]  # Yellow color for the boundary
+
+    # Combine the boundary image with the original image
+    # Keep the original image where there are background pixels (foreground will be transparent)
+    combined_image = np.copy(original_image)
+    combined_image[foreground_boundaries] = boundary_image[foreground_boundaries]  # Apply yellow boundary where foreground
+    return combined_image
+
 def processing_superpixel(slide_path, JSON_SAVE_PATH):
     
     print("Start processing: ", slide_path)
@@ -225,7 +247,7 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
     equalized_image = equalize_image(downscaled_region_array)
 
     foreground_superpixels, background_superpixels = identify_foreground_background(equalized_image, superpixel_labels)
-    # sp_plot = plot_foreground_boundaries_on_original_image(downscaled_region_array, superpixel_labels, foreground_superpixels)
+    sp_plot = plot_foreground_boundaries_on_original_image(downscaled_region_array, superpixel_labels, foreground_superpixels)
 
     bounding_boxes, output_image_with_bboxes = get_bounding_boxes_for_foreground_segments(
         downscaled_region_array,
