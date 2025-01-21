@@ -253,9 +253,9 @@ def train_epoch(
     # Move data to device (GPU or CPU)a
     for features, label, patch_indices  in dataset: 
         label = label.long()
-        print("features", features.shape)
-        print("indices", patch_indices)
-        print("label shape: ", label.shape) 
+        # print("features", features.shape)
+        # print("indices", patch_indices)
+        # print("label shape: ", label.shape) 
         
         features, label = features.to(device), label[0].to(device)
 
