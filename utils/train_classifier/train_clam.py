@@ -175,7 +175,7 @@ def train_loop_clam(
     logger.info(f"Starting epoch {epoch}...")
 
     # Move data to device (GPU or CPU)a
-    for features, patch_indices, label  in features_dataset: 
+    for features, patch_indices, label  in dataset: 
         print("features", features.shape)
         print("indices", patch_indices)
         print("label shape: ", label.shape) 
