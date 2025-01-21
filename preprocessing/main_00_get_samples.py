@@ -24,7 +24,8 @@ def main(args):
     print("Items in json path:")
     for item in json_items:
         print(item)
-
+    items_not_in_json = [item for item in slide_items if item not in json_items]
+ 
     # Find items in slide_items that are not in json_items
     items_not_in_json = [item for item in items_not_in_json if not item.startswith("test_")]
 
