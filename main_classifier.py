@@ -86,7 +86,7 @@ def main(args):
         gate=False, 
         size_arg="small", 
         dropout=0.25, 
-        k_sample=30, 
+        k_sample=10, 
         n_classes=2, 
         subtyping=False, 
         embed_dim=768
@@ -94,8 +94,8 @@ def main(args):
     
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
-    bag_weight = 0.4  
-    epoch_num = 300
+    bag_weight = 0.7
+    epoch_num = 100
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
