@@ -280,7 +280,7 @@ def train_epoch(
         total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
        
 
-        print(f"bag loss {loss.item()}, instance loss {instance_loss.item(), total loss {total_loss}}")
+        print(f"bag loss {loss.item()}, instance loss {instance_loss.item()}, total loss {total_loss}")
         # train_losses.append(total_loss.item())
         
         # Log instance-level accuracy
