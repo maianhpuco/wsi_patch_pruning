@@ -63,6 +63,31 @@ def rescaling_stat_for_segmentation(obj, downsampling_size=1024):
 
     return downsample_factor, new_width, new_height, original_width, original_height 
 
+
+def downscaling(obj, new_width, new_height):
+    """
+    Downscale the given object (image or slide) to the specified size.
+    """
+    if isinstance(obj, np.ndarray):  # If it's a NumPy array
+        # Resize using scikit-image (resize scales and interpolates)
+        image_numpy = resize(obj, (new_height, new_width), anti_aliasing=True)
+        image_numpy = (image_numpy * 255).astype(np.uint8)
+
+    elif hasattr(obj, 'size'):  # If it's an image (PIL or similar)
+        obj = obj.resize((new_width, new_height))
+        image_numpy = np.array(obj)
+
+    elif hasattr(obj, 'dimensions'):  # If it's a slide (e.g., a TIFF object)
+        thumbnail = obj.get_thumbnail((new_width, new_height))
+        transform = transforms.Compose([
+            transforms.ToTensor(),  # Converts the image to a tensor (C, H, W)
+        ])
+        image_tensor = transform(thumbnail)
+        image_numpy = image_tensor.permute(1, 2, 0).numpy()  # Convert from (C, H, W) to (H, W, C) numpy format
+    else:
+        raise ValueError("The object must have either 'size' (image) or 'dimensions' (slide) attribute.")
+ 
+ 
 def superpixel_segmenting(obj, downsample_size = 1096, n_segments=2000, compactness=10.0, start_label=0):
     # start = time.time()
     downsample_factor, new_width, new_height, curr_width, curr_height = rescaling_stat_for_segmentation(
