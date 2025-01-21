@@ -30,7 +30,9 @@ if __name__ == '__main__':
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp002')
     args = parser.parse_args()
-    
+    if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
+        config = load_config(f'./testbest_config/{args.config_file}.yaml')
+          
     args.slide_path = config.get('SLIDE_PATH')
     args.json_path = config.get('JSON_PATH')    
     
