@@ -105,8 +105,8 @@ def superpixel_segmenting(obj, downsample_size = 1096, n_segments=2000, compactn
         obj, new_width, new_height)
     
     downscaled_region_array = np.array(downscaled_region)
-    print("downsample_factor", downsample_factor)
-    print(downscaled_region_array.shape)
+    # print("downsample_factor", downsample_factor)
+    # print(downscaled_region_array.shape)
     
     lab_image = color.rgb2lab(downscaled_region_array)
     superpixel_labels = segmentation.slic(lab_image, n_segments=n_segments, compactness=compactness, start_label=start_label)
@@ -275,7 +275,7 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
     }
     
 
-    Save the dictionary to a single JSON file
+    # Save the dictionary to a single JSON file
     with open(JSON_SAVE_PATH, 'w') as json_file:
         json.dump(data_to_save, json_file)
 
