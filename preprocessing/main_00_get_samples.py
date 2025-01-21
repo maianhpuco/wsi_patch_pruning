@@ -34,6 +34,7 @@ def main(args):
 
     print("Randomly sampled items not in json path (excluding 'test_' items):")
     print(sampled_items)
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -235,8 +235,22 @@ class SuperpixelDataset(Dataset):
         # slide = openslide.open_slide(wsi_path)
         # Load corresponding JSON data
         json_path = os.path.join(self.json_folder, f'{basename}.json')
+     
+        ######################################## 
+        wt_json_path = os.path.join(self.json_folder, f'{basename}')
+        if not os.path.exists(json_path) and os.path.exists(wt_json_path):
+            # If wt_json_path exists, rename it to json_path (with .json extension)
+            os.rename(wt_json_path, json_path)
+            print(f"Renamed {wt_json_path} to {json_path}")
+    
+        # Now that json_path should exist, read the file
+        if os.path.exists(json_path):
+            sample = self.read_json_superpixel(json_path)
+        else:
+            raise FileNotFoundError(f"JSON file for {basename} not found.")
+        ########################################  
         sample = self.read_json_superpixel(json_path)
-
+        
         bounding_boxes = sample['bounding_boxes']
         downsample_factor = sample['downsample_factor']
         foreground_superpixels = sample['foreground_superpixels']

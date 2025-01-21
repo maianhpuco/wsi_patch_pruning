@@ -157,7 +157,8 @@ def main(args):
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = args.json_path
-    
+    print(wsi_paths)
+     
     superpixel_dataset = SuperpixelDataset(
         slide_paths=wsi_paths,
         json_folder=json_folder,
@@ -166,8 +167,9 @@ def main(args):
     print("Number of slide in dataset:", len(superpixel_dataset)) 
    
     from tqdm import tqdm
-    
+    count=0
     for slide_index in tqdm(range(len(superpixel_dataset))):
+        print("Counting", count, len(superpixel_dataset)) 
         
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
