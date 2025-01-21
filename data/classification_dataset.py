@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import normalize
 import glob 
-class CustomDataset(Dataset):
+
+class FeaturesDataset(Dataset):
     def __init__(
         self, 
         feature_folder, 
@@ -46,40 +47,19 @@ class CustomDataset(Dataset):
         """
         # Get the index of the file
         file_idx = self.indices[index]
-        file_path = self.paths[]
-        file_basename = self.names[file_idx]
-        file_path = self.get_feature_path(file_basename)
+        file_path = self.paths[file_idx]
+        file_basename = os.path.basename(file_path).split(".")
+        
         # Load the HDF5 file
         with h5py.File(file_path,  "r") as f:
             features = f['features'][:]
-            neighbor_indices = f['indices'][:] # how to get these indice 
-            values = f['similarities'][:]
-            values = np.nan_to_num(values)
-            label = self.name_label_dict[file_basename]
-            
+            patch_indices = f['patch_indices'][:] # how to get these indice 
+            label = f['label'][:]
+           
+
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
-         
-        Idx = neighbor_indices[:, :8]
-        rows = np.asarray([[enum] * len(item) for enum, item in enumerate(Idx)]).ravel()
-        columns = Idx.ravel()
-        
-        neighbor_matrix = values[:, 1:]
-        normalized_matrix = normalize(neighbor_matrix, norm="l2")
-
-        similarities = np.exp(-normalized_matrix)
-        values = np.concatenate((np.max(similarities, axis=1).reshape(-1, 1), similarities), axis=1)
-        values = values[:, :8]
-        values = values.ravel().tolist()
-        sparse_coords = list(zip(rows, columns))
-
-        # Create sparse adjacency matrix
-        sparse_matrix = torch.sparse_coo_tensor(
-            indices=torch.tensor(sparse_coords).t(),
-            values=torch.tensor(values),
-            size=(features.shape[0], features.shape[0])
-        )
-        
-        features_tensor = torch.tensor(features, dtype=torch.float3
-
-        return features_tensor, sparse_matrix, label_tensor  
+        features_tensor = torch.tensor(features, dtype=torch.float32)
+        patch_indices = torch.tensor(patch_indices, dtype=torch.int64)
+    
+        return features_tensor, label_tensor, patch_indices  
 
