@@ -1,6 +1,7 @@
 import os
 import argparse 
 import yaml  
+import random
 
 available = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032'] 
 
