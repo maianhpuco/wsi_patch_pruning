@@ -249,7 +249,6 @@ def train_epoch(
 
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
-    train_losses = []
     
     # Move data to device (GPU or CPU)a
     for features, label, patch_indices  in dataset: 
@@ -317,7 +316,8 @@ def train_epoch(
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
     
-    print("train loss:", train_losses)
+    return train_loss 
+    # print("train loss:", train_losses)
 
 if __name__=='__main__':
     logger = setup_logger("./logs/training_log.txt")

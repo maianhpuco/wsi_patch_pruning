@@ -106,9 +106,9 @@ def main(args):
     #     logger=logger  # Configuration arguments
     #     args, 
     # )
-     
+    train_losses = [] 
     for epoch in range(100):
-        train_epoch(
+        train_loss = train_epoch(
             epoch, 
             model_clam, 
             features_dataset,
@@ -118,6 +118,9 @@ def main(args):
             logger, 
             loss_fn
             )
+        train_losses.append(train_loss)
+
+    print("train loss:", train_losses)
     # adding testing set here!  
         
          
