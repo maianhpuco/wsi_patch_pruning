@@ -95,7 +95,7 @@ def main(args):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.5  
-    epoch = 0
+    epoch_num = 200
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
@@ -107,7 +107,7 @@ def main(args):
     #     args, 
     # )
     train_losses = [] 
-    for epoch in range(100):
+    for epoch in range(epoch_num):
         train_loss = train_epoch(
             epoch, 
             model_clam, 
