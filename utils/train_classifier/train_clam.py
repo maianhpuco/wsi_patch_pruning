@@ -151,8 +151,7 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
 def train_loop_clam(
     epoch, 
     model, 
-    features, 
-    label, 
+    dataset, 
     optimizer, 
     n_classes, 
     bag_weight, 
@@ -175,48 +174,54 @@ def train_loop_clam(
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
 
-    # Move data to device (GPU or CPU)
-    features, label = features.to(device), label.to(device)
+    # Move data to device (GPU or CPU)a
+    for features, patch_indices, label  in features_dataset: 
+        print("features", features.shape)
+        print("indices", patch_indices)
+        print("label shape: ", label.shape) 
+        
+        features, label = features.to(device), label.to(device)
 
-    # Perform forward pass through the model
-    logits, Y_prob, Y_hat, _, instance_dict = model(features, label=label, instance_eval=True)
+        # Perform forward pass through the model
+        logits, Y_prob, Y_hat, _, instance_dict = model(
+            features, label=label, instance_eval=True)
 
-    # Log overall accuracy
-    acc_logger.log(Y_hat, label)
-    
-    # Calculate loss
-    loss = loss_fn(logits, label)
-    loss_value = loss.item()
+        # Log overall accuracy
+        acc_logger.log(Y_hat, label)
+        
+        # Calculate loss
+        loss = loss_fn(logits, label)
+        loss_value = loss.item()
 
-    # Instance-level loss
-    instance_loss = instance_dict['instance_loss']
-    inst_count += 1
-    instance_loss_value = instance_loss.item()
-    train_inst_loss += instance_loss_value
+        # Instance-level loss
+        instance_loss = instance_dict['instance_loss']
+        inst_count += 1
+        instance_loss_value = instance_loss.item()
+        train_inst_loss += instance_loss_value
 
-    # Total loss is a weighted combination of the bag-level and instance-level losses
-    total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
+        # Total loss is a weighted combination of the bag-level and instance-level losses
+        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
 
-    # Log instance-level accuracy
-    inst_preds = instance_dict['inst_preds']
-    inst_labels = instance_dict['inst_labels']
-    print("------get the instance result")
-    print(len(inst_preds))
-    print(len(inst_labels))
-    print("------")
-    inst_logger.log_batch(inst_preds, inst_labels)
+        # Log instance-level accuracy
+        inst_preds = instance_dict['inst_preds']
+        inst_labels = instance_dict['inst_labels']
+        print("------get the instance result")
+        print(len(inst_preds))
+        print(len(inst_labels))
+        print("------")
+        inst_logger.log_batch(inst_preds, inst_labels)
 
-    # Accumulate the loss
-    train_loss += loss_value
+        # Accumulate the loss
+        train_loss += loss_value
 
-    # Calculate training error
-    error = calculate_error(Y_hat, label)
-    train_error += error
-    
-    # Perform backward pass and optimizer step
-    total_loss.backward()
-    optimizer.step()
-    optimizer.zero_grad()
+        # Calculate training error
+        error = calculate_error(Y_hat, label)
+        train_error += error
+        
+        # Perform backward pass and optimizer step
+        total_loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
 
     # Calculate and log the average loss and error for the epoch
     train_loss /= 1  # Since we're not dealing with batches, we just use the single example
@@ -235,12 +240,6 @@ def train_loop_clam(
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
 
-    # if writer:
-    #     writer.add_scalar('train/loss', train_loss, epoch)
-    #     writer.add_scalar('train/error', train_error, epoch)
-    #     writer.add_scalar('train/clustering_loss', train_inst_loss, epoch) 
-    
-    # Print all logs captured during training epoch
 
 if __name__=='__main__':
     logger = setup_logger("./logs/training_log.txt")

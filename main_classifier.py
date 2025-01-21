@@ -77,6 +77,18 @@ def main(args):
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
     )
+    train_loop_clam(
+        epoch, 
+        model_clam, 
+        features_dataset,
+        optimizer, 
+        n_classes, 
+        bag_weight, 
+        logger, 
+        loss_fn
+        )  
+
+    
     for features, patch_indices, label  in features_dataset:
         print("features", features.shape)
         print("indices", patch_indices)
