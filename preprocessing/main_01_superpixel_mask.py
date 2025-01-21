@@ -87,18 +87,22 @@ def downscaling(obj, new_width, new_height):
     else:
         raise ValueError("The object must have either 'size' (image) or 'dimensions' (slide) attribute.")
  
- 
+    return image_numpy
+
+
 def superpixel_segmenting(obj, downsample_size = 1096, n_segments=2000, compactness=10.0, start_label=0):
     # start = time.time()
     downsample_factor, new_width, new_height, curr_width, curr_height = rescaling_stat_for_segmentation(
         obj, downsample_size)
-    
+
     # Downscale the region and prepare for mask generation
     downscaled_region = downscaling(
         obj, new_width, new_height)
+    
     downscaled_region_array = np.array(downscaled_region)
     print("downsample_factor", downsample_factor)
     print(downscaled_region_array.shape)
+    
     lab_image = color.rgb2lab(downscaled_region_array)
     superpixel_labels = segmentation.slic(lab_image, n_segments=n_segments, compactness=compactness, start_label=start_label)
 
