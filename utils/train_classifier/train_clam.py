@@ -146,7 +146,85 @@ def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, lo
     error = calculate_error(Y_hat, label)
     print("error", error)
     
-def train_loop_clam(
+def train_all_epochs(datasets, cur, logger):
+    """
+    Train the model for a single fold across multiple epochs
+    """
+    # print(f'\nTraining Fold {cur}!')
+    # logger = setup_logger('./logs/test_clam.txt')  # Set up logger to record output to a file
+
+    # # Initialize train, validation, and test splits
+    # print('\nInit train/val/test splits...', end=' ')
+    # train_split, val_split, test_split = datasets
+    # save_splits(datasets, ['train', 'val', 'test'], os.path.join(args.results_dir, f'splits_{cur}.csv'))
+    # print('Done!')
+
+    # # Display number of samples
+    # logger.info(f"Training on {len(train_split)} samples")
+    # logger.info(f"Validating on {len(val_split)} samples")
+    # logger.info(f"Testing on {len(test_split)} samples")
+
+    # # Initialize loss function
+    # logger.info('\nInit loss function...')
+    # loss_fn = get_loss_function(args)
+    # logger.info('Done!')
+
+    # # Initialize model
+    # logger.info('\nInit Model...')
+    # model = initialize_model(args)
+    # model.to(device)
+    # logger.info('Done!')
+    # print_network(model)
+
+    # # Set up optimizer
+    # logger.info('\nInit optimizer ...')
+    # optimizer = get_optim(model, args)
+    # logger.info('Done!')
+
+    # # Initialize data loaders
+    # logger.info('\nInit Loaders...')
+    # train_loader = get_split_loader(train_split, training=True, testing=args.testing, weighted=args.weighted_sample)
+    # val_loader = get_split_loader(val_split, testing=args.testing)
+    # test_loader = get_split_loader(test_split, testing=args.testing)
+    # logger.info('Done!')
+
+    # # Setup early stopping
+    # logger.info('\nSetup EarlyStopping...')
+    early_stopping = EarlyStopping(patience=20, stop_epoch=50, verbose=True) if args.early_stopping else None
+    logger.info('Done!')
+
+    # Run the training loop across all epochs
+    for epoch in range(args.max_epochs):
+        stop = train_epoch(epoch, model, train_loader, optimizer, args.n_classes, args.bag_weight, logger, loss_fn)
+
+        if stop:
+            break
+
+        # Validate the model after every epoch
+        
+        # stop = validate_epoch(cur, epoch, model, val_loader, args.n_classes, early_stopping, logger, loss_fn, args.results_dir)
+
+        if stop:
+            break
+
+    # Save the final model state
+    if args.early_stopping:
+        model.load_state_dict(torch.load(os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt")))
+    else:
+        torch.save(model.state_dict(), os.path.join(args.results_dir, f"s_{cur}_checkpoint.pt"))
+
+    # # Print the validation results
+    # val_error, val_auc = print_results(model, val_loader, args.n_classes)
+    # logger.info(f'Val error: {val_error:.4f}, ROC AUC: {val_auc:.4f}')
+
+    # # Print the test results
+    # test_error, test_auc = print_results(model, test_loader, args.n_classes)
+    # logger.info(f'Test error: {test_error:.4f}, ROC AUC: {test_auc:.4f}')
+
+    return train_acc #, test_auc, val_auc
+ 
+          
+def train_epoch(
     epoch, 
     model, 
     dataset, 
@@ -204,10 +282,7 @@ def train_loop_clam(
         # Log instance-level accuracy
         inst_preds = instance_dict['inst_preds']
         inst_labels = instance_dict['inst_labels']
-        print("------get the instance result")
-        print(len(inst_preds))
-        print(len(inst_labels))
-        print("------")
+        
         inst_logger.log_batch(inst_preds, inst_labels)
 
         # Accumulate the loss
