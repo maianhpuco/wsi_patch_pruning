@@ -86,10 +86,11 @@ def main(args):
     ]) 
     
     for wsi_path in wsi_paths:
-        print("Processinging: ", wsi_path)
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         
+        print("Processinging: ", slide_basename)
+ 
         slide_patch_dataset = SlidePatchesDataset(
             patch_dir = os.path.join(args.patch_path, slide_basename),
             transform = transform
@@ -136,7 +137,7 @@ def main(args):
         slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat(
             [torch.tensor(idxes) for idxes in _patch_idxes], dim=0
-            ).to(args.device) 
+            ).to(args.device)
                 
         
          # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
