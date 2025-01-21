@@ -22,7 +22,7 @@ from data.merge_dataset import SuperpixelDataset, PatchDataset
 from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
-from patch_merging import tome 
+# from patch_merging import tome 
 from utils import utils  
 from testbed.importance_scores import get_scoring_do_nothing
 from testbed.pruning import get_pruning_do_nothing
