@@ -180,7 +180,7 @@ def train_loop_clam(
         print("indices", patch_indices)
         print("label shape: ", label.shape) 
         
-        features, label = features.to(device), label.to(device)
+        features, label = features.to(device), label[0].to(device)
 
         # Perform forward pass through the model
         logits, Y_prob, Y_hat, _, instance_dict = model(
