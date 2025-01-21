@@ -302,8 +302,8 @@ def train_epoch(
         optimizer.zero_grad()
     
     # Calculate and log the average loss and error for the epoch
-    train_loss /= 1  # Since we're not dealing with batches, we just use the single example
-    train_error /= 1
+    train_loss /= len(dataset)  # Since we're not dealing with batches, we just use the single example
+    train_error /= len(dataset)
     
     if inst_count > 0:
         train_inst_loss /= inst_count
