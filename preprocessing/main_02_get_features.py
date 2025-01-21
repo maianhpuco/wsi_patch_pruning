@@ -10,6 +10,8 @@ import timm
 import yaml 
 import h5py 
 import openslide
+from tqdm import tqdm 
+
 
 import torch
 import torch.nn as nn
@@ -85,8 +87,9 @@ def main(args):
         transforms.ToTensor(),          # Convert the image to tensor
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
     ]) 
-    
+    count = 0
     for wsi_path in wsi_paths:
+        print(">------ processing", count+1, "over", len(wsi_paths))
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         
@@ -133,7 +136,7 @@ def main(args):
          
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
-         
+            count += 1 
         slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat(
             [torch.tensor(idxes) for idxes in _patch_idxes], dim=0
