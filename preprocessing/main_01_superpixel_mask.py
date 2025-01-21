@@ -97,7 +97,7 @@ def superpixel_segmenting(obj, downsample_size = 1096, n_segments=2000, compactn
     downscaled_region = downscaling(
         obj, new_width, new_height)
     downscaled_region_array = np.array(downscaled_region)
-
+    print(downscaled_region_array.shape)
     lab_image = color.rgb2lab(downscaled_region_array)
     superpixel_labels = segmentation.slic(lab_image, n_segments=n_segments, compactness=compactness, start_label=start_label)
 
