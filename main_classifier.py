@@ -86,7 +86,7 @@ def main(args):
         gate=False, 
         size_arg="small", 
         dropout=0.25, 
-        k_sample=50, 
+        k_sample=70, 
         n_classes=2, 
         subtyping=False, 
         embed_dim=768
