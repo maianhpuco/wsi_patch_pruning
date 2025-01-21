@@ -235,12 +235,12 @@ if __name__ == '__main__':
         os.makedirs(args.patch_path, exist_ok=True) 
         
         args.patch_size = config.get('patch_size')
-        args.scoring_function = SCORING_FUNCTION_MAP.get(
-            config.get("scoring_function")
-        )
-        args.pruning_function = PRUNING_FUNCTION_MAP.get(
-            config.get('pruning_function') 
-        )
+        # args.scoring_function = SCORING_FUNCTION_MAP.get(
+        #     config.get("scoring_function")
+        # )
+        # args.pruning_function = PRUNING_FUNCTION_MAP.get(
+        #     config.get('pruning_function') 
+        # )
         args.batch_size = config.get('batch_size')
         # args.scoring_function("")
         # args.pruning_function("")
