@@ -10,7 +10,7 @@ import time
 import timm 
 import yaml 
 import json 
-from glob import glob 
+import glob 
 import h5py 
 import openslide
 
