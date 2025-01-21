@@ -190,7 +190,7 @@ def train_all_epochs(datasets, cur, logger):
 
     # # Setup early stopping
     # logger.info('\nSetup EarlyStopping...')
-    early_stopping = EarlyStopping(patience=20, stop_epoch=50, verbose=True) if args.early_stopping else None
+    early_stopping = EarlyStopping(patience=20, stop_epoch=50, verbose=True)
     logger.info('Done!')
 
     # Run the training loop across all epochs

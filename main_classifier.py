@@ -99,22 +99,25 @@ def main(args):
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
+    
     results_dict, test_auc, val_auc = train_all_epochs(
         datasets=features_dataset,  # Pass the dataset (train, val, test splits)
         cur=0,  # Index for current fold, typically starting from 0
         logger=logger  # Configuration arguments
+        args, 
     ) 
-     
-    # train_epoch(
-    #     epoch, 
-    #     model_clam, 
-    #     features_dataset,
-    #     optimizer, 
-    #     n_classes, 
-    #     bag_weight, 
-    #     logger, 
-    #     loss_fn
-    #     )  
+    for epoch in range(10):
+        train_epoch(
+            epoch, 
+            model_clam, 
+            features_dataset,
+            optimizer, 
+            n_classes, 
+            bag_weight, 
+            logger, 
+            loss_fn
+            ) 
+        
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
