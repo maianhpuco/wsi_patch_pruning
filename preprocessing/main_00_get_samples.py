@@ -32,8 +32,7 @@ def main(args):
     sampled_items = random.sample(items_not_in_json, min(30, len(items_not_in_json)))
 
     print("Randomly sampled items not in json path (excluding 'test_' items):")
-    for item in sampled_items:
-        print(item)
+    print(sampled_items)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
