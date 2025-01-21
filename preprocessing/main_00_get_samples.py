@@ -1,6 +1,17 @@
 import os
+import argparse 
+import yaml  
+
 available = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032'] 
 
+def load_config(config_file):
+    # Load configuration from the provided YAML file
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
+ 
+ 
+ 
 def main(args):
     # List all items in slide_path
     slide_items = os.listdir(args.slide_path)
