@@ -106,7 +106,7 @@ def main(args):
     #     logger=logger  # Configuration arguments
     #     args, 
     # ) 
-    for epoch in range(10):
+    for epoch in range(100):
         train_epoch(
             epoch, 
             model_clam, 
