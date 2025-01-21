@@ -275,10 +275,12 @@ def train_epoch(
         inst_count += 1
         instance_loss_value = instance_loss.item()
         train_inst_loss += instance_loss_value
-
+        
         # Total loss is a weighted combination of the bag-level and instance-level losses
         total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
        
+
+        print(f"bag loss {loss.item()}, instance loss {instance_loss.item(), total loss {total_loss}}")
         # train_losses.append(total_loss.item())
         
         # Log instance-level accuracy
