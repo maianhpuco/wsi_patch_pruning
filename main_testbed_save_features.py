@@ -99,7 +99,7 @@ def main(args):
         _slide_features = []
         _patch_idxes = []
         
-        for batch in dataloader:
+        for batch in tqdm(dataloader):
             batch_image = batch['image'].to(args.device) 
             batch_patch_info = batch['patch_info']
             
@@ -137,7 +137,8 @@ def main(args):
         slide_patch_idxes = torch.cat(
             [torch.tensor(idxes) for idxes in _patch_idxes], dim=0
             ).to(args.device)
-                
+        
+        
         
          # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
         label = 0 if slide_basename.split("_")[0] == "normal" else 1
