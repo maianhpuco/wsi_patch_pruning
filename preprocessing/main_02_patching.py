@@ -139,6 +139,17 @@ def filter_by_edge_detection(patch, patch_area):
     return edge_mean 
 
 
+def get_region_original_size(slide, xywh_abs_bbox):
+
+    xmin_original, ymin_original, width_original, height_original = xywh_abs_bbox
+
+    region = slide.read_region(
+        (xmin_original, ymin_original),  # Top-left corner (x, y)
+        0,  # Level 0
+        (width_original, height_original)  # Width and height
+    )
+
+    return region.convert('RGB')
 
 
 def main(args):
@@ -157,7 +168,7 @@ def main(args):
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     json_folder = args.json_path
-    print(wsi_paths)
+    print([os.path.basename(i) for i in wsi_paths])
      
     superpixel_dataset = SuperpixelDataset(
         slide_paths=wsi_paths,
@@ -168,7 +179,8 @@ def main(args):
    
     from tqdm import tqdm
     count=0
-    for slide_index in tqdm(range(len(superpixel_dataset))):
+    
+    for slide_index in range(len(superpixel_dataset)):
         print("Counting", count, len(superpixel_dataset)) 
         
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
@@ -196,11 +208,14 @@ def main(args):
             superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
 
             
-            superpixel_np = utils.read_region_from_npy(
-                args.spixel_path, 
-                slide_basename, 
-                foreground_idx
-                )
+            region_cropped = get_region_original_size(slide, xywh_abs_bbox)
+            superpixel_np = np.array(region_cropped)
+             
+            # superpixel_np = utils.read_region_from_npy(
+            #     args.spixel_path, 
+            #     slide_basename, 
+            #     foreground_idx
+            #     )
              
             num_patch = save_patches_with_updated_bboxes(
                 superpixel_np, 
