@@ -66,28 +66,29 @@ class PruningFeaturesDataset(Dataset):
             
         # print(features.shape)
         # print(patch_indices.shape)
-        # if self.pruning_function:
-        #     try:
-        #         features, patch_indices = self.pruning_function(features, patch_indices, **self.kwargs)
-        #     except Exception as e:
-        #         print(f"Error during pruning: {e}")
-                # raise  # Re-raise the exception after logging  
+        if self.pruning_function:
+            try:
+                features, patch_indices = self.pruning_function(features, patch_indices, **self.kwargs)
+            except Exception as e:
+                print(f"Error during pruning: {e}")
+                raise  # Re-raise the exception after logging  
 
             
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
         features_tensor = torch.tensor(features, dtype=torch.float32)
         patch_indices = torch.tensor(patch_indices, dtype=torch.int64)
         # features_tensor = self.transform(features_tensor)
+        
         if self.transform:
             features_tensor = self.transform(features_tensor)
             
-        if self.pruning_function:
-            try:
-                features_tensor, patch_indices = self.pruning_function(
-                    features_tensor, patch_indices, **self.kwargs)  
-            except Exception as e:
-                print(f"Error during pruning: {e}")
-                raise  # Re-raise the exception after logging  
+        # if self.pruning_function:
+        #     try:
+        #         features_tensor, patch_indices = self.pruning_function(
+        #             features_tensor, patch_indices, **self.kwargs)  
+        #     except Exception as e:
+        #         print(f"Error during pruning: {e}")
+        #         raise  # Re-raise the exception after logging  
         
         return features_tensor, label_tensor, patch_indices  
 
