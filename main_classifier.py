@@ -114,13 +114,13 @@ def main(args):
 
     train_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
-        basename_list = args.train_list
+        basename_list = args.train_list, 
         transform=None
     )
     
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
-        basename_list = args.test_list
+        basename_list = args.test_list, 
         transform=None
     )
     print("Processing dataset with length: ", len(features_dataset)) 
