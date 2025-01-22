@@ -1,6 +1,6 @@
 import numpy as np
 
-def random_feature_selection(features, patch_indices, n_features):
+def random_feature_selection(features, patch_indices, fraction=0.1):
     total_sample = features.shape[0]
     # Step 1: Calculate the number of features to select based on the fraction
     n_to_select = int(total_sample * fraction)

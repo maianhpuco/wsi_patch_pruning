@@ -138,7 +138,8 @@ def main(args):
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
         transform=None, 
-        pruning_function=random_feature_selection
+        pruning_function=random_feature_selection, 
+        fraction=0.5
     )
     
     test_dataset = FeaturesDataset(

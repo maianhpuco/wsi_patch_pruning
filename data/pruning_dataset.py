@@ -17,6 +17,7 @@ class PruningFeaturesDataset(Dataset):
         shuffle=False,
         transform=None, 
         pruning_function=None, 
+        **kwargs
         ):
         """
         Args:
@@ -33,6 +34,7 @@ class PruningFeaturesDataset(Dataset):
         if self.shuffle:
             np.random.shuffle(self.indices)
         self.pruning_function = pruning_function 
+        self.kwargs = kwargs
         
     def get_feature_path(self, basename):
         return os.path.join(self.feature_folder, 
@@ -71,7 +73,7 @@ class PruningFeaturesDataset(Dataset):
             
         if self.pruning_function is not None:
             features_tensor, patch_indices = self.pruning_function(
-                features_tensor, patch_indices)
+                features_tensor, patch_indices, **self.kwargs)
         
         return features_tensor, label_tensor, patch_indices  
 
