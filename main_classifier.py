@@ -57,7 +57,7 @@ sys.path.append(os.path.join(PROJECT_DIR))
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
-def train_clam(features_dataset):
+def train_clam(train_dataset, test_dataset):
     # model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
     # model = model.to(args.device) 
     # model.eval()   
@@ -88,7 +88,7 @@ def train_clam(features_dataset):
         train_loss = train_epoch(
             epoch, 
             model_clam, 
-            features_dataset,
+            train_dataset,
             optimizer, 
             n_classes, 
             bag_weight, 
@@ -106,13 +106,12 @@ def main(args):
     else:
         print("Running on full data") 
 
-    features_dataset = FeaturesDataset(
+    train_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
-        # image_basename = 
         transform=None
     )
     print("Processing dataset with length: ", len(features_dataset)) 
-    train_clam(features_dataset)
+    train_clam(features_dataset, None)
     
     
     
@@ -151,15 +150,15 @@ if __name__ == '__main__':
 
         
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
-    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086'] 
 
     # avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
     # items_not_in_json = [item for item in example_list if item not in avai_items] 
     # example_list = items_not_in_json    
     # print(example_list)
+    
     for i in os.listdir(args.features_h5_path):
         print(i)
+    
     # main(args) 
     
