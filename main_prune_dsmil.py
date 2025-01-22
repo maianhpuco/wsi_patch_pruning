@@ -86,7 +86,8 @@ def load_config(config_file):
 
 #     print("Train loss:", [f"{loss:.2f}" for loss in train_losses]) 
     
-def train_dsmil(features_dataset)
+def train_dsmil(features_dataset):
+    pass 
 
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
