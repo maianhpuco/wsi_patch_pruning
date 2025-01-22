@@ -121,6 +121,7 @@ def main(args):
     
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
+        transform=transform 
     )
     
     train_clam(features_dataset)
