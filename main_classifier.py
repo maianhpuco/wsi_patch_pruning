@@ -57,7 +57,7 @@ sys.path.append(os.path.join(PROJECT_DIR))
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
-def train_clam(features):
+def train_clam(features_dataset):
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
     optimizer = optim.Adam(model.parameters(), lr=0.0001) 
     
@@ -122,6 +122,8 @@ def main(args):
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path
     )
+    
+    train_clam(features_dataset)
     
     
     
