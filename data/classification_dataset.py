@@ -25,7 +25,7 @@ class FeaturesDataset(Dataset):
         self.feature_folder = feature_folder
         self.shuffle = shuffle
         paths = glob.glob(os.path.join(self.feature_folder, '*.h5'))
-        self.paths = [i for i in paths if os.path.basename(i).split(".h5") in basename_list]
+        self.paths = [i for i in paths if os.path.basename(i).split(".h5")[0] in basename_list]
         print("self.paths:")
         print(self.paths)
         self.indices = np.arange(len(self.paths))

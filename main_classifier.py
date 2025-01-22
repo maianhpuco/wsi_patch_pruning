@@ -54,8 +54,8 @@ PROJECT_DIR = os.environ.get('PROJECT_DIR')
 sys.path.append(os.path.join(PROJECT_DIR))  
 
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
-example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
-example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
+# example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
+# example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
 def train_eval_clam(train_dataset, test_dataset):
     model_clam = CLAM_MB(
@@ -123,8 +123,8 @@ def main(args):
         basename_list = args.test_list, 
         transform=None
     )
-    print("Processing dataset with length: ", len(features_dataset)) 
-    
+    print("Processing training dataset with length: ", len(train_dataset)) 
+    print("Processing test dataset with length: ", len(test_dataset)) 
     train_eval_clam(train_dataset, test_dataset)
     
          
