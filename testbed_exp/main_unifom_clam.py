@@ -204,7 +204,7 @@ if __name__ == '__main__':
     test_list = [item for item in example_list if item not in train_list] 
     
     print("Total example {}, train {} test {}")
-    print("\n--Train list")
+    print("\n--Train list", train_list)
     tr_n = [i for i in train_list if i.split("_")[0]=='normal']
     tr_r = [i for i in train_list if i.split("_")[0]=='tumor'] 
     print(" + Normal: ", len(tr_n))
