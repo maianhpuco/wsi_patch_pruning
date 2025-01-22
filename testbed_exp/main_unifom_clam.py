@@ -146,9 +146,9 @@ def main(args):
     )
     print("---")
     
-    # for features, l, indice in train_dataset:
+    for features, l, indice in train_dataset:
+        print(features.shape)
         
-    #     print(features.shape)
     #     features, indice = random_feature_selection(features, indice)
         # total_sample = features.shape[0]
         # pruning_rate=0.5
