@@ -143,6 +143,7 @@ def main(args):
         pruning_function=random_feature_selection, 
         fraction=0.5
     )
+    print("---")
     for f, l, i in train_dataset:
         print(f.shape)
     
