@@ -128,8 +128,13 @@ def main(args):
     )
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset)) 
-    train_eval_clam(train_dataset, test_dataset)
+    # train_eval_clam(train_dataset, test_dataset)
     
+    uniform_sampler = Uniform(train_dataset, fraction=0.5, random_seed=42, balance=True) 
+    selected_indices = uniform_sampler.select()["indices"]
+    selected_data = torch.utils.data.Subset(train_dataset, selected_indices)
+    
+    train_eval_clam(selected_data, test_dataset) 
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

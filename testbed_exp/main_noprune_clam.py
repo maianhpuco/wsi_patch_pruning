@@ -118,6 +118,7 @@ def main(args):
     else:
         print("Running on full data") 
 
+    
     train_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
@@ -129,6 +130,10 @@ def main(args):
         basename_list = args.test_list, 
         transform=None
     )
+    from src.pruning import Uniform
+     
+    
+    
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset)) 
     train_eval_clam(train_dataset, test_dataset)
