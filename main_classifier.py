@@ -179,18 +179,24 @@ if __name__ == '__main__':
     print("\n--Train list")
     tr_n = [i for i in train_list if i.split("_")[0]=='normal']
     tr_r = [i for i in train_list if i.split("_")[0]=='tumor'] 
-    print(" + Normal: ", len(tr_n), "--", tr_n)
-    print(" + Tumor: ", len(tr_r), "--", tr_r)
+    print(" + Normal: ", len(tr_n))
+    print(" + Tumor: ", len(tr_r))
 
     print("\n--Test list", test_list)
     t_n = [i for i in test_list if i.split("_")[0]=='normal']
     t_r = [i for i in test_list if i.split("_")[0]=='tumor'] 
-    print(" + Normal: ",len(t_n), "--", test_list)
-    print(" + Tumor: ",len(t_r), "--", test_list)
+    print(" + Normal: ",len(t_n))
+    print(" + Tumor: ",len(t_r))
     
     # [i for i in os.listdir(args.features_h5_path)]
         
     args.train_list = train_list
     args.test_list = test_list 
     # main(args) 
-    
+# --Train list
+# + Normal:  10 -- ['normal_048', 'normal_051', 'normal_072', 'normal_047', 'normal_003', 'normal_016', 'normal_093', 'normal_084', 'normal_022', 'normal_031']
+# + Tumor:  1 -- ['tumor_032']
+
+# --Test list ['tumor_031', 'normal_088', 'normal_024', 'normal_087', 'normal_001']
+# + Normal:  4 --
+# + Tumor:  1 -- 
