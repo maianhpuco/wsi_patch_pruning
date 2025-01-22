@@ -10,6 +10,11 @@ import timm
 import yaml 
 import h5py 
 import openslide
+PROJECT_DIR = os.environ.get('PROJECT_DIR')
+print("PROJECT DIR", PROJECT_DIR)
+sys.path.append(PROJECT_DIR) 
+ 
+
 
 import torch
 import torch.nn as nn
