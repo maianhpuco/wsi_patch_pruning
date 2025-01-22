@@ -62,7 +62,7 @@ class FeaturesDataset(Dataset):
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
         features_tensor = torch.tensor(features, dtype=torch.float32)
         patch_indices = torch.tensor(patch_indices, dtype=torch.int64)
-        features_tensor = self.transform(features_tensor)
+        # features_tensor = self.transform(features_tensor)
     
         return features_tensor, label_tensor, patch_indices  
 
