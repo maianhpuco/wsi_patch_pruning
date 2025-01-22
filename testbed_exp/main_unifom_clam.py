@@ -129,7 +129,7 @@ def main(args):
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset)) 
     # train_eval_clam(train_dataset, test_dataset)
-    from src.pruning import * 
+    from src.pruning.coreset_uniform import Uniform
     
     uniform_sampler = Uniform(train_dataset, fraction=0.5, random_seed=42, balance=True) 
     selected_indices = uniform_sampler.select()["indices"]
