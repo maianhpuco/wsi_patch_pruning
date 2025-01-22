@@ -64,17 +64,15 @@ class PruningFeaturesDataset(Dataset):
             patch_indices = f['patch_indices'][:] # how to get these indice 
             label = f['label'][:]
             
-        print(features.shape)
-        print(patch_indices.shape)
-        if self.pruning_function:
-            try:
-                features, patch_indices = self.pruning_function(features, patch_indices, **self.kwargs)
-            except Exception as e:
-                print(f"Error during pruning: {e}")
-                raise  # Re-raise the exception after logging  
+        # print(features.shape)
+        # print(patch_indices.shape)
         # if self.pruning_function:
-        #     features, patch_indices = self.pruning_function(
-        #         features, patch_indices, **self.kwargs) 
+        #     try:
+        #         features, patch_indices = self.pruning_function(features, patch_indices, **self.kwargs)
+        #     except Exception as e:
+        #         print(f"Error during pruning: {e}")
+                raise  # Re-raise the exception after logging  
+
             
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
         features_tensor = torch.tensor(features, dtype=torch.float32)
@@ -82,6 +80,10 @@ class PruningFeaturesDataset(Dataset):
         # features_tensor = self.transform(features_tensor)
         if self.transform:
             features_tensor = self.transform(features_tensor)
+            
+        if self.pruning_function:
+            features_tensor, patch_indices = self.pruning_function(
+                features_tensor, patch_indices, **self.kwargs)  
             
         print(features_tensor.shape)
         print(patch_indices.shape)
