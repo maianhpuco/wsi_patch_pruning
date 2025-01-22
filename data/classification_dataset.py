@@ -12,7 +12,7 @@ class FeaturesDataset(Dataset):
     def __init__(
         self, 
         feature_folder, 
-        basename_list=None 
+        basename_list=None, 
         feature_file_end ='h5',  
         shuffle=True,
         transform=None 
