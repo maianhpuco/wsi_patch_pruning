@@ -146,24 +146,9 @@ def main(args):
     )
     print("---")
     
-    for features, l, indice in train_dataset:
-        print(features.shape)
+    # for features, l, indice in train_dataset:
+    #     print(features.shape)
         
-    #     features, indice = random_feature_selection(features, indice)
-        # total_sample = features.shape[0]
-        # pruning_rate=0.5
-        # # Step 1: Calculate the number of features to select based on the fraction
-        # n_to_select = int(total_sample * (1-pruning_rate))
-
-        # # Step 2: Randomly select `n_features_to_select` feature indices
-        # selected_indices = np.random.choice(
-        #     range(total_sample), size=n_to_select, replace=False)
-        # # print(selected_indices)
-        # print("before")
-        # print(features.shape)
-        # print("after") 
-        # print(features[selected_indices, :].shape)
-    
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
         basename_list = args.test_list, 
@@ -174,7 +159,7 @@ def main(args):
     print("Processing test dataset with length: ", len(test_dataset))
       
 
-    # train_eval_clam(train_dataset, test_dataset) 
+    train_eval_clam(train_dataset, test_dataset) 
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
