@@ -57,7 +57,7 @@ def k_center_greedy(features, patch_indices, pruning_rate=0.1):
     n_samples_to_select = int(n_points * (1 - pruning_rate))
 
     # Step 1: Calculate pairwise distances between all points in the dataset
-    distances = pairwise_distances(features.numpy(), features.numpy(), metric="euclidean")
+    distances = pairwise_distances(features, features, metric="euclidean")
 
     # Step 2: Randomly select the first point to start the selection process
     selected_indices = [np.random.choice(range(n_points))]
@@ -75,7 +75,7 @@ def k_center_greedy(features, patch_indices, pruning_rate=0.1):
         min_distances = np.minimum(min_distances, distances[farthest_point])
 
     # Convert selected indices to PyTorch tensor
-    selected_indices = torch.tensor(selected_indices, dtype=torch.long)
+    # selected_indices = torch.tensor(selected_indices, dtype=torch.long)
 
     # Step 5: Return the selected features and patch indices
     selected_features = features[selected_indices]
