@@ -62,12 +62,13 @@ sys.path.append(os.path.join(PROJECT_DIR))
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
+    
 def train_eval_clam(train_dataset, test_dataset):
     model_clam = CLAM_MB(
         gate=False, 
         size_arg="small", 
         dropout=0.15, 
-        k_sample=50, 
+        k_sample=10, 
         n_classes=2, 
         subtyping=False, 
         embed_dim=768
