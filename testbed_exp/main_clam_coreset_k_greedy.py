@@ -147,7 +147,7 @@ def main(args):
     print("---")
     
     for features, l, indice in train_dataset:
-        stat=time.time()
+        start=time.time()
         print(features.shape)
         print("finish selection after", time.time()-start)
         
