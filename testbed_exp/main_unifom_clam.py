@@ -155,7 +155,10 @@ def main(args):
         # Step 2: Randomly select `n_features_to_select` feature indices
         selected_indices = np.random.choice(
             range(total_sample), size=n_to_select, replace=False)
-        print(selected_indices) 
+        # print(selected_indices)
+        print("before")
+        print(features)
+        print("after") 
         print(features[selected_indices, :].shape)
     
     test_dataset = FeaturesDataset(
