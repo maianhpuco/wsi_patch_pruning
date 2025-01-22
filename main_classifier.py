@@ -108,6 +108,7 @@ def main(args):
 
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
+        # image_basename = 
         transform=None
     )
     print("Processing dataset with length: ", len(features_dataset)) 
@@ -158,6 +159,7 @@ if __name__ == '__main__':
     # items_not_in_json = [item for item in example_list if item not in avai_items] 
     # example_list = items_not_in_json    
     # print(example_list)
-    
-    main(args) 
+    for i in os.listdir(args.features_h5_path):
+        print(i)
+    # main(args) 
     
