@@ -235,7 +235,7 @@ def main(args):
         print(">>>>>> total patch in this slide: ", total)
         print("Finish after ", time.time()-start_slide)
         # print('Complete an Slide after: ', time.time()-start_slide)
-
+        count+=1 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
