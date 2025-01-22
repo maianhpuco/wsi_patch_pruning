@@ -71,7 +71,7 @@ class PruningFeaturesDataset(Dataset):
             
         if self.pruning_function is not None:
             features_tensor, patch_indices = self.pruning_function(
-                features_tensor, patch_indice)
+                features_tensor, patch_indices)
         
         return features_tensor, label_tensor, patch_indices  
 
