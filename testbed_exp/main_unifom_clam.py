@@ -20,7 +20,9 @@ import torch.nn as nn
 import torch.optim as optim 
 
 from data.merge_dataset import SuperpixelDataset, PatchDataset, SlidePatchesDataset
+from data.pruning_dataset import PruningFeaturesDataset
 from data.classification_dataset import FeaturesDataset 
+
 
 from torchvision import transforms
 from torch.utils.data import DataLoader
@@ -115,26 +117,40 @@ def main(args):
     else:
         print("Running on full data") 
 
-    train_dataset = FeaturesDataset(
+    # train_dataset = FeaturesDataset(
+    #     feature_folder=args.features_h5_path, 
+    #     basename_list = args.train_list, 
+    #     transform=None, 
+    # )
+    
+    # test_dataset = FeaturesDataset(
+    #     feature_folder=args.features_h5_path, 
+    #     basename_list = args.test_list, 
+    #     transform=None
+    # )
+    
+    print("Processing training dataset with length: ", len(train_dataset)) 
+    print("Processing test dataset with length: ", len(test_dataset)) 
+    # train_eval_clam(train_dataset, test_dataset)
+    
+    from src.pruning.random import random_feature_selection
+    
+    train_dataset = PruningFeaturesDataset(
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
-        transform=None
+        transform=None, 
+        pruning_function=random_feature_selection
     )
     
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
         basename_list = args.test_list, 
         transform=None
-    )
-    print("Processing training dataset with length: ", len(train_dataset)) 
-    print("Processing test dataset with length: ", len(test_dataset)) 
-    # train_eval_clam(train_dataset, test_dataset)
-    from src.pruning.coreset_uniform import Uniform
-    
-    uniform_sampler = Uniform(train_dataset, None, fraction=0.5, random_seed=42, balance=True) 
-    selected_indices = uniform_sampler.select()["indices"]
+    ) 
+     
+
     selected_data = torch.utils.data.Subset(train_dataset, selected_indices)
-    
+
     train_eval_clam(selected_data, test_dataset) 
          
 if __name__ == '__main__':

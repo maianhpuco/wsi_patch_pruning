@@ -8,14 +8,15 @@ import pandas as pd
 from sklearn.preprocessing import normalize
 import glob 
 
-class FeaturesDataset(Dataset):
+class PruningFeaturesDataset(Dataset):
     def __init__(
         self, 
         feature_folder, 
         basename_list=None, 
         feature_file_end ='h5',  
-        shuffle=True,
-        transform=None 
+        shuffle=False,
+        transform=None, 
+        pruning_function=None, 
         ):
         """
         Args:
@@ -31,6 +32,7 @@ class FeaturesDataset(Dataset):
          
         if self.shuffle:
             np.random.shuffle(self.indices)
+        self.pruning_function = pruning_function 
         
     def get_feature_path(self, basename):
         return os.path.join(self.feature_folder, 
@@ -59,12 +61,17 @@ class FeaturesDataset(Dataset):
             features = f['features'][:]
             patch_indices = f['patch_indices'][:] # how to get these indice 
             label = f['label'][:]
-           
-
+        
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
         features_tensor = torch.tensor(features, dtype=torch.float32)
         patch_indices = torch.tensor(patch_indices, dtype=torch.int64)
         # features_tensor = self.transform(features_tensor)
         if self.transform:
             features_tensor = self.transform(features_tensor)
+            
+        if self.pruning_function is not None:
+            features_tensor, patch_indices = self.pruning_function(
+                feature_tensor, patch_indice)
+        
         return features_tensor, label_tensor, patch_indices  
+
