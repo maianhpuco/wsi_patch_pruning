@@ -141,15 +141,15 @@ def main(args):
         basename_list = args.train_list, 
         transform=None, 
         pruning_function=None, 
-        # pruning_function=random_feature_selection, 
-        # pruning_rate=0.5
+        pruning_function=random_feature_selection, 
+        pruning_rate=0.5
     )
     print("---")
     
-    for features, l, indice in train_dataset:
+    # for features, l, indice in train_dataset:
         
-        print(features.shape)
-        features, indice = random_feature_selection(features, indice)
+    #     print(features.shape)
+    #     features, indice = random_feature_selection(features, indice)
         # total_sample = features.shape[0]
         # pruning_rate=0.5
         # # Step 1: Calculate the number of features to select based on the fraction
@@ -160,7 +160,7 @@ def main(args):
         #     range(total_sample), size=n_to_select, replace=False)
         # # print(selected_indices)
         # print("before")
-        print(features.shape)
+        # print(features.shape)
         # print("after") 
         # print(features[selected_indices, :].shape)
     

@@ -82,9 +82,12 @@ class PruningFeaturesDataset(Dataset):
             features_tensor = self.transform(features_tensor)
             
         if self.pruning_function:
-            features_tensor, patch_indices = self.pruning_function(
-                features_tensor, patch_indices, **self.kwargs)  
-            
+            try:
+                features_tensor, patch_indices = self.pruning_function(
+                    features_tensor, patch_indices, **self.kwargs)  
+            except Exception as e:
+                print(f"Error during pruning: {e}")
+                raise  # Re-raise the exception after logging  
         
         return features_tensor, label_tensor, patch_indices  
 
