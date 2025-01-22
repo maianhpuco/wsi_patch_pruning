@@ -140,7 +140,7 @@ def main(args):
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
         transform=None, 
-        pruning_function=None, 
+        # pruning_function=None, 
         pruning_function=random_feature_selection, 
         pruning_rate=0.5
     )
