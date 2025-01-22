@@ -176,13 +176,13 @@ if __name__ == '__main__':
     test_list = [item for item in example_list if item not in train_list] 
     
     print("Total example {}, train {} test {}")
-    print("--Train list")
+    print("\n--Train list")
     tr_n = [i for i in train_list if i.split("_")[0]=='normal']
     tr_r = [i for i in train_list if i.split("_")[0]=='tumor'] 
     print(" + Normal: ", len(tr_n), "--", tr_n)
     print(" + Tumor: ", len(tr_r), "--", tr_r)
-    
-    print("--Test list", test_list)
+
+    print("\n--Test list", test_list)
     t_n = [i for i in test_list if i.split("_")[0]=='normal']
     t_r = [i for i in test_list if i.split("_")[0]=='tumor'] 
     print(" + Normal: ",len(t_n), "--", test_list)
