@@ -142,7 +142,8 @@ def main(args):
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
             count += 1 
-        slide_features = torch.cat(_slide_features, dim=0).to(args.device)   # Concatenate all features for the slide on GPU
+            
+        slide_features = torch.cat(_slide_features, dim=0)   # Concatenate all features for the slide on CPU
         slide_patch_idxes = torch.cat(
             [torch.tensor(idxes) for idxes in _patch_idxes], dim=0
             ).to(args.device)
