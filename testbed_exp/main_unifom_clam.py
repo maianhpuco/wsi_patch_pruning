@@ -146,7 +146,7 @@ def main(args):
     )
     print("---")
     
-    for f, l, i in train_dataset:
+    for selected_indices, l, i in train_dataset:
         total_sample = features.shape[0]
         # Step 1: Calculate the number of features to select based on the fraction
         n_to_select = int(total_sample * (1-pruning_rate))
@@ -155,7 +155,7 @@ def main(args):
         selected_indices = np.random.choice(
             range(total_sample), size=n_to_select, replace=False)
         print(selected_indices) 
-        print(f[selected_indices, :].shape)
+        print(selected_indices[selected_indices, :].shape)
     
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
