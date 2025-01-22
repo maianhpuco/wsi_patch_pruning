@@ -140,26 +140,27 @@ def main(args):
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
         transform=None, 
-        pruning_function=random_feature_selection, 
-        pruning_rate=0.5
+        pruning_function=None, 
+        # pruning_function=random_feature_selection, 
+        # pruning_rate=0.5
     )
     print("---")
     
     for features, l, i in train_dataset:
         print(features.shape)
-        # total_sample = features.shape[0]
-        # pruning_rate=0.5
-        # # Step 1: Calculate the number of features to select based on the fraction
-        # n_to_select = int(total_sample * (1-pruning_rate))
+        total_sample = features.shape[0]
+        pruning_rate=0.5
+        # Step 1: Calculate the number of features to select based on the fraction
+        n_to_select = int(total_sample * (1-pruning_rate))
 
-        # # Step 2: Randomly select `n_features_to_select` feature indices
-        # selected_indices = np.random.choice(
-        #     range(total_sample), size=n_to_select, replace=False)
-        # # print(selected_indices)
-        # print("before")
-        # print(features.shape)
-        # print("after") 
-        # print(features[selected_indices, :].shape)
+        # Step 2: Randomly select `n_features_to_select` feature indices
+        selected_indices = np.random.choice(
+            range(total_sample), size=n_to_select, replace=False)
+        # print(selected_indices)
+        print("before")
+        print(features.shape)
+        print("after") 
+        print(features[selected_indices, :].shape)
     
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
