@@ -150,7 +150,6 @@ def main(args):
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset))
       
-    selected_data = torch.utils.data.Subset(train_dataset, selected_indices)
 
     train_eval_clam(selected_data, test_dataset) 
          
