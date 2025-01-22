@@ -71,7 +71,7 @@ class PruningFeaturesDataset(Dataset):
         #         features, patch_indices = self.pruning_function(features, patch_indices, **self.kwargs)
         #     except Exception as e:
         #         print(f"Error during pruning: {e}")
-                raise  # Re-raise the exception after logging  
+                # raise  # Re-raise the exception after logging  
 
             
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
