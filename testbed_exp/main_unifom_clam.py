@@ -129,8 +129,7 @@ def main(args):
     #     transform=None
     # )
     
-    print("Processing training dataset with length: ", len(train_dataset)) 
-    print("Processing test dataset with length: ", len(test_dataset)) 
+
     # train_eval_clam(train_dataset, test_dataset)
     
     from src.pruning.random import random_feature_selection
@@ -148,7 +147,9 @@ def main(args):
         transform=None
     ) 
      
-
+    print("Processing training dataset with length: ", len(train_dataset)) 
+    print("Processing test dataset with length: ", len(test_dataset))
+      
     selected_data = torch.utils.data.Subset(train_dataset, selected_indices)
 
     train_eval_clam(selected_data, test_dataset) 
