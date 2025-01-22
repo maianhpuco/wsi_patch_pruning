@@ -80,8 +80,10 @@ def train_eval_clam(train_dataset, test_dataset):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 20
-    logger = setup_logger('./logs/test_clam.txt')
+    epoch_num = 50
+    
+    file_name = os.path.basename(__file__)
+    logger = setup_logger(f'./logs/{file_name}.txt')
     
     print('>>> Ready to test 1 epoch') 
     
@@ -152,7 +154,7 @@ def main(args):
     print("Processing test dataset with length: ", len(test_dataset))
       
 
-    train_eval_clam(train_dataset, test_dataset) 
+    # train_eval_clam(train_dataset, test_dataset) 
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
