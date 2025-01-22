@@ -62,7 +62,7 @@ def train_eval_clam(train_dataset, test_dataset):
         gate=False, 
         size_arg="small", 
         dropout=0.15, 
-        k_sample=20, 
+        k_sample=50, 
         n_classes=2, 
         subtyping=False, 
         embed_dim=768
@@ -93,7 +93,7 @@ def train_eval_clam(train_dataset, test_dataset):
             )
         train_losses.append(train_loss)
 
-    
+    ``
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
     eval(
