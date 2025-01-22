@@ -134,14 +134,14 @@ def main(args):
 
     # train_eval_clam(train_dataset, test_dataset)
     
-    from src.pruning.random import random_feature_selection
+    from src.pruning.coreset_k_center_greedy_v2 import k_center_greedy
     
     train_dataset = PruningFeaturesDataset(
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
         transform=None, 
         # pruning_function=None, 
-        pruning_function=random_feature_selection, 
+        pruning_function=k_center_greedy, 
         pruning_rate=0.5
     )
     print("---")
