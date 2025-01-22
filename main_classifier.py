@@ -78,17 +78,11 @@ def train_clam(features_dataset):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 200
+    epoch_num = 50
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
     
-    # results_dict, test_auc, val_auc = train_all_epochs(
-    #     datasets=features_dataset,  # Pass the dataset (train, val, test splits)
-    #     cur=0,  # Index for current fold, typically starting from 0
-    #     logger=logger  # Configuration arguments
-    #     args, 
-    # )
     train_losses = [] 
     for epoch in range(epoch_num):
         train_loss = train_epoch(
@@ -112,19 +106,11 @@ def main(args):
     else:
         print("Running on full data") 
 
-    
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # Resize the patch to 224x224
-        transforms.ToTensor(),          # Convert the image to a PyTorch tensor
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
-        # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
-    ])
-    
     features_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
         transform=None
     )
-    
+    print("Processing dataset with length: ", len(features_dataset)) 
     train_clam(features_dataset)
     
     
@@ -161,11 +147,17 @@ if __name__ == '__main__':
         )
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
-        
-        # args.scoring_function("")
-        # args.pruning_function("")
+
         
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086'] 
+
+    # avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+    # items_not_in_json = [item for item in example_list if item not in avai_items] 
+    # example_list = items_not_in_json    
+    # print(example_list)
     
     main(args) 
     
