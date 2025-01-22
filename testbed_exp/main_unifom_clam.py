@@ -140,8 +140,9 @@ def main(args):
         feature_folder=args.features_h5_path, 
         basename_list = args.train_list, 
         transform=None, 
-        pruning_function=random_feature_selection, 
-        fraction=0.5
+        pruning_function=None, 
+        # pruning_function=random_feature_selection, 
+        pruning_rate=0.5
     )
     print("---")
     for f, l, i in train_dataset:
