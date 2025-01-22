@@ -183,5 +183,5 @@ if __name__ == '__main__':
         
     args.train_list = train_list
     args.test_list = test_list 
-    main(args) 
+    # main(args) 
     
