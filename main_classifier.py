@@ -168,7 +168,7 @@ if __name__ == '__main__':
      
     print(example_list)
     max_len = len(example_list)
-    train_num = int(0.7*example_list)
+    train_num = int(0.7*max_len)
     test_num = max_len - train_num 
     import random
     random.seed(123)
