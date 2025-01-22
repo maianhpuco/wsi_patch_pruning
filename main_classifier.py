@@ -93,7 +93,6 @@ def train_eval_clam(train_dataset, test_dataset):
             )
         train_losses.append(train_loss)
 
-    ``
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
     eval(
