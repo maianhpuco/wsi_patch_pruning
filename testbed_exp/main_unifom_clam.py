@@ -131,7 +131,7 @@ def main(args):
     # train_eval_clam(train_dataset, test_dataset)
     from src.pruning.coreset_uniform import Uniform
     
-    uniform_sampler = Uniform(train_dataset, fraction=0.5, random_seed=42, balance=True) 
+    uniform_sampler = Uniform(train_dataset, None, fraction=0.5, random_seed=42, balance=True) 
     selected_indices = uniform_sampler.select()["indices"]
     selected_data = torch.utils.data.Subset(train_dataset, selected_indices)
     
