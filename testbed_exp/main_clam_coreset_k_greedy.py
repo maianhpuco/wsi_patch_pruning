@@ -147,7 +147,9 @@ def main(args):
     print("---")
     
     for features, l, indice in train_dataset:
+        stat=time.time()
         print(features.shape)
+        print("finish selection after", time.time()-start)
         
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
@@ -159,7 +161,7 @@ def main(args):
     print("Processing test dataset with length: ", len(test_dataset))
       
 
-    # train_eval_clam(train_dataset, test_dataset) 
+    train_eval_clam(train_dataset, test_dataset) 
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
