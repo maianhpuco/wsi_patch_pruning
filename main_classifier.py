@@ -58,9 +58,10 @@ example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_03
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
 def train_clam(features_dataset):
-    loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-    optimizer = optim.Adam(model.parameters(), lr=0.0001) 
-    
+    # model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
+    # model = model.to(args.device) 
+    # model.eval()   
+
     model_clam = CLAM_MB(
         gate=False, 
         size_arg="small", 
@@ -71,6 +72,9 @@ def train_clam(features_dataset):
         embed_dim=768
         )
     
+    loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
+    optimizer = optim.Adam(model_clam.parameters(), lr=0.0001) 
+     
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
@@ -107,10 +111,7 @@ def main(args):
         print("Running the dry run")
     else:
         print("Running on full data") 
-    
-    model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
-    model = model.to(args.device) 
-    model.eval()   
+
     
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the patch to 224x224
