@@ -41,7 +41,9 @@ sys.path.append(os.path.join(PROJECT_DIR))
 
 
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
-example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+# example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+
+
 
 model = timm.create_model('vit_base_patch16_224', pretrained=True)  # You can choose any model
 model.eval()   
@@ -258,9 +260,16 @@ if __name__ == '__main__':
         # args.pruning_function = PRUNING_FUNCTION_MAP.get(
         #     config.get('pruning_function') 
         # )
+        
         args.batch_size = config.get('batch_size')
         # args.scoring_function("")
         # args.pruning_function("")
-    
+        example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+        
+        avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+        items_not_in_json = [item for item in example_list if item not in avai_items] 
+        example_list = items_not_in_json    
+        
     main(args) 
     
+    # ['normal_003.tif', 'normal_047.tif', 'normal_051.tif', 'normal_016.tif', 'normal_093.tif', 'normal_084.tif', 'normal_022.tif', 'normal_087.tif', 'normal_088.tif', 'normal_024.tif', 'normal_031.tif', 'normal_039.tif', 'normal_101.tif', 'normal_078.tif', 'normal_114.tif', 'normal_148.tif', 'normal_155.tif', 'tumor_049.tif', 'tumor_048.tif', 'tumor_009.tif', 'tumor_024.tif', 'tumor_010.tif', 'tumor_012.tif', 'tumor_067.tif', 'tumor_014.tif', 'tumor_015.tif', 'tumor_057.tif', 'tumor_084.tif', 'tumor_086.tif', 'tumor_101.tif']

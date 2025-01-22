@@ -308,7 +308,7 @@ if __name__=='__main__':
      
     print(">>>>count", len(wsi_basenames)) 
     
-    
+     
     main(args)
     print("list all path in json path")
     print(os.listdir(args.json_path))
