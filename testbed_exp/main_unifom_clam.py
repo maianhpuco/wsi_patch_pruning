@@ -157,7 +157,7 @@ def main(args):
             range(total_sample), size=n_to_select, replace=False)
         # print(selected_indices)
         print("before")
-        print(features)
+        print(features.shape)
         print("after") 
         print(features[selected_indices, :].shape)
     
