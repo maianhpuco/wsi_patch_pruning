@@ -1,3 +1,4 @@
+# OUTPUT: images 
 #run after superpixel (json) >> processing patch and save patches  
 import os
 import sys 
