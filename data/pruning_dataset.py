@@ -71,10 +71,10 @@ class PruningFeaturesDataset(Dataset):
         if self.transform:
             features_tensor = self.transform(features_tensor)
             
-        if self.pruning_function is not None:
-            features_tensor, patch_indices = self.pruning_function(
-                features_tensor, patch_indices, **self.kwargs)
-        print(features_tensor.shape)
-        print(patch_indices.shape)
+        # if self.pruning_function is not None:
+        #     features_tensor, patch_indices = self.pruning_function(
+        #         features_tensor, patch_indices, **self.kwargs)
+        # print(features_tensor.shape)
+        # print(patch_indices.shape)
         return features_tensor, label_tensor, patch_indices  
 
