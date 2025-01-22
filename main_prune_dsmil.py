@@ -118,7 +118,7 @@ def main(args):
         feature_folder=args.features_h5_path
     )
     
-    train(features_dataset)
+    train_dsmil(features_dataset)
 
 
     # adding testing set here!  

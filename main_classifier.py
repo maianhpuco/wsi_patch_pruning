@@ -57,28 +57,7 @@ sys.path.append(os.path.join(PROJECT_DIR))
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
-def main(args):
-    if args.dry_run:
-        print("Running the dry run")
-    else:
-        print("Running on full data") 
-    
-    model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
-    model = model.to(args.device) 
-    model.eval()   
-    
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # Resize the patch to 224x224
-        transforms.ToTensor(),          # Convert the image to a PyTorch tensor
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
-        # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
-    ])
-    
-    features_dataset = FeaturesDataset(
-        feature_folder=args.features_h5_path
-    )
-    
-    
+def train_clam(features):
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
     optimizer = optim.Adam(model.parameters(), lr=0.0001) 
     
@@ -95,7 +74,7 @@ def main(args):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 500
+    epoch_num = 200
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
@@ -121,6 +100,31 @@ def main(args):
         train_losses.append(train_loss)
 
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    
+    
+def main(args):
+    if args.dry_run:
+        print("Running the dry run")
+    else:
+        print("Running on full data") 
+    
+    model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
+    model = model.to(args.device) 
+    model.eval()   
+    
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize the patch to 224x224
+        transforms.ToTensor(),          # Convert the image to a PyTorch tensor
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
+        # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
+    ])
+    
+    features_dataset = FeaturesDataset(
+        feature_folder=args.features_h5_path
+    )
+    
+    
+    
 
     # adding testing set here!  
         
