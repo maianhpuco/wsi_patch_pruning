@@ -172,12 +172,18 @@ if __name__ == '__main__':
     test_num = max_len - train_num 
     import random
     random.seed(123)
+    random.shuffle(example_list)
+    
     train_list = random.sample(example_list, train_num)
     test_list = [item for item in example_list if item not in train_list] 
     
     print("Total example {}, train {} test {}")
-    print("train list", train_list)
-    print("test list", test_list)
+    print("--Train list")
+    print(" + Normal: ", [i for i in train_list if i.split("_")[0]=='normal'], "--", train_list)
+    print(" + Tumor: ", [i for i in train_list if i.split("_")[0]=='tumor'], "--", train_list)
+    print("--Test list", test_list)
+    print(" + Normal: ", [i for i in test_list if i.split("_")[0]=='normal'], "--", test_list)
+    print(" + Tumor: ", [i for i in test_list if i.split("_")[0]=='tumor'], "--", test_list)
     
     # [i for i in os.listdir(args.features_h5_path)]
         
