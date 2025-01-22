@@ -120,7 +120,7 @@ def main(args):
     ])
     
     features_dataset = FeaturesDataset(
-        feature_folder=args.features_h5_path
+        feature_folder=args.features_h5_path, 
         transform=transform 
     )
     
