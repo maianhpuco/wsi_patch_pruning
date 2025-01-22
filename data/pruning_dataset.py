@@ -64,7 +64,7 @@ class PruningFeaturesDataset(Dataset):
             patch_indices = f['patch_indices'][:] # how to get these indice 
             label = f['label'][:]
             
-        if self.pruning_function
+        if self.pruning_function:
             features, patch_indices = self.pruning_function(
                 features, patch_indices, **self.kwargs) 
             
