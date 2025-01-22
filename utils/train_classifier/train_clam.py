@@ -319,6 +319,103 @@ def train_epoch(
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
     
     return train_loss 
+
+
+def eval(
+    epoch, 
+    model, 
+    dataset, 
+    n_classes, 
+    bag_weight, 
+    logger=None, 
+    loss_fn=None
+):
+    # Set model to training mode
+    model.eval()
+    
+    # Initialize accuracy loggers for both overall and instance-level accuracy
+    acc_logger = Accuracy_Logger(n_classes=n_classes)
+    inst_logger = Accuracy_Logger(n_classes=n_classes)
+    
+    # Initialize loss and error accumulators
+    train_loss = 0.
+    train_error = 0.
+    train_inst_loss = 0.
+    inst_count = 0
+
+    # Log header for the epoch
+    logger.info(f"Starting epoch {epoch}...")
+    
+    # Move data to device (GPU or CPU)a
+    for features, label, patch_indices  in dataset: 
+        label = label.long()
+        # print("features", features.shape)
+        # print("indices", patch_indices)
+        # print("label shape: ", label.shape) 
+        
+        features, label = features.to(device), label[0].to(device)
+
+        # Perform forward pass through the model
+        logits, Y_prob, Y_hat, _, instance_dict = model(
+            features, label=label, instance_eval=True)
+
+        # Log overall accuracy
+        acc_logger.log(Y_hat, label)
+        
+        # Calculate loss
+        loss = loss_fn(logits, label)
+        loss_value = loss.item()
+
+        # Instance-level loss
+        instance_loss = instance_dict['instance_loss']
+        inst_count += 1
+        instance_loss_value = instance_loss.item()
+        train_inst_loss += instance_loss_value
+        
+        # Total loss is a weighted combination of the bag-level and instance-level losses
+        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
+       
+
+        # print(f"bag loss {loss.item()}, instance loss {instance_loss.item()}, total loss {total_loss}")
+        # train_losses.append(total_loss.item())
+        
+        # Log instance-level accuracy
+        inst_preds = instance_dict['inst_preds']
+        inst_labels = instance_dict['inst_labels']
+        
+        inst_logger.log_batch(inst_preds, inst_labels)
+
+        # Accumulate the loss
+        train_loss += loss_value
+
+        # Calculate training error
+        error = calculate_error(Y_hat, label)
+        train_error += error
+        
+        # # Perform backward pass and optimizer step
+        # total_loss.backward()
+        # optimizer.step()
+        # optimizer.zero_grad()
+    
+    # Calculate and log the average loss and error for the epoch
+    train_loss /= len(dataset)  # Since we're not dealing with batches, we just use the single example
+    train_error /= len(dataset)
+    
+    if inst_count > 0:
+        train_inst_loss /= inst_count
+        # Log instance accuracy for each class
+        for i in range(n_classes):
+            acc, correct, count = inst_logger.get_summary(i)
+            # logger.info(f"Class {i} Clustering Accuracy: {acc}, Correct: {correct}/{count}")
+
+    logger.info(f"Loss: {train_loss:.4f}, Clustering Loss: {train_inst_loss:.4f}, Train Error: {train_error:.4f}")
+
+    for i in range(n_classes):
+        acc, correct, count = acc_logger.get_summary(i)
+        logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
+    
+    
+
     # print("train loss:", train_losses)
 
 # if __name__=='__main__':

@@ -57,11 +57,7 @@ sys.path.append(os.path.join(PROJECT_DIR))
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_031', 'tumor_032']  
 
-def train_clam(train_dataset, test_dataset):
-    # model = timm.create_model(args.feature_extraction_model, pretrained=True)  # You can choose any model
-    # model = model.to(args.device) 
-    # model.eval()   
-
+def train_eval_clam(train_dataset, test_dataset):
     model_clam = CLAM_MB(
         gate=False, 
         size_arg="small", 
@@ -97,8 +93,18 @@ def train_clam(train_dataset, test_dataset):
             )
         train_losses.append(train_loss)
 
+    
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
+    eval(
+        epoch, 
+        model_clam, 
+        test_dataset,
+        n_classes, 
+        bag_weight, 
+        logger, 
+        loss_fn
+        )
     
 def main(args):
     if args.dry_run:
@@ -108,16 +114,19 @@ def main(args):
 
     train_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
+        basename_list = args.train_list
+        transform=None
+    )
+    
+    test_dataset = FeaturesDataset(
+        feature_folder=args.features_h5_path, 
+        basename_list = args.test_list
         transform=None
     )
     print("Processing dataset with length: ", len(features_dataset)) 
-    train_clam(features_dataset, None)
     
+    train_eval_clam(train_dataset, test_dataset)
     
-    
-
-    # adding testing set here!  
-        
          
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -150,15 +159,29 @@ if __name__ == '__main__':
 
         
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086'] 
+    _list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086'] 
 
-    # avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
-    # items_not_in_json = [item for item in example_list if item not in avai_items] 
-    # example_list = items_not_in_json    
-    # print(example_list)
+    avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+    items_not_in_json = [item for item in _list if item not in avai_items] 
     
-    for i in os.listdir(args.features_h5_path):
-        print(i)
+    example_list = items_not_in_json   
+     
+    print(example_list)
+    max_len = len(example_list)
+    train_num = int(0.7*example_list)
+    test_num = max_len - train_num 
+    import random
+    random.seed(123)
+    train_list = random.sample(example_list, train_num)
+    test_list = [item for item in example_list if item not in train_list] 
     
-    # main(args) 
+    print("Total example {}, train {} test {}")
+    print("train list", train_list)
+    print("test list", test_list)
+    
+    # [i for i in os.listdir(args.features_h5_path)]
+        
+    args.train_list = train_list
+    args.test_list = test_list 
+    main(args) 
     
