@@ -184,7 +184,7 @@ def main(args):
     count=0
     
     for slide_index in range(len(superpixel_dataset)):
-        print("Counting", count,'/', len(superpixel_dataset)) 
+        print("Counting", count+1,'/', len(superpixel_dataset)) 
         
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
