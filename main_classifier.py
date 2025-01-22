@@ -192,7 +192,9 @@ if __name__ == '__main__':
         
     args.train_list = train_list
     args.test_list = test_list 
-    # main(args) 
+    
+    main(args) 
+    
 # --Train list
 # + Normal:  10 -- ['normal_048', 'normal_051', 'normal_072', 'normal_047', 'normal_003', 'normal_016', 'normal_093', 'normal_084', 'normal_022', 'normal_031']
 # + Tumor:  1 -- ['tumor_032']
