@@ -74,7 +74,7 @@ def train_eval_clam(train_dataset, test_dataset):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 50
+    epoch_num = 20
     logger = setup_logger('./logs/test_clam.txt')
     
     print('>>> Ready to test 1 epoch') 
