@@ -218,7 +218,7 @@ if __name__ == '__main__':
     avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
     items_not_in_json = [item for item in example_list if item not in avai_items] 
     
-    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024']
+    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015']
     
     items_not_in_json = [item for item in items_not_in_json if item not in remove_item] 
   
