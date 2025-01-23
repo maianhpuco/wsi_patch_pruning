@@ -217,6 +217,10 @@ if __name__ == '__main__':
     example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
     avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
     items_not_in_json = [item for item in example_list if item not in avai_items] 
+    remove_item = ['normal_114']
+    
+    items_not_in_json = [item for item in items_not_in_json if item not in remove_item] 
+  
     example_list = items_not_in_json    
     
     main(args) 
