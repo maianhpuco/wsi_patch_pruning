@@ -75,6 +75,7 @@ def train_eval_bagcls(train_dataset, test_dataset):
     
     print(model)
     
+    
      
     train_losses = [] 
     for epoch in range(epoch_num):
@@ -90,7 +91,8 @@ def train_eval_bagcls(train_dataset, test_dataset):
             )
         train_losses.append(train_loss)
 
-    print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    
+    print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
     eval(
         epoch, 
@@ -101,7 +103,10 @@ def train_eval_bagcls(train_dataset, test_dataset):
         logger, 
         loss_fn
         )
-    
+    for features, label, patch_indices in train_dataset: 
+        explainer = GradientExplainer(model, features,local_smoothing=100)   
+        shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
+        
 def main(args):
     if args.dry_run:
         print("Running the dry run")

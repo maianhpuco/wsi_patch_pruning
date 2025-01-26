@@ -366,7 +366,7 @@ def train_epoch(
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
     
-    logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
+    # logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
     
     return train_loss 
 
