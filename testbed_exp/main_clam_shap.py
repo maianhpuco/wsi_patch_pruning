@@ -40,6 +40,7 @@ from src.bag_classifier.bag_classifier import Bag_Classifier
 from utils.train_classifier.train_bag_classifer import * 
 from utils.utils import setup_logger
 
+from shap import 
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
@@ -64,7 +65,7 @@ def train_eval_bagcls(train_dataset, test_dataset):
     model = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 2 
+    epoch_num = 10 
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/{file_name}.txt')
     
