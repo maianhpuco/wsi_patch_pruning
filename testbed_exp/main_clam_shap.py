@@ -36,8 +36,8 @@ from utils import utils
 from src.important_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
 
-from src.bag_classifier.clam import CLAM_MB
-from utils.train_classifier.train_clam import * 
+from src.bag_classifier.bag_classifier import Bag_Classifier
+from utils.train_classifier.train_bag_classifer import * 
 from utils.utils import setup_logger
 
 
@@ -47,8 +47,8 @@ def load_config(config_file):
         config = yaml.safe_load(f)
     return config
  
-def train_eval_clam(train_dataset, test_dataset):
-    model_clam = CLAM_MB(
+def train_eval_bagcls(train_dataset, test_dataset):
+    model_clam = Bag_Classifier(
         gate=False, 
         size_arg="small", 
         dropout=0.15, 
@@ -64,11 +64,10 @@ def train_eval_clam(train_dataset, test_dataset):
     model_clam = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
-    epoch_num = 50
+    epoch_num = 2 
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/{file_name}.txt')
     
-    print('>>> Ready to test 1 epoch') 
     
     train_losses = [] 
     for epoch in range(epoch_num):
@@ -86,15 +85,15 @@ def train_eval_clam(train_dataset, test_dataset):
 
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
-    eval(
-        epoch, 
-        model_clam, 
-        test_dataset,
-        n_classes, 
-        bag_weight, 
-        logger, 
-        loss_fn
-        )
+    # eval(
+    #     epoch, 
+    #     model_clam, 
+    #     test_dataset,
+    #     n_classes, 
+    #     bag_weight, 
+    #     logger, 
+    #     loss_fn
+    #     )
     
 def main(args):
     if args.dry_run:
@@ -115,9 +114,11 @@ def main(args):
         transform=None
     )
     
+    
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset)) 
-    train_eval_clam(train_dataset, test_dataset)
+    
+    train_eval_bagcls(train_dataset, test_dataset)
     
          
 if __name__ == '__main__':
