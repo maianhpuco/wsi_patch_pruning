@@ -3,7 +3,7 @@ import sys
 
 project_dir = os.environ.get("PROJECT_DIR")
 sys.path.append(os.path.join(project_dir))
-sys.path.append(os.path.join(project_dir, "includes", "shap"))
+sys.path.append(os.path.join(project_dir, "includes"))
 
 import torch 
 import torchvision
