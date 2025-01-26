@@ -50,5 +50,6 @@ print("to_explain_tensor_out.shape", to_explain_tensor_out.shape)
 print("---------------shap values-----------------") 
 
 
- 
+if __name__=='__main__':
+    print("true") 
 
