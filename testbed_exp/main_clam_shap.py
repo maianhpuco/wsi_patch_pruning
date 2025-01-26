@@ -106,12 +106,12 @@ def train_eval_bagcls(train_dataset, test_dataset):
     
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
-        
+        print(features.shape)
         # explainer = GradientExplainer(model, features,local_smoothing=100) 
           
         # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
-        print(features.shape)
-        print(label)
+        
+        # print(label)
         
 def main(args):
     if args.dry_run:
