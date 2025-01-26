@@ -46,9 +46,6 @@ def load_config(config_file):
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
     return config
-
-
-
  
 def train_eval_clam(train_dataset, test_dataset):
     model_clam = CLAM_MB(
