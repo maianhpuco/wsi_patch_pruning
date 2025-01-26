@@ -164,17 +164,18 @@ if __name__ == '__main__':
     
     print("Total example {}, train {} test {}")
     print("\n--Train list")
+    print("------------") 
     tr_n = [i for i in train_list if i.split("_")[0]=='normal']
     tr_r = [i for i in train_list if i.split("_")[0]=='tumor'] 
     print(" + Normal: ", len(tr_n))
     print(" + Tumor: ", len(tr_r))
 
-    print("\n--Test list", test_list)
+    print("\n--Test list")
     t_n = [i for i in test_list if i.split("_")[0]=='normal']
     t_r = [i for i in test_list if i.split("_")[0]=='tumor'] 
     print(" + Normal: ",len(t_n))
     print(" + Tumor: ",len(t_r))
-    
+    print("------------")
     # [i for i in os.listdir(args.features_h5_path)]
         
     args.train_list = train_list
