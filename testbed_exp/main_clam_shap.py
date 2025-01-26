@@ -71,11 +71,8 @@ def train_eval_bagcls(train_dataset, test_dataset):
     bag_weight = 0.7
     epoch_num = 10 
     file_name = os.path.basename(__file__)
-    logger = setup_logger(f'./logs/{file_name}.txt')
-    
-    print(model)
-    
-    
+    logger = setup_logger(f'./logs/{file_name}.txt')    
+
      
     # train_losses = [] 
     # for epoch in range(epoch_num):
@@ -103,32 +100,36 @@ def train_eval_bagcls(train_dataset, test_dataset):
     #     logger, 
     #     loss_fn
     #     )
-    import torch.nn.functional as F
+    # import torch.nn.functional as F
  
-    tensor1 = torch.randn(5684, 768)
-    tensor2 = torch.randn(17135, 768)
-    tensor3 = torch.randn(46011, 768)
-    tensor4 = torch.randn(22113, 768)
+    # tensor1 = torch.randn(5684, 768)
+    # tensor2 = torch.randn(17135, 768)
+    # tensor3 = torch.randn(46011, 768)
+    # tensor4 = torch.randn(22113, 768)
 
-    # Find the maximum length of the tensors
-    max_len = max(tensor1.size(0), tensor2.size(0), tensor3.size(0), tensor4.size(0))
+    # # Find the maximum length of the tensors
+    # max_len = max(tensor1.size(0), tensor2.size(0), tensor3.size(0), tensor4.size(0))
 
-    # Pad each tensor to match the size of the maximum tensor
-    padded_tensor1 = F.pad(tensor1, (0, 0, 0, max_len - tensor1.size(0)))
-    padded_tensor2 = F.pad(tensor2, (0, 0, 0, max_len - tensor2.size(0)))
-    padded_tensor3 = F.pad(tensor3, (0, 0, 0, max_len - tensor3.size(0)))
-    padded_tensor4 = F.pad(tensor4, (0, 0, 0, max_len - tensor4.size(0)))
+    # # Pad each tensor to match the size of the maximum tensor
+    # padded_tensor1 = F.pad(tensor1, (0, 0, 0, max_len - tensor1.size(0)))
+    # padded_tensor2 = F.pad(tensor2, (0, 0, 0, max_len - tensor2.size(0)))
+    # padded_tensor3 = F.pad(tensor3, (0, 0, 0, max_len - tensor3.size(0)))
+    # padded_tensor4 = F.pad(tensor4, (0, 0, 0, max_len - tensor4.size(0)))
 
-    # Now stack them into a batch
-    background_batch = torch.stack([padded_tensor1, padded_tensor2, padded_tensor3, padded_tensor4])
+    # # Now stack them into a batch
+    # background_batch = torch.stack([padded_tensor1, padded_tensor2, padded_tensor3, padded_tensor4])
 
-    print(background_batch.shape)  # This will print: torch.Size([4, 46011, 768]) 
-    background_batch = background_batch.to(args.device) 
-    explainer = GradientExplainer(model, background_batch, local_smoothing=100)
+    # print(background_batch.shape)  # This will print: torch.Size([4, 46011, 768]) 
+    # background_batch = background_batch.to(args.device) 
+    # print(background_batch.shape)  # This will print: torch.Size([4, 46011, 768])
+    
+    # explainer = GradientExplainer(model, background_batch, local_smoothing=100)
      
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
         print(features.shape)
+        explainer = GradientExplainer(model, features, local_smoothing=100)
+        break
         # explainer = GradientExplainer(model, features, local_smoothing=100) 
           
         # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
