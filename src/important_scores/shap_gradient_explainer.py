@@ -2,7 +2,7 @@ import os
 import sys
 
 project_dir = os.environ.get("PROJECT_DIR")
-sys.path.append(os.path.join(project_dir, "includes/shape"))
+sys.path.append(os.path.join(project_dir, "includes/shap"))
 
 import torch 
 import torchvision
