@@ -114,9 +114,6 @@ def main(args):
         basename_list = args.test_list, 
         transform=None
     )
-    from src.pruning import Uniform
-     
-    
     
     print("Processing training dataset with length: ", len(train_dataset)) 
     print("Processing test dataset with length: ", len(test_dataset)) 
