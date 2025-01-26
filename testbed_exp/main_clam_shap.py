@@ -77,35 +77,41 @@ def train_eval_bagcls(train_dataset, test_dataset):
     
     
      
-    train_losses = [] 
-    for epoch in range(epoch_num):
-        train_loss = train_epoch(
-            epoch, 
-            model, 
-            train_dataset,
-            optimizer, 
-            n_classes, 
-            bag_weight, 
-            logger, 
-            loss_fn
-            )
-        train_losses.append(train_loss)
+    # train_losses = [] 
+    # for epoch in range(epoch_num):
+    #     train_loss = train_epoch(
+    #         epoch, 
+    #         model, 
+    #         train_dataset,
+    #         optimizer, 
+    #         n_classes, 
+    #         bag_weight, 
+    #         logger, 
+    #         loss_fn
+    #         )
+    #     train_losses.append(train_loss)
 
     
-    print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    # print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
-    eval(
-        epoch, 
-        model, 
-        test_dataset,
-        n_classes, 
-        bag_weight, 
-        logger, 
-        loss_fn
-        )
+    # eval(
+    #     epoch, 
+    #     model, 
+    #     test_dataset,
+    #     n_classes, 
+    #     bag_weight, 
+    #     logger, 
+    #     loss_fn
+    #     )
+    
     for features, label, patch_indices in train_dataset: 
-        explainer = GradientExplainer(model, features,local_smoothing=100)   
-        shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
+        features, label = features.to(device), label[0].to(device) 
+        
+        # explainer = GradientExplainer(model, features,local_smoothing=100) 
+          
+        # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
+        print(features.shape)
+        print(label)
         
 def main(args):
     if args.dry_run:
