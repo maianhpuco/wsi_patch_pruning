@@ -40,7 +40,9 @@ from src.bag_classifier.bag_classifier import Bag_Classifier
 from utils.train_classifier.train_bag_classifer import * 
 from utils.utils import setup_logger
 
-from shap import 
+
+
+from shap import datasets as shap_datasets  
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
