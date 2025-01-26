@@ -2,6 +2,7 @@ import os
 import sys
 
 project_dir = os.environ.get("PROJECT_DIR")
+print("project_dir", project_dir) 
 sys.path.append(os.path.join(project_dir))
 sys.path.append(os.path.join(project_dir, "includes", "shap"))
 
