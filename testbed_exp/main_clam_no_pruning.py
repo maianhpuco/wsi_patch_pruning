@@ -27,7 +27,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader
 from PIL import Image
 from utils import utils  
-from src.importance_scores import get_scoring_do_nothing
+from src.important_scores import get_scoring_do_nothing
 from src.pruning import get_pruning_do_nothing
 
 from src.bag_classifier.clam import CLAM_MB

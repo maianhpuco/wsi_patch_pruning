@@ -2,7 +2,8 @@ import os
 import sys
 
 project_dir = os.environ.get("PROJECT_DIR")
-sys.path.append(os.path.join(project_dir, "includes/shap"))
+sys.path.append(os.path.join(project_dir))
+sys.path.append(os.path.join(project_dir, "includes", "shap"))
 
 import torch 
 import torchvision
@@ -15,6 +16,7 @@ from PIL import Image
 
 import torch
 import torch.nn as nn 
+
 from shap import GradientExplainer  
 from shap import datasets as shap_datasets 
 

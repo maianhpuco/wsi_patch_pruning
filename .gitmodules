@@ -1,3 +1,0 @@
-[submodule "includes/shap"]
-	path = includes/shap
-	url = https://github.com/shap/shap.git
