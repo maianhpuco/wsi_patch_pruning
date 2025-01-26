@@ -61,7 +61,7 @@ def train_eval_bagcls(train_dataset, test_dataset):
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
     optimizer = optim.Adam(model_clam.parameters(), lr=0.0001) 
      
-    model_clam = model_clam.to(args.device) 
+    model = model_clam.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
     epoch_num = 2 
@@ -73,7 +73,7 @@ def train_eval_bagcls(train_dataset, test_dataset):
     for epoch in range(epoch_num):
         train_loss = train_epoch(
             epoch, 
-            model_clam, 
+            model, 
             train_dataset,
             optimizer, 
             n_classes, 
@@ -85,15 +85,15 @@ def train_eval_bagcls(train_dataset, test_dataset):
 
     print("Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
-    # eval(
-    #     epoch, 
-    #     model_clam, 
-    #     test_dataset,
-    #     n_classes, 
-    #     bag_weight, 
-    #     logger, 
-    #     loss_fn
-    #     )
+    eval(
+        epoch, 
+        model, 
+        test_dataset,
+        n_classes, 
+        bag_weight, 
+        logger, 
+        loss_fn
+        )
     
 def main(args):
     if args.dry_run:

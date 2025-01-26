@@ -369,3 +369,58 @@ def train_epoch(
     logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
     
     return train_loss 
+
+
+
+def eval(
+    epoch, 
+    model, 
+    dataset, 
+    n_classes, 
+    bag_weight, 
+    logger=None, 
+    loss_fn=None
+):
+    model.eval()  # Set model to evaluation mode
+    
+    acc_logger = Accuracy_Logger(n_classes=n_classes)
+    val_loss = 0.
+    val_error = 0.
+
+    # Disable gradient calculations during evaluation
+    with torch.no_grad():
+        for features, label, patch_indices in dataset:
+            label = label.long()
+            
+            features, label = features.to(device), label[0].to(device)
+
+            # Forward pass (no backward pass for evaluation)
+            logits, Y_prob, Y_hat, _ = model(features, label=label, instance_eval=True)
+
+            # Log accuracy
+            acc_logger.log(Y_hat, label)
+            
+            # Compute loss
+            loss = loss_fn(logits, label)
+            loss_value = loss.item()
+
+            total_loss = bag_weight * loss  # Only using bag-level loss for evaluation
+
+            # Accumulate the loss and error
+            val_loss += loss_value
+            error = calculate_error(Y_hat, label)
+            val_error += error
+
+    # Calculate the average loss and error for the entire dataset
+    val_loss /= len(dataset)
+    val_error /= len(dataset)
+
+    # Log the per-class accuracy and other metrics
+    for i in range(n_classes):
+        acc, correct, count = acc_logger.get_summary(i)
+        logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
+
+    logger.info(f"Epoch {epoch}, Validation Loss: {val_loss:.4f}, Validation Error: {val_error:.4f}")
+
+    return val_loss
+ 
