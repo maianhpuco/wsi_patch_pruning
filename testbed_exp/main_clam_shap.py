@@ -43,6 +43,8 @@ from utils.utils import setup_logger
 
 
 from shap import datasets as shap_datasets  
+from shap import GradientExplainer 
+
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
@@ -51,7 +53,7 @@ def load_config(config_file):
     return config
  
 def train_eval_bagcls(train_dataset, test_dataset):
-    model_clam = Bag_Classifier(
+    model = Bag_Classifier(
         gate=False, 
         size_arg="small", 
         dropout=0.15, 
@@ -62,16 +64,18 @@ def train_eval_bagcls(train_dataset, test_dataset):
         )
     
     loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-    optimizer = optim.Adam(model_clam.parameters(), lr=0.0001) 
+    optimizer = optim.Adam(model.parameters(), lr=0.0001) 
      
-    model = model_clam.to(args.device) 
+    model = model.to(args.device) 
     n_classes = 2 
     bag_weight = 0.7
     epoch_num = 10 
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/{file_name}.txt')
     
+    print(model)
     
+     
     train_losses = [] 
     for epoch in range(epoch_num):
         train_loss = train_epoch(
