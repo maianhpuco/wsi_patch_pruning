@@ -141,7 +141,7 @@ def train_epoch(
 
     for i in range(n_classes):
         acc, correct, count = acc_logger.get_summary(i)
-        logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
+        logger.info(f"Epoch {epoch}, Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
     
     # logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
     
@@ -174,12 +174,14 @@ def eval(
             # Forward pass (no backward pass for evaluation)
             logits = model(features, label=label)
             Y_prob = F.softmax(logits, dim = 1) 
-            Y_hat = torch.topk(logits, 1, dim = 1)[1]  
+            Y_hat = torch.topk(logits, 1, dim = 1)[1]   
             
-            acc_logger.log(Y_hat, label) 
+            acc_logger.log(Y_hat, label)
             
-            # Compute loss
             loss = loss_fn(logits, label)
+                
+            acc_logger.log(Y_hat, label)  
+            
             loss_value = loss.item()
 
             total_loss = loss  # Only using bag-level loss for evaluation

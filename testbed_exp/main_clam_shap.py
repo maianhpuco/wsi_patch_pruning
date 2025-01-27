@@ -155,8 +155,7 @@ def main(args):
      
     pruning_model = pruning_model.to(args.device) 
     n_classes = 2 
-    bag_weight = 0.7
-    epoch_num = 30 
+    epoch_num = 2 
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
  
