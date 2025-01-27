@@ -94,6 +94,27 @@ def calculate_error(Y_hat, Y):
 
 	return error 
 
+def save_checkpoint(model, optimizer, epoch, loss, filename='checkpoint.pth'):
+    checkpoint = {
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss,
+    }
+    torch.save(checkpoint, filename)
+    print(f"Checkpoint saved at epoch {epoch}") 
+    
+    return model, optimizer, epoch, loss 
+
+def load_checkpoint(model, optimizer, filename='checkpoint.pth'):
+    checkpoint = torch.load(filename)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+    loss = checkpoint['loss']
+    print(f"Checkpoint loaded from epoch {epoch}, loss {loss:.4f}")
+    return model, optimizer, epoch, loss
+
 def train_epoch(
     epoch, 
     model, 
@@ -101,7 +122,9 @@ def train_epoch(
     optimizer, 
     n_classes, 
     logger=None, 
-    loss_fn=None
+    loss_fn=None, 
+    checkpoint_filename='checkpoint.pt',
+    save_last_epoch_checkpoint=True, 
 ):
     model.train()
     
@@ -141,18 +164,29 @@ def train_epoch(
         logger.info(f"Epoch {epoch}, Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
     
     # logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Train Error: {train_error:.4f}")
-    
+    if save_last_epoch_checkpoint:
+        save_checkpoint(model, optimizer, epoch, train_loss, checkpoint_filename)  
     return train_loss 
 
 
 
 def eval(
     model, 
+    optimizer, 
     dataset, 
     n_classes, 
     logger, 
-    loss_fn
+    loss_fn, 
+    checkpoint_filename=None, 
 ):
+    if checkpoint_filename is not None: 
+        try:
+            model, optimizer, start_epoch, last_loss = load_checkpoint(model, optimizer, filename=checkpoint_filename)
+            print(f"Resuming training from epoch {start_epoch}")
+        except FileNotFoundError:
+            print("No checkpoint found, starting training from scratch") 
+        
+        
     model.eval()  # Set model to evaluation mode
     
     acc_logger = Accuracy_Logger(n_classes=n_classes)

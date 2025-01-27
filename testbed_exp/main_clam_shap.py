@@ -86,10 +86,16 @@ def main(args):
      
     pruning_model = pruning_model.to(args.device) 
     n_classes = 2 
-    epoch_num = 100
+    epoch_num = 10
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
- 
+    
+    if not os.path.exists(args.checkpoint_path):
+        os.makedirs(args.checkpoint_path)
+        print(f"Created directory: {args.checkpoint_path}")
+    else:
+        print(f"Directory {args.checkpoint_path} already exists")
+         
     for epoch in range(epoch_num):
         train_loss = train_epoch(
             epoch, 
@@ -98,7 +104,9 @@ def main(args):
             optimizer, 
             n_classes, 
             logger, 
-            loss_fn
+            loss_fn, 
+            checkpoint_filename=args.checkpoint_path, 
+            save_last_epoch_checkpoint=True 
             )
         train_losses.append(train_loss)
 
@@ -107,10 +115,12 @@ def main(args):
     
     eval(
         pruning_model, 
+        optimizer,
         test_dataset,
         n_classes, 
         logger, 
-        loss_fn
+        loss_fn, 
+        checkpoint_filename=args.checkpoint_path 
         )  
     
     print("------Start Pruning") 
@@ -195,6 +205,7 @@ if __name__ == '__main__':
         args.spixel_path = config.get('SPIXEL_PATH')
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
+        args.checkpoint_path = config.get('CHECKPOINT_PATH') 
          
         print(args.features_h5_path)
         
