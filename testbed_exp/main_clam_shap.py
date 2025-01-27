@@ -54,46 +54,7 @@ def load_config(config_file):
  
 def train_eval_bagcls(train_dataset, test_dataset):
     pass 
-    
-     
-    # train_losses = [] 
-    # for epoch in range(epoch_num):
-    #     train_loss = train_epoch(
-    #         epoch, 
-    #         model, 
-    #         train_dataset,
-    #         optimizer, 
-    #         n_classes, 
-    #         bag_weight, 
-    #         logger, 
-    #         loss_fn
-    #         )
-    #     train_losses.append(train_loss)
 
-    
-    # print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
-    
-    # eval(
-    #     epoch, 
-    #     model, 
-    #     test_dataset,
-    #     n_classes, 
-    #     bag_weight, 
-    #     logger, 
-    #     loss_fn
-    #     )
-    # import torch.nn.functional as F
-     
-    # for features, label, patch_indices in train_dataset: 
-    #     features, label = features.to(device), label[0].to(device) 
-    #     print(features.shape)
-    #     explainer = GradientExplainer(model, features, local_smoothing=100)
-    #     break 
-        # explainer = GradientExplainer(model, features, local_smoothing=100) 
-          
-        # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
-        
-        # print(label)
         
 def main(args):
     if args.dry_run:
@@ -157,11 +118,22 @@ def main(args):
         logger, 
         loss_fn
         )  
-    print("------Start Pruning") 
     
+    print("------Start Pruning") 
+    bg_1 = torch.randn(17135, 768) 
+    black_bg_1 = torch.zeros_like(bg_1).float() 
+    black_bg_1 = black_bg_1.unsqueeze(0) 
+    for features, label, _  in train_dataset:  # If using DataLoader
+        batch_size = features.shape[0]
+        if batch_size > max_features_size:
+            max_features_size = batch_size
+            
+    print("Max features size: ", max_features_size) 
+    
+    print(black_bg_1.shape) 
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
-        break 
+        # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
         # if len(unique_patch_indices) < len(patch_indices):
     #         print("Duplicate patch indices found!")
@@ -170,7 +142,10 @@ def main(args):
          
     # train_eval_bagcls(train_dataset, test_dataset)
     
-         
+# TODO:
+# - GET THE RESULT OF CLASSIFICATION 
+# - GET VISUALIZAITON OF THE FEATURES THAT HAS BEEN REMOVE AND KEEP (HEATMAP)
+      
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)

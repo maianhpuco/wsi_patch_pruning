@@ -59,12 +59,15 @@ class FeaturesDataset(Dataset):
             features = f['features'][:]
             patch_indices = f['patch_indices'][:] # how to get these indice 
             label = f['label'][:]
-           
+            coordinates = f['coordinates'][:] 
+            spixels_indices = f['spixel_idx'][:] 
 
         label_tensor = torch.tensor([label], dtype=torch.float32).view(1, 1)
         features_tensor = torch.tensor(features, dtype=torch.float32)
         patch_indices = torch.tensor(patch_indices, dtype=torch.int64)
+        coordinates = torch.tensor(coordinates, dtype=torch.float32) 
+        spixels_indices = torch.tensor(spixels_indices, dtype=torch.int64) 
         # features_tensor = self.transform(features_tensor)
         if self.transform:
             features_tensor = self.transform(features_tensor)
-        return features_tensor, label_tensor, patch_indices  
+        return features_tensor, label_tensor, patch_indices, coordinates, spixels_indices  
