@@ -13,6 +13,7 @@ import timm
 import yaml 
 import shutil
 import openslide
+from tqdm import tqdm
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 print("PROJECT DIR", PROJECT_DIR)
@@ -143,15 +144,12 @@ def filter_by_edge_detection(patch, patch_area):
 
 
 def get_region_original_size(slide, xywh_abs_bbox):
-
     xmin_original, ymin_original, width_original, height_original = xywh_abs_bbox
-
     region = slide.read_region(
         (xmin_original, ymin_original),  # Top-left corner (x, y)
         0,  # Level 0
         (width_original, height_original)  # Width and height
     )
-
     return region.convert('RGB')
 
 
@@ -180,11 +178,12 @@ def main(args):
     
     print("Number of slide in dataset:", len(superpixel_dataset)) 
    
-    from tqdm import tqdm
+    
     count=0
     
     for slide_index in range(len(superpixel_dataset)):
-        print("Counting", count+1,'/', len(superpixel_dataset)) 
+        
+        print("-----------Counting", count+1,'/', len(superpixel_dataset)) 
         
         superpixel_datas, wsi_path = superpixel_dataset[slide_index]
         print(wsi_path)
@@ -232,7 +231,7 @@ def main(args):
 
             total += num_patch 
             
-        print(">>>>>> total patch in this slide: ", total)
+        print("Total patch in this slide: ", total)
         print("Finish after ", time.time()-start_slide)
         # print('Complete an Slide after: ', time.time()-start_slide)
         count+=1 
@@ -255,24 +254,19 @@ if __name__ == '__main__':
         os.makedirs(args.patch_path, exist_ok=True) 
         
         args.patch_size = config.get('patch_size')
-        # args.scoring_function = SCORING_FUNCTION_MAP.get(
-        #     config.get("scoring_function")
-        # )
-        # args.pruning_function = PRUNING_FUNCTION_MAP.get(
-        #     config.get('pruning_function') 
-        # )
-        
+
         args.batch_size = config.get('batch_size')
-        # args.scoring_function("")
-        # args.pruning_function("")
-        example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
-        
+
+        # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+        example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json')] 
+         
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
         items_not_in_json = [item for item in example_list if item not in avai_items]
         removed =['tumor_057']
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         example_list = items_not_in_json    
         
+        print("Total number to process:", len(example_list))
     main(args) 
     
     # ['normal_003.tif', 'normal_047.tif', 'normal_051.tif', 'normal_016.tif', 'normal_093.tif', 'normal_084.tif', 'normal_022.tif', 'normal_087.tif', 'normal_088.tif', 'normal_024.tif', 'normal_031.tif', 'normal_039.tif', 'normal_101.tif', 'normal_078.tif', 'normal_114.tif', 'normal_148.tif', 'normal_155.tif', 'tumor_049.tif', 'tumor_048.tif', 'tumor_009.tif', 'tumor_024.tif', 'tumor_010.tif', 'tumor_012.tif', 'tumor_067.tif', 'tumor_014.tif', 'tumor_015.tif', 'tumor_057.tif', 'tumor_084.tif', 'tumor_086.tif', 'tumor_101.tif']
