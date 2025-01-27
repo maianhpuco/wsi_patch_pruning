@@ -155,9 +155,14 @@ def main(args):
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
         shap_values, indexes = explainer.shap_values(
             to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
-         
-        print("Complete the first features after " , time.time()-start) 
-        break 
+        min_val = np.min(shap_values)
+        max_val = np.max(shap_values)
+        median_val = np.median(shap_values)
+        average_val = np.mean(shap_values)
+        variance_val = np.var(shap_values)  
+        print(f"Min: {min_val:.4f}, Max: {max_val:.4f}, Median: {median_val:.4f}, Average: {average_val:.4f}, Variance: {variance_val:.4f}")
+        print(f"- Complete the first features after {time.time()-start}" ) 
+     
         # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
         # if len(unique_patch_indices) < len(patch_indices):
