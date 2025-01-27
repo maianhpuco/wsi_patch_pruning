@@ -95,7 +95,7 @@ class Bag_Classifier(nn.Module):
 
         M = torch.mm(A, h) 
         logits = self.classifiers(M)
-        Y_prob = F.softmax(logits, dim = 1)
+        # Y_prob = F.softmax(logits, dim = 1)
 
         # return logits, Y_prob, Y_hat, A_raw  
-        return Y_prob
+        return logits
