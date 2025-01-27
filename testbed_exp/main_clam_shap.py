@@ -2,7 +2,6 @@ import os
 import sys
 
 project_dir = os.environ.get("PROJECT_DIR")
-print("project_dir", project_dir) 
 sys.path.append(os.path.join(project_dir))
 sys.path.append(os.path.join(project_dir, "includes", "shap"))
 
@@ -16,12 +15,6 @@ import timm
 import yaml 
 import h5py 
 import openslide
-
-PROJECT_DIR = os.environ.get('PROJECT_DIR')
-print("PROJECT DIR", PROJECT_DIR)
-sys.path.append(PROJECT_DIR) 
- 
-
 
 import torch
 import torch.nn as nn
@@ -163,11 +156,11 @@ def main(args):
         shap_values_avg = shap_values_sliced.mean(axis=1).squeeze()
         
         print("shap_values_avg.shape", shap_values_avg.shape)  
-        min_val = np.min(shap_values)
-        max_val = np.max(shap_values)
-        median_val = np.median(shap_values)
-        average_val = np.mean(shap_values)
-        variance_val = np.var(shap_values) 
+        min_val = np.min(shap_values_avg)
+        max_val = np.max(shap_values_avg)
+        median_val = np.median(shap_values_avg)
+        average_val = np.mean(shap_values_avg)
+        variance_val = np.var(shap_values_avg) 
          
         print(f"Min: {min_val:.4f}, Max: {max_val:.4f}, Median: {median_val:.4f}, Average: {average_val:.4f}, Variance: {variance_val:.4f}")
         print(f"---Complete the first features after {time.time()-start}" )
