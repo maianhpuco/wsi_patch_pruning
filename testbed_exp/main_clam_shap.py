@@ -155,8 +155,7 @@ def main(args):
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
         shap_values, indexes = explainer.shap_values(
             to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
-        print("len")
-        len(len(shap_values))
+        print("len", len(shap_values))
         min_val = np.min(shap_values)
         max_val = np.max(shap_values)
         median_val = np.median(shap_values)
