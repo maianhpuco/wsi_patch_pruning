@@ -115,13 +115,14 @@ def train_epoch(
         features, label = features.to(device), label[0].to(device)
 
         logits = model(features, label=label)
+        Y_prob = F.softmax(logits, dim = 1) 
+        Y_hat = torch.topk(logits, 1, dim = 1)[1]   
         
         acc_logger.log(Y_hat, label)
         
         loss = loss_fn(logits, label)
         
-        Y_prob = F.softmax(logits, dim = 1) 
-        Y_hat = torch.topk(logits, 1, dim = 1)[1]  
+
             
         acc_logger.log(Y_hat, label) 
         
