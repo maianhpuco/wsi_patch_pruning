@@ -105,7 +105,7 @@ def equalize_image(downscaled_region_array):
 
     return equalized_image
  
- def identify_foreground_background(equalized_image, superpixel_labels, threshold=240):
+def identify_foreground_background(equalized_image, superpixel_labels, threshold=240):
     """
     """
     # Convert to a numpy array and initialize the lists

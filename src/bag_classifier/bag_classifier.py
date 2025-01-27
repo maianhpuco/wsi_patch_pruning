@@ -57,8 +57,15 @@ class Attn_Net_Gated(nn.Module):
 
 
 class Bag_Classifier(nn.Module):
-    def __init__(self, gate = True, size_arg = "small", dropout = 0., k_sample=8, n_classes=2,
-        instance_loss_fn=nn.CrossEntropyLoss(), subtyping=False, embed_dim=1024):
+    def __init__(
+        self, 
+        gate = True,
+        size_arg = "small", 
+        dropout = 0.,  
+        n_classes=2,
+        subtyping=False, 
+        embed_dim=1024):
+        
         super().__init__()
         self.size_dict = {"small": [embed_dim, 512, 256], "big": [embed_dim, 512, 384]}
         size = self.size_dict[size_arg]
@@ -67,19 +74,18 @@ class Bag_Classifier(nn.Module):
             attention_net = Attn_Net_Gated(L = size[1], D = size[2], dropout = dropout, n_classes = 1)
         else:
             attention_net = Attn_Net(L = size[1], D = size[2], dropout = dropout, n_classes = 1)
+        
         fc.append(attention_net)
+        
         self.attention_net = nn.Sequential(*fc)
         self.classifiers = nn.Linear(size[1], n_classes)
-        
-        # instance_classifiers = [nn.Linear(size[1], 2) for i in range(n_classes)]
-        # self.instance_classifiers = nn.ModuleList(instance_classifiers)
-        
-        self.k_sample = k_sample
-        self.instance_loss_fn = instance_loss_fn
         self.n_classes = n_classes
         self.subtyping = subtyping
 
-    def forward(self, h, label=None, instance_eval=False, return_features=False, attention_only=False):
+    def forward(self, h, label=None, return_features=False, attention_only=False):
+        if h.shape[0] == 1:
+            h = h.squeeze(0)    
+                 
         A, h = self.attention_net(h)  # NxK        
         A = torch.transpose(A, 1, 0)  # KxN
         if attention_only:
@@ -89,7 +95,7 @@ class Bag_Classifier(nn.Module):
 
         M = torch.mm(A, h) 
         logits = self.classifiers(M)
-        Y_hat = torch.topk(logits, 1, dim = 1)[1]
         Y_prob = F.softmax(logits, dim = 1)
 
-        return logits, Y_prob, Y_hat, A_raw  
+        # return logits, Y_prob, Y_hat, A_raw  
+        return Y_prob

@@ -53,26 +53,8 @@ def load_config(config_file):
     return config
  
 def train_eval_bagcls(train_dataset, test_dataset):
-    model = Bag_Classifier(
-        gate=False, 
-        size_arg="small", 
-        dropout=0.15, 
-        k_sample=10, 
-        n_classes=2, 
-        subtyping=False, 
-        embed_dim=768
-        )
     
-    loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
-    optimizer = optim.Adam(model.parameters(), lr=0.0001) 
-     
-    model = model.to(args.device) 
-    n_classes = 2 
-    bag_weight = 0.7
-    epoch_num = 10 
-    file_name = os.path.basename(__file__)
-    logger = setup_logger(f'./logs/{file_name}.txt')    
-
+    
      
     # train_losses = [] 
     # for epoch in range(epoch_num):
@@ -101,35 +83,12 @@ def train_eval_bagcls(train_dataset, test_dataset):
     #     loss_fn
     #     )
     # import torch.nn.functional as F
- 
-    # tensor1 = torch.randn(5684, 768)
-    # tensor2 = torch.randn(17135, 768)
-    # tensor3 = torch.randn(46011, 768)
-    # tensor4 = torch.randn(22113, 768)
-
-    # # Find the maximum length of the tensors
-    # max_len = max(tensor1.size(0), tensor2.size(0), tensor3.size(0), tensor4.size(0))
-
-    # # Pad each tensor to match the size of the maximum tensor
-    # padded_tensor1 = F.pad(tensor1, (0, 0, 0, max_len - tensor1.size(0)))
-    # padded_tensor2 = F.pad(tensor2, (0, 0, 0, max_len - tensor2.size(0)))
-    # padded_tensor3 = F.pad(tensor3, (0, 0, 0, max_len - tensor3.size(0)))
-    # padded_tensor4 = F.pad(tensor4, (0, 0, 0, max_len - tensor4.size(0)))
-
-    # # Now stack them into a batch
-    # background_batch = torch.stack([padded_tensor1, padded_tensor2, padded_tensor3, padded_tensor4])
-
-    # print(background_batch.shape)  # This will print: torch.Size([4, 46011, 768]) 
-    # background_batch = background_batch.to(args.device) 
-    # print(background_batch.shape)  # This will print: torch.Size([4, 46011, 768])
-    
-    # explainer = GradientExplainer(model, background_batch, local_smoothing=100)
      
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
         print(features.shape)
         explainer = GradientExplainer(model, features, local_smoothing=100)
-        break
+        break 
         # explainer = GradientExplainer(model, features, local_smoothing=100) 
           
         # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
@@ -154,23 +113,90 @@ def main(args):
         basename_list = args.test_list, 
         transform=None
     )
+    print("Processing Pruning training dataset with length: ", len(train_dataset)) 
+    print("Processing Pruning test dataset with length: ", len(test_dataset))  
+    train_losses = [] 
+    # for epoch in range(epoch_num):
+    #     train_loss = train_epoch(
+    #         epoch, 
+    #         model, 
+    #         train_dataset,
+    #         optimizer, 
+    #         n_classes, 
+    #         bag_weight, 
+    #         logger, 
+    #         loss_fn
+    #         )
+    #     train_losses.append(train_loss)
+
+    
+    # print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    
+    # eval(
+    #     epoch, 
+    #     model, 
+    #     test_dataset,
+    #     n_classes, 
+    #     bag_weight, 
+    #     logger, 
+    #     loss_fn
+    #     ) 
+    pruning_model = Bag_Classifier(
+        gate=False, 
+        size_arg="small", 
+        dropout=0.15, 
+        n_classes=2, 
+        subtyping=False, 
+        embed_dim=768
+        )
+    
+    loss_fn = nn.CrossEntropyLoss()  # Common loss function for classification
+    optimizer = optim.Adam(pruning_model.parameters(), lr=0.0001) 
+     
+    pruning_model = pruning_model.to(args.device) 
+    n_classes = 2 
+    bag_weight = 0.7
+    epoch_num = 30 
+    file_name = os.path.basename(__file__)
+    logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
+ 
+    for epoch in range(epoch_num):
+        train_loss = train_epoch(
+            epoch, 
+            pruning_model, 
+            train_dataset,
+            optimizer, 
+            n_classes, 
+            bag_weight, 
+            logger, 
+            loss_fn
+            )
+        train_losses.append(train_loss)
+
+    
+    print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    
+    eval(
+        epoch, 
+        pruning_model, 
+        test_dataset,
+        n_classes, 
+        bag_weight, 
+        logger, 
+        loss_fn
+        )  
+    print("Start Pruning") 
     
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
-        # Check for duplicate patch indices
-        unique_patch_indices = torch.unique(patch_indices)
-        print(patch_indices[:10])
-        print(len(print(unique_patch_indices)))
         
+        unique_patch_indices = torch.unique(patch_indices)
         if len(unique_patch_indices) < len(patch_indices):
             print("Duplicate patch indices found!")
         else:
             print("No duplicates in patch indices.") 
          
-    print("Processing training dataset with length: ", len(train_dataset)) 
-    print("Processing test dataset with length: ", len(test_dataset)) 
-    
-    # train_eval_bagcls(train_dataset, test_dataset)
+    train_eval_bagcls(train_dataset, test_dataset)
     
          
 if __name__ == '__main__':

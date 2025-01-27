@@ -109,6 +109,8 @@ def main(args):
         
         _slide_features = []
         _patch_idxes = []
+        _coordinates = []  # To store coordinates as a combined list of [xmin, xmax, ymin, ymax]
+        _spixel_idx = []  # To store the superpixel indices  
         
         for batch in tqdm(dataloader):
             batch_image = batch['image'].to(args.device) 
@@ -127,7 +129,13 @@ def main(args):
                 parsed_batch_info.append(parsed_info)
                 
             batch_idxes = [info['patch_idx'] for info in parsed_batch_info] 
-            
+            _coordinates.extend([
+                [info['xmin'], info['xmax'], info['ymin'], info['ymax']] for info in parsed_batch_info
+            ])
+            _spixel_idx.extend([
+                info['spixel_idx'] for info in parsed_batch_info
+            ])
+ 
             # Print the parsed batch info
             # print("Parsed Batch Info of a sample:", parsed_batch_info[0])
             # print("Batch Image Shape:", batch_image.shape) 
@@ -142,6 +150,7 @@ def main(args):
          
             _slide_features.append(class_token_features)
             _patch_idxes.append(batch_idxes)
+            
         count += 1 
             
         slide_features = torch.cat(_slide_features, dim=0)   # Concatenate all features for the slide on CPU
@@ -149,6 +158,8 @@ def main(args):
             [torch.tensor(idxes) for idxes in _patch_idxes], dim=0
             ).to(args.device)
         
+        _coordinates = np.array(_coordinates)  # Shape will be [num_patches, 4] for [xmin, xmax, ymin, ymax]
+        _spixel_idx = np.array(_spixel_idx) 
         
         
          # Label for the slide (assuming binary classification, 0 for normal, 1 for tumor)
@@ -162,7 +173,11 @@ def main(args):
             f.create_dataset('features', data=slide_features.cpu().numpy())  # Save features as dataset
             f.create_dataset('patch_indices', data=slide_patch_idxes.cpu().numpy())  # Save patch indices
             f.create_dataset('label', data=np.array([label]))  # Save label as dataset
-            
+             # Save the coordinates (xmin, xmax, ymin, ymax) as a single dataset
+            f.create_dataset('coordinates', data=_coordinates)  # Save coordinates as dataset (shape: [num_patches, 4])
+            # Save the superpixel indices
+            f.create_dataset('spixel_idx', data=_spixel_idx)  # Save superpixel indices (shape: [num_patches]) 
+        
         print(f"Saved features for {slide_basename} to {output_file}")
         print(f"Finish a slide after: {(time.time()-start_slide)/60.0000} mins")
         print(f"Slide feature shape {slide_features.shape}")
@@ -215,7 +230,9 @@ if __name__ == '__main__':
     
     # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
     example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+    
     avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
+    
     items_not_in_json = [item for item in example_list if item not in avai_items] 
     
     remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015']
