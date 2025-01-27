@@ -144,7 +144,9 @@ def main(args):
         
         bg_1 = torch.randn(features.shape[0], 768) 
         black_bg_1 = torch.zeros_like(bg_1).float() 
-        black_bg_1 = black_bg_1.unsqueeze(0) 
+        black_bg_1 = black_bg_1.unsqueeze(0)
+        black_bg_1 = black_bg_1.to(device) 
+         
         print("black_bg_1.shape", black_bg_1.shape)
         
         to_explain = features.unsqueeze(0) 
