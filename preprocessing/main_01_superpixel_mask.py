@@ -283,7 +283,7 @@ def main(args):
     total = len(wsi_basenames)
     count = 1 
     for wsi_basename in wsi_basenames:
-
+        start = time.time()
         print("------ processing: ", wsi_basename, "------", count, "/", total) 
         print(wsi_basename)
         slide_path = glob.glob(os.path.join(args.slide_path, f'{wsi_basename}*'))[0]
@@ -291,6 +291,7 @@ def main(args):
         print(JSON_SAVE_PATH) 
         processing_superpixel(slide_path, JSON_SAVE_PATH) 
         count += 1 
+        print("Time (mins): ", (time.time()-start)/60.00) 
 
 
 
