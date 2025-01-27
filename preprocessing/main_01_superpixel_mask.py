@@ -280,12 +280,17 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
     print("All results saved successfully in one JSON file!")
     
 def main(args):
+    total = len(wsi_basenames)
+    count = 1 
     for wsi_basename in wsi_basenames:
+
+        print("------ processing: ", wsi_basename, "------", count, "/", total) 
         print(wsi_basename)
         slide_path = glob.glob(os.path.join(args.slide_path, f'{wsi_basename}*'))[0]
         JSON_SAVE_PATH = os.path.join(args.json_path, f'{wsi_basename}.json')
         print(JSON_SAVE_PATH) 
         processing_superpixel(slide_path, JSON_SAVE_PATH) 
+        count += 1 
 
 
 
@@ -311,5 +316,3 @@ if __name__=='__main__':
     
      
     main(args)
-    print("list all path in json path")
-    print(os.listdir(args.json_path))
