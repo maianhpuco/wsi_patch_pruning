@@ -138,9 +138,9 @@ def main(args):
         start = time.time()
         features, label, patch_indices, coordinates, spixels_indices = data   
         features, label = features.to(device), label[0].to(device) 
-        print(coordinates.shape)
-        print(spixels_indices.shape)
-        print(spixels_indices.shape)
+        # print(coordinates.shape)
+        # print(spixels_indices.shape)
+        # print(spixels_indices.shape)
         
         bg_1 = torch.randn(features.shape[0], 768) 
         black_bg_1 = torch.zeros_like(bg_1).float() 
@@ -153,8 +153,8 @@ def main(args):
         
         explainer = GradientExplainer(
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
-        # shap_values, indexes = explainer.shap_values(
-        #     to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
+        shap_values, indexes = explainer.shap_values(
+            to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
          
         print("Complete the first features after " , time.time()-start) 
         break 
