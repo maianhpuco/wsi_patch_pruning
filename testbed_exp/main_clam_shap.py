@@ -189,14 +189,14 @@ def main(args):
     
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
-        
-        unique_patch_indices = torch.unique(patch_indices)
-        if len(unique_patch_indices) < len(patch_indices):
-            print("Duplicate patch indices found!")
-        else:
-            print("No duplicates in patch indices.") 
+        break 
+        # unique_patch_indices = torch.unique(patch_indices)
+        # if len(unique_patch_indices) < len(patch_indices):
+    #         print("Duplicate patch indices found!")
+    #     else:
+    #         print("No duplicates in patch indices.") 
          
-    train_eval_bagcls(train_dataset, test_dataset)
+    # train_eval_bagcls(train_dataset, test_dataset)
     
          
 if __name__ == '__main__':
