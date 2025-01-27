@@ -167,7 +167,6 @@ def main(args):
             train_dataset,
             optimizer, 
             n_classes, 
-            bag_weight, 
             logger, 
             loss_fn
             )
@@ -181,7 +180,6 @@ def main(args):
         pruning_model, 
         test_dataset,
         n_classes, 
-        bag_weight, 
         logger, 
         loss_fn
         )  
