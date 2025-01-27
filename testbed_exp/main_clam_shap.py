@@ -131,8 +131,12 @@ def main(args):
     print("Max features size: ", max_features_size) 
     
     print(black_bg_1.shape) 
-    for features, label, patch_indices in train_dataset: 
+    for data in train_dataset:
+        features_tensor, label_tensor, patch_indices, coordinates, spixels_indices = data   
         features, label = features.to(device), label[0].to(device) 
+        print(coordinates)
+        print(spixels_indices)
+        print(spixels_indices)
         # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
         # if len(unique_patch_indices) < len(patch_indices):
