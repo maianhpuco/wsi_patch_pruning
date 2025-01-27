@@ -16,6 +16,7 @@ import timm
 import yaml 
 import h5py 
 import openslide
+
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
 print("PROJECT DIR", PROJECT_DIR)
 sys.path.append(PROJECT_DIR) 
@@ -92,7 +93,7 @@ def main(args):
      
     pruning_model = pruning_model.to(args.device) 
     n_classes = 2 
-    epoch_num = 20
+    epoch_num = 4
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
  
@@ -136,9 +137,10 @@ def main(args):
     for data in train_dataset: 
         features, label, patch_indices, coordinates, spixels_indices = data   
         features, label = features.to(device), label[0].to(device) 
-        print(coordinates)
-        print(spixels_indices)
-        print(spixels_indices)
+        print(coordinates.shape)
+        print(spixels_indices.shape)
+        print(spixels_indices.shape)
+        break 
         # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
         # if len(unique_patch_indices) < len(patch_indices):
