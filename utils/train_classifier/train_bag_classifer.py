@@ -187,7 +187,7 @@ def eval(
     # Log the per-class accuracy and other metrics
     for i in range(n_classes):
         acc, correct, count = acc_logger.get_summary(i)
-        logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
+        logger.info(f"Class {i}: Accuracy: {acc:.3f}, Correct: {correct}/{count}")
 
     logger.info(f" Validation Loss: {val_loss:.4f}")
 
