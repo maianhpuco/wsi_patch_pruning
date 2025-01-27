@@ -123,6 +123,8 @@ def main(args):
     bg_1 = torch.randn(17135, 768) 
     black_bg_1 = torch.zeros_like(bg_1).float() 
     black_bg_1 = black_bg_1.unsqueeze(0) 
+    
+    max_features_size = 0 
     for features, _, _, _, _ in train_dataset:  # If using DataLoader
         batch_size = features.shape[0]
         if batch_size > max_features_size:
