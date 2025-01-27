@@ -155,7 +155,8 @@ def main(args):
         
         shap_values_avg = shap_values_sliced.mean(axis=1).squeeze()
         
-        print("shap_values_avg.shape", shap_values_avg.shape)  
+        print("shap_values_avg.shape", shap_values_avg.shape) 
+        print(shap_values_avg[:10]) 
         min_val = np.min(shap_values_avg)
         max_val = np.max(shap_values_avg)
         median_val = np.median(shap_values_avg)
