@@ -250,8 +250,10 @@ def train_epoch(
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
     
-    # Move data to device (GPU or CPU)a
-    for features, label, patch_indices  in dataset: 
+    # Move data to device (GPU or CPU)
+    for data in dataset: 
+        features, label, patch_indices, coordinates, spixels_indices = data    
+
         label = label.long()
         # print("features", features.shape)
         # print("indices", patch_indices)
@@ -346,8 +348,10 @@ def eval(
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
     
-    # Move data to device (GPU or CPU)a
-    for features, label, patch_indices  in dataset: 
+    # Move data to device (GPU or CPU)
+    for data in dataset: 
+        features, label, patch_indices, coordinates, spixels_indices = data    
+
         label = label.long()
         # print("features", features.shape)
         # print("indices", patch_indices)

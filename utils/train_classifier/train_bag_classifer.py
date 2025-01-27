@@ -108,8 +108,9 @@ def train_epoch(
     acc_logger = Accuracy_Logger(n_classes=n_classes)
     train_loss = 0.
     train_error = 0.
+    for data in dataset: 
+        features, label, patch_indices, coordinates, spixels_indices = data    
 
-    for features, label, patch_indices in dataset: 
         label = label.long()
         
         features, label = features.to(device), label[0].to(device)
@@ -160,7 +161,9 @@ def eval(
 
     # Disable gradient calculations during evaluation
     with torch.no_grad():
-        for features, label, patch_indices in dataset:
+        for data in dataset: 
+            features, label, patch_indices, coordinates, spixels_indices = data   
+        
             label = label.long()
             
             features, label = features.to(device), label[0].to(device)

@@ -131,8 +131,8 @@ def main(args):
     print("Max features size: ", max_features_size) 
     
     print(black_bg_1.shape) 
-    for data in train_dataset:
-        features_tensor, label_tensor, patch_indices, coordinates, spixels_indices = data   
+    for data in train_dataset: 
+        features, label, patch_indices, coordinates, spixels_indices = data   
         features, label = features.to(device), label[0].to(device) 
         print(coordinates)
         print(spixels_indices)
