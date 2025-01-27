@@ -151,8 +151,8 @@ def main(args):
         
         explainer = GradientExplainer(
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
-        shap_values, indexes = explainer.shap_values(
-            to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
+        # shap_values, indexes = explainer.shap_values(
+        #     to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
          
         print("Complete the first features after " , time.time()-start) 
         break 
