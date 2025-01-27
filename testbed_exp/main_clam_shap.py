@@ -122,24 +122,39 @@ def main(args):
     
     print("------Start Pruning") 
 
-    max_features_size = 0 
-    for features, _, _, _, _ in train_dataset:  # If using DataLoader
-        batch_size = features.shape[0]
-        if batch_size > max_features_size:
-            max_features_size = batch_size
+    # max_features_size = 0 
+    # for features, _, _, _, _ in train_dataset:  # If using DataLoader
+    #     batch_size = features.shape[0]
+    #     if batch_size > max_features_size:
+    #         max_features_size = batch_size
 
-    print("Max features size: ", max_features_size) 
-    bg_1 = torch.randn(max_features_size, 768) 
-    black_bg_1 = torch.zeros_like(bg_1).float() 
-    black_bg_1 = black_bg_1.unsqueeze(0) 
-    print("black_bg_1.shape", black_bg_1.shape)
+    # print("Max features size: ", max_features_size) 
+    # bg_1 = torch.randn(max_features_size, 768) 
+    # black_bg_1 = torch.zeros_like(bg_1).float() 
+    # black_bg_1 = black_bg_1.unsqueeze(0) 
+    # print("black_bg_1.shape", black_bg_1.shape)
     
     for data in train_dataset: 
+        start = time.time()
         features, label, patch_indices, coordinates, spixels_indices = data   
         features, label = features.to(device), label[0].to(device) 
         print(coordinates.shape)
         print(spixels_indices.shape)
         print(spixels_indices.shape)
+        
+        bg_1 = torch.randn(features.shape[0], 768) 
+        black_bg_1 = torch.zeros_like(bg_1).float() 
+        black_bg_1 = black_bg_1.unsqueeze(0) 
+        print("black_bg_1.shape", black_bg_1.shape)
+        
+        to_explain = features.unsqueeze(0) 
+        
+        explainer = GradientExplainer(
+            pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
+        shap_values, indexes = explainer.shap_values(
+            to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
+         
+        print("Complete the first features after " , time.time()-start) 
         break 
         # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
