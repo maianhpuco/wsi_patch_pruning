@@ -159,6 +159,9 @@ def main(args):
         features, label = features.to(device), label[0].to(device) 
         # Check for duplicate patch indices
         unique_patch_indices = torch.unique(patch_indices)
+        print(patch_indices[:10])
+        print(len(print(unique_patch_indices)))
+        
         if len(unique_patch_indices) < len(patch_indices):
             print("Duplicate patch indices found!")
         else:
