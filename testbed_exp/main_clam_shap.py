@@ -147,7 +147,7 @@ def main(args):
         explainer = GradientExplainer(
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
         shap_values, indexes = explainer.shap_values(
-            to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
+            to_explain, nsamples=100, ranked_outputs=2, rseed=123)  
         shap_values = shap_values[0]
         print(f"Shap values shape: {shap_values.shape}")  
         shap_values_sliced = shap_values[:, :, 0]  
@@ -163,7 +163,7 @@ def main(args):
         average_val = np.mean(shap_values_avg)
         variance_val = np.var(shap_values_avg) 
          
-        print(f"Min: {min_val:.4f}, Max: {max_val:.4f}, Median: {median_val:.4f}, Average: {average_val:.4f}, Variance: {variance_val:.4f}")
+        print(f"Min: {min_val}, Max: {max_val}, Median: {median_val}, Average: {average_val}, Variance: {variance_val}")
         print(f"---Complete the first features after {time.time()-start}" )
         print("------") 
      
