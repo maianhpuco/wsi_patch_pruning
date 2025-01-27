@@ -116,31 +116,7 @@ def main(args):
     print("Processing Pruning training dataset with length: ", len(train_dataset)) 
     print("Processing Pruning test dataset with length: ", len(test_dataset))  
     train_losses = [] 
-    # for epoch in range(epoch_num):
-    #     train_loss = train_epoch(
-    #         epoch, 
-    #         model, 
-    #         train_dataset,
-    #         optimizer, 
-    #         n_classes, 
-    #         bag_weight, 
-    #         logger, 
-    #         loss_fn
-    #         )
-    #     train_losses.append(train_loss)
 
-    
-    # print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
-    
-    # eval(
-    #     epoch, 
-    #     model, 
-    #     test_dataset,
-    #     n_classes, 
-    #     bag_weight, 
-    #     logger, 
-    #     loss_fn
-    #     ) 
     pruning_model = Bag_Classifier(
         gate=False, 
         size_arg="small", 
@@ -155,7 +131,7 @@ def main(args):
      
     pruning_model = pruning_model.to(args.device) 
     n_classes = 2 
-    epoch_num = 2 
+    epoch_num = 20
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
  
@@ -181,7 +157,7 @@ def main(args):
         logger, 
         loss_fn
         )  
-    print("Start Pruning") 
+    print("------Start Pruning") 
     
     for features, label, patch_indices in train_dataset: 
         features, label = features.to(device), label[0].to(device) 
