@@ -86,7 +86,7 @@ def main(args):
      
     pruning_model = pruning_model.to(args.device) 
     n_classes = 2 
-    epoch_num = 50
+    epoch_num = 100
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
  
@@ -103,7 +103,7 @@ def main(args):
         train_losses.append(train_loss)
 
     
-    print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
+    print("------Train loss:", [f"{loss:.4f}" for loss in train_losses])
     
     eval(
         pruning_model, 
@@ -147,7 +147,7 @@ def main(args):
         explainer = GradientExplainer(
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
         shap_values, indexes = explainer.shap_values(
-            to_explain, nsamples=100, ranked_outputs=2, rseed=123)  
+            to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
         shap_values = shap_values[0]
         print(f"Shap values shape: {shap_values.shape}")  
         shap_values_sliced = shap_values[:, :, 0]  
