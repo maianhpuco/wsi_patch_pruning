@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 import argparse
 import time   
-import timm 
 import yaml 
 import json 
 import glob 
