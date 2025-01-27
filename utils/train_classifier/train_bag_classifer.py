@@ -118,11 +118,7 @@ def train_epoch(
         Y_prob = F.softmax(logits, dim = 1) 
         Y_hat = torch.topk(logits, 1, dim = 1)[1]   
         
-        acc_logger.log(Y_hat, label)
-        
         loss = loss_fn(logits, label)
-        
-
             
         acc_logger.log(Y_hat, label) 
         
@@ -150,13 +146,11 @@ def train_epoch(
 
 
 def eval(
-    epoch, 
     model, 
     dataset, 
     n_classes, 
-    bag_weight, 
-    logger=None, 
-    loss_fn=None
+    logger, 
+    loss_fn
 ):
     model.eval()  # Set model to evaluation mode
     
@@ -183,8 +177,6 @@ def eval(
             acc_logger.log(Y_hat, label)  
             
             loss_value = loss.item()
-
-            total_loss = loss  # Only using bag-level loss for evaluation
 
             # Accumulate the loss and error
             val_loss += loss_value

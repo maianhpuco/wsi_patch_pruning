@@ -53,7 +53,7 @@ def load_config(config_file):
     return config
  
 def train_eval_bagcls(train_dataset, test_dataset):
-    
+    pass 
     
      
     # train_losses = [] 
@@ -84,11 +84,11 @@ def train_eval_bagcls(train_dataset, test_dataset):
     #     )
     # import torch.nn.functional as F
      
-    for features, label, patch_indices in train_dataset: 
-        features, label = features.to(device), label[0].to(device) 
-        print(features.shape)
-        explainer = GradientExplainer(model, features, local_smoothing=100)
-        break 
+    # for features, label, patch_indices in train_dataset: 
+    #     features, label = features.to(device), label[0].to(device) 
+    #     print(features.shape)
+    #     explainer = GradientExplainer(model, features, local_smoothing=100)
+    #     break 
         # explainer = GradientExplainer(model, features, local_smoothing=100) 
           
         # shap_values, indexes = explainer.shap_values(features, ranked_outputs=1)
@@ -175,7 +175,6 @@ def main(args):
     print("------Train loss:", [f"{loss:.2f}" for loss in train_losses])
     
     eval(
-        epoch, 
         pruning_model, 
         test_dataset,
         n_classes, 
