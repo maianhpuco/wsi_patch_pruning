@@ -158,13 +158,16 @@ def main(args):
         shap_values = shap_values[0]
         print(f"Shap values shape: {shap_values.shape}")  
         shap_values_sliced = shap_values[:, :, 0]  
+        print("shap_values_sliced.shape", shap_values_sliced.shape) 
+        
         shap_values_avg = shap_values_sliced.mean(axis=2).squeeze()
         print("shap_values_avg.shape", shap_values_avg.shape)  
         min_val = np.min(shap_values)
         max_val = np.max(shap_values)
         median_val = np.median(shap_values)
         average_val = np.mean(shap_values)
-        variance_val = np.var(shap_values)  
+        variance_val = np.var(shap_values) 
+         
         print(f"Min: {min_val:.4f}, Max: {max_val:.4f}, Median: {median_val:.4f}, Average: {average_val:.4f}, Variance: {variance_val:.4f}")
         print(f"---Complete the first features after {time.time()-start}" )
         print("------") 
