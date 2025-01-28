@@ -129,21 +129,18 @@ def main(args):
                 # _batch_features = model.forward_features(batch_image)
                 # class_token_features = _batch_features[:, 0, :]  
                 outputs = dinov2_model(**inputs)
+                last_hidden_states = outputs.last_hidden_state
+            
             
 
-            last_hidden_states = outputs.last_hidden_state
-            print(list(last_hidden_states.shape))
-
-            return
-
-                
             # 0. apply feature extraction here on batch_image
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
          
-            
-            _slide_features.append(class_token_features)
+            _slide_features.append(last_hidden_states)
             _patch_idxes.append(batch_idxes)
+            # _slide_features.append(class_token_features)
+            # _patch_idxes.append(batch_idxes)
             
         slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
