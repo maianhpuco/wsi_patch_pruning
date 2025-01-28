@@ -70,11 +70,14 @@ def main(args):
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
 
+    print("log1")
+
     start_slide = time.time()    
     
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     
+    print("log2")
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the image to 224x224
         transforms.ToTensor(),          # Convert the image to tensor
