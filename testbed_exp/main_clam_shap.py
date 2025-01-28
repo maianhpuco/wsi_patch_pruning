@@ -158,7 +158,11 @@ def main(args):
         
         shap_values = shap_values # Convert shap_values to NumPy array if needed
         indexes = indexes  # Convert indexes to NumPy array if needed
-
+        if isinstance(shap_values, torch.Tensor):
+            shap_values = shap_values.cpu().numpy()  # Move to CPU (if needed) and convert to numpy
+        if isinstance(indexes, torch.Tensor):
+            indexes = indexes.cpu().numpy()  # Move to CPU (if needed) and convert to numpy
+        
         # Specify the output HDF5 file path
         output_file = os.path.join(args.important_scores_path, f"{file_basename}.h5")
 
