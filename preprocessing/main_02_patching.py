@@ -260,6 +260,7 @@ if __name__ == '__main__':
 
         # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
         example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json')] 
+        
         print("Json count", len(example_list))
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
         print("Available items:", len(avai_items))
