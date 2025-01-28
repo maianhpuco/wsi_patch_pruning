@@ -94,8 +94,11 @@ def main(args):
         
         _slide_features = []
         _patch_idxes = []
+
+        count = 0
         
         for batch in dataloader:
+            count += 1
             batch_image = batch['image']
             batch_patch_info = batch['patch_info']
             
@@ -134,6 +137,7 @@ def main(args):
             _patch_idxes.append(batch_idxes)
             # _slide_features.append(class_token_features)
             # _patch_idxes.append(batch_idxes)
+            print(f"count: {count}")
             
         slide_features = torch.cat(_slide_features, dim=0)  # Concatenate all features for the slide on GPU
         slide_patch_idxes = torch.cat([torch.tensor(idxes) for idxes in _patch_idxes], dim=0) 
