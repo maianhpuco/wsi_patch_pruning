@@ -133,6 +133,7 @@ def main(args):
     # black_bg_1 = torch.zeros_like(bg_1).float() 
     # black_bg_1 = black_bg_1.unsqueeze(0) 
     # print("black_bg_1.shape", black_bg_1.shape)
+    
     count=1
     total = len(train_dataset)
     
@@ -179,7 +180,8 @@ def main(args):
             # Create datasets for shap_values and indexes
             f.create_dataset('shap_values_avg', data=shap_values_avg)
             f.create_dataset('indexes', data=indexes)
-
+            f.create_dataset("coordinates", data=coordinates) 
+            
         print(f"Saved {count}/{total} shap_values and indexes to {output_file}")  
         count+=1 
         

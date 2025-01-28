@@ -70,4 +70,5 @@ class FeaturesDataset(Dataset):
         # features_tensor = self.transform(features_tensor)
         if self.transform:
             features_tensor = self.transform(features_tensor)
+         
         return features_tensor, label_tensor, patch_indices, coordinates, spixels_indices, file_basename 
