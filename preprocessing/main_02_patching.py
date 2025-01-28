@@ -266,8 +266,12 @@ if __name__ == '__main__':
         items_not_in_json = [item for item in example_list if item not in avai_items]
         removed =['tumor_057', 'tumor_075', 'tumor_014']
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
-        example_list = items_not_in_json    
-        
+        # example_list = items_not_in_json    
+        sorted_list = sorted(items_not_in_json) 
+        last_50 = items_not_in_json[-50:] 
+        the_rest = items_not_in_json[:-50]
+        example_list = the_rest 
+     
         print("Total number to process:", len(example_list))
     main(args) 
     
