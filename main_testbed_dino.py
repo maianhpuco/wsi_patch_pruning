@@ -84,6 +84,8 @@ def main(args):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
     ]) 
     
+    print("len(wsi_paths)", len(wsi_paths))
+    print("wsi_paths", wsi_paths)
     for wsi_path in wsi_paths:
         print("wsi_path", wsi_path)
         start_slide = time.time()
