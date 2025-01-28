@@ -26,7 +26,7 @@ import torch
 from datasets import load_dataset
 
 image_processor = AutoImageProcessor.from_pretrained("facebook/dinov2-base")
-model = Dinov2Model.from_pretrained("facebook/dinov2-base")
+dinov2_model = Dinov2Model.from_pretrained("facebook/dinov2-base")
 
 SCORING_FUNCTION_MAP = {
     "get_scoring_do_nothing": get_scoring_do_nothing,
@@ -82,6 +82,7 @@ def main(args):
     ]) 
     
     for wsi_path in wsi_paths:
+        print("wsi_path", wsi_path)
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         
@@ -96,6 +97,7 @@ def main(args):
         _patch_idxes = []
         
         for batch in dataloader:
+            print("batch", batch)
             batch_image = batch['image']
             batch_patch_info = batch['patch_info']
             
@@ -121,7 +123,7 @@ def main(args):
             with torch.no_grad():  # Disable gradient calculation for inference
                 # _batch_features = model.forward_features(batch_image)
                 # class_token_features = _batch_features[:, 0, :]  
-                outputs = model(**inputs)
+                outputs = dinov2_model(**inputs)
             
 
             last_hidden_states = outputs.last_hidden_state
