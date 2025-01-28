@@ -262,7 +262,7 @@ if __name__ == '__main__':
          
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
         items_not_in_json = [item for item in example_list if item not in avai_items]
-        removed =['tumor_057']
+        removed =['tumor_057', 'tumor_075']
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         example_list = items_not_in_json    
         
