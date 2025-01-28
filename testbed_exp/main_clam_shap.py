@@ -59,7 +59,8 @@ def main(args):
     
     train_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path, 
-        basename_list = args.train_list, 
+        basename_list=args.train_list + args.test_list,
+        # basename_list = args.train_list, 
         transform=None
     )
     
@@ -179,7 +180,7 @@ def main(args):
             f.create_dataset('shap_values_avg', data=shap_values_avg)
             f.create_dataset('indexes', data=indexes)
 
-        print(f"Saved{count}/{total}shap_values and indexes to {output_file}")  
+        print(f"Saved {count}/{total} shap_values and indexes to {output_file}")  
         count+=1 
         
         
