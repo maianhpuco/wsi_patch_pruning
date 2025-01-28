@@ -14,4 +14,7 @@
 
 ```python main_testbed_superpixel.py``` -> loop through each slide, then loop through all superixel and return the patch (image) in the whole slide.
 
-
+- Train a Bag Classifier alone:
+2025-01-28 14:15:32,674 - Class 0: Accuracy: 0.667, Correct: 8/12
+2025-01-28 14:15:32,674 - Class 1: Accuracy: 0.333, Correct: 2/6
+2025-01-28 14:15:32,674 -  Validation Loss: 2.8346 
