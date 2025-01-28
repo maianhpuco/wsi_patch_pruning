@@ -96,19 +96,20 @@ def main(args):
     else:
         print(f"Directory {args.checkpoint_path} already exists")
     checkpoint_file = os.path.join(args.checkpoint_path, "bag_classifer.pth")
-    for epoch in range(epoch_num):
-        train_loss = train_epoch(
-            epoch, 
-            pruning_model, 
-            train_dataset,
-            optimizer, 
-            n_classes, 
-            logger, 
-            loss_fn, 
-            checkpoint_filename=checkpoint_file, 
-            save_last_epoch_checkpoint=True 
-            )
-        train_losses.append(train_loss)
+    
+    # for epoch in range(epoch_num):
+    #     train_loss = train_epoch(
+    #         epoch, 
+    #         pruning_model, 
+    #         train_dataset,
+    #         optimizer, 
+    #         n_classes, 
+    #         logger, 
+    #         loss_fn, 
+    #         checkpoint_filename=checkpoint_file, 
+    #         save_last_epoch_checkpoint=True 
+    #         )
+    #     train_losses.append(train_loss)
 
     
     print("------Train loss:", [f"{loss:.4f}" for loss in train_losses])
