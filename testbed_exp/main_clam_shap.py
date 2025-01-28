@@ -132,6 +132,8 @@ def main(args):
     # black_bg_1 = torch.zeros_like(bg_1).float() 
     # black_bg_1 = black_bg_1.unsqueeze(0) 
     # print("black_bg_1.shape", black_bg_1.shape)
+    count=1
+    total = len(train_dataset)
     
     for data in train_dataset: 
         start = time.time()
@@ -162,18 +164,23 @@ def main(args):
             shap_values = shap_values.cpu().numpy()  # Move to CPU (if needed) and convert to numpy
         if isinstance(indexes, torch.Tensor):
             indexes = indexes.cpu().numpy()  # Move to CPU (if needed) and convert to numpy
+        shap_values = shap_values[0]
+        # print(f"Shap values shape: {shap_values.shape}")  
+        shap_values_sliced = shap_values[:, :, 0]  
+        # print("shap_values_sliced.shape", shap_values_sliced.shape) 
         
+        shap_values_avg = shap_values_sliced.mean(axis=1).squeeze() 
         # Specify the output HDF5 file path
         output_file = os.path.join(args.important_scores_path, f"{file_basename[0]}.h5")
-
+        
         # Save shap_values and indexes to an HDF5 file
         with h5py.File(output_file, 'w') as f:
             # Create datasets for shap_values and indexes
-            f.create_dataset('shap_values', data=shap_values)
+            f.create_dataset('shap_values_avg', data=shap_values_avg)
             f.create_dataset('indexes', data=indexes)
 
-        print(f"Saved shap_values and indexes to {output_file}")  
-        
+        print(f"Saved{count}/{total}shap_values and indexes to {output_file}")  
+        count+=1 
         
         
         # shap_values = shap_values[0]
@@ -228,7 +235,7 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoint_path = config.get('CHECKPOINT_PATH') 
-        args.important_scores_path = config.get('IMPORTANT_SCORES_PATH') 
+        args.important_scores_path = config.get('IMPORTANT_SCORES_PATH2') 
        
         #------------------  
         if not os.path.exists(args.checkpoint_path):
