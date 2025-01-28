@@ -156,8 +156,8 @@ def main(args):
             to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
         
         
-        shap_values = shap_values.cpu() # Convert shap_values to NumPy array if needed
-        indexes = indexes.cpu()  # Convert indexes to NumPy array if needed
+        shap_values = shap_values # Convert shap_values to NumPy array if needed
+        indexes = indexes  # Convert indexes to NumPy array if needed
 
         # Specify the output HDF5 file path
         output_file = os.path.join(args.important_scores_path, f"{file_basename}.h5")
