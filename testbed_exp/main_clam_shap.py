@@ -95,7 +95,7 @@ def main(args):
         print(f"Created directory: {args.checkpoint_path}")
     else:
         print(f"Directory {args.checkpoint_path} already exists")
-         
+    checkpoint_file = os.path.join(args.checkpoint_path, "bag_classifer.pth")
     for epoch in range(epoch_num):
         train_loss = train_epoch(
             epoch, 
@@ -105,7 +105,7 @@ def main(args):
             n_classes, 
             logger, 
             loss_fn, 
-            checkpoint_filename=args.checkpoint_path, 
+            checkpoint_filename=checkpoint_file, 
             save_last_epoch_checkpoint=True 
             )
         train_losses.append(train_loss)
@@ -120,7 +120,7 @@ def main(args):
         n_classes, 
         logger, 
         loss_fn, 
-        checkpoint_filename=args.checkpoint_path 
+        checkpoint_filename=checkpoint_file
         )  
     
     print("------Start Pruning") 
