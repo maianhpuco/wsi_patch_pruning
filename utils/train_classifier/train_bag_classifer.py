@@ -132,7 +132,7 @@ def train_epoch(
     train_loss = 0.
     train_error = 0.
     for data in dataset: 
-        features, label, patch_indices, coordinates, spixels_indices = data    
+        features, label, patch_indices, coordinates, spixels_indices, file_basename = data    
 
         label = label.long()
         
@@ -196,7 +196,7 @@ def eval(
     # Disable gradient calculations during evaluation
     with torch.no_grad():
         for data in dataset: 
-            features, label, patch_indices, coordinates, spixels_indices = data   
+            features, label, patch_indices, coordinates, spixels_indices, file_basename= data   
         
             label = label.long()
             

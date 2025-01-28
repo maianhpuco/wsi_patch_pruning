@@ -90,12 +90,7 @@ def main(args):
     file_name = os.path.basename(__file__)
     logger = setup_logger(f'./logs/pruning_{file_name}.txt')    
     
-    if not os.path.exists(args.checkpoint_path):
-        os.makedirs(args.checkpoint_path)
-        print(f"Created directory: {args.checkpoint_path}")
-    else:
-        print(f"Directory {args.checkpoint_path} already exists")
-    checkpoint_file = os.path.join(args.checkpoint_path, "bag_classifer.pth")
+
     
     # for epoch in range(epoch_num):
     #     train_loss = train_epoch(
@@ -140,7 +135,7 @@ def main(args):
     
     for data in train_dataset: 
         start = time.time()
-        features, label, patch_indices, coordinates, spixels_indices = data   
+        features, label, patch_indices, coordinates, spixels_indices, file_basename = data   
         features, label = features.to(device), label[0].to(device) 
         # print(coordinates.shape)
         # print(spixels_indices.shape)
@@ -159,24 +154,46 @@ def main(args):
             pruning_model, black_bg_1, local_smoothing=100, batch_size=1)  
         shap_values, indexes = explainer.shap_values(
             to_explain, nsamples=10, ranked_outputs=2, rseed=123)  
-        shap_values = shap_values[0]
-        print(f"Shap values shape: {shap_values.shape}")  
-        shap_values_sliced = shap_values[:, :, 0]  
-        print("shap_values_sliced.shape", shap_values_sliced.shape) 
         
-        shap_values_avg = shap_values_sliced.mean(axis=1).squeeze()
         
-        print("shap_values_avg.shape", shap_values_avg.shape) 
-        print(shap_values_avg[:10]) 
-        min_val = np.min(shap_values_avg)
-        max_val = np.max(shap_values_avg)
-        median_val = np.median(shap_values_avg)
-        average_val = np.mean(shap_values_avg)
-        variance_val = np.var(shap_values_avg) 
+        shap_values = np.array(shap_values)  # Convert shap_values to NumPy array if needed
+        indexes = np.array(indexes)  # Convert indexes to NumPy array if needed
+
+        # Specify the output HDF5 file path
+        output_file = os.path.join(args.important_scores_path, f"{file_basename}.h5")
+
+        # Save shap_values and indexes to an HDF5 file
+        with h5py.File(output_file, 'w') as f:
+            # Create datasets for shap_values and indexes
+            f.create_dataset('shap_values', data=shap_values)
+            f.create_dataset('indexes', data=indexes)
+
+        print(f"Saved shap_values and indexes to {output_file}")  
+        
+        
+        
+        # shap_values = shap_values[0]
+        # print(f"Shap values shape: {shap_values.shape}")  
+        # shap_values_sliced = shap_values[:, :, 0]  
+        # print("shap_values_sliced.shape", shap_values_sliced.shape) 
+        
+        # shap_values_avg = shap_values_sliced.mean(axis=1).squeeze()
+        
          
-        print(f"Min: {min_val}, Max: {max_val}, Median: {median_val}, Average: {average_val}, Variance: {variance_val}")
-        print(f"---Complete the first features after {time.time()-start}" )
-        print("------") 
+        # print("shap_values_avg.shape", shap_values_avg.shape) 
+        # print(shap_values_avg[:10]) 
+        # min_val = np.min(shap_values_avg)
+        # max_val = np.max(shap_values_avg)
+        # median_val = np.median(shap_values_avg)
+        # average_val = np.mean(shap_values_avg)
+        # variance_val = np.var(shap_values_avg) 
+         
+        # print(f"Min: {min_val}, Max: {max_val}, Median: {median_val}, Average: {average_val}, Variance: {variance_val}")
+        # print(f"---Complete the first features after {time.time()-start}" )
+        # print("------") 
+        
+        
+
      
         # shap_values, indexes = explainer.shap_values(to_explain_padded, nsamples=3, ranked_outputs=2, rseed=123)   
         # unique_patch_indices = torch.unique(patch_indices)
@@ -207,7 +224,24 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoint_path = config.get('CHECKPOINT_PATH') 
-         
+        args.important_scores_path = config.get('IMPORTANT_SCORES_PATH') 
+       
+        #------------------  
+        if not os.path.exists(args.checkpoint_path):
+            os.makedirs(args.checkpoint_path)
+            print(f"Created directory: {args.checkpoint_path}")
+        else:
+            print(f"Directory {args.checkpoint_path} already exists")
+        checkpoint_file = os.path.join(args.checkpoint_path, "bag_classifer.pth") 
+        #------------------
+        if not os.path.exists(args.important_scores_path):
+            os.makedirs(args.important_scores_path)
+            print(f"Created directory: {args.important_scores_path}")
+        else:
+            print(f"Directory {args.important_scores_path} already exists")
+        
+        
+        
         print(args.features_h5_path)
         
         os.makedirs(args.features_h5_path, exist_ok=True)  

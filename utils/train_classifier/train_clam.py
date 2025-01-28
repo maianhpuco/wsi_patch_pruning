@@ -252,7 +252,7 @@ def train_epoch(
     
     # Move data to device (GPU or CPU)
     for data in dataset: 
-        features, label, patch_indices, coordinates, spixels_indices = data    
+        features, label, patch_indices, coordinates, spixels_indices, file_basename= data    
 
         label = label.long()
         # print("features", features.shape)
@@ -350,7 +350,7 @@ def eval(
     
     # Move data to device (GPU or CPU)
     for data in dataset: 
-        features, label, patch_indices, coordinates, spixels_indices = data    
+        features, label, patch_indices, coordinates, spixels_indices, file_basename= data    
 
         label = label.long()
         # print("features", features.shape)
