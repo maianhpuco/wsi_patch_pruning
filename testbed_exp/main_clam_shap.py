@@ -164,7 +164,7 @@ def main(args):
             indexes = indexes.cpu().numpy()  # Move to CPU (if needed) and convert to numpy
         
         # Specify the output HDF5 file path
-        output_file = os.path.join(args.important_scores_path, f"{file_basename}.h5")
+        output_file = os.path.join(args.important_scores_path, f"{file_basename[0]}.h5")
 
         # Save shap_values and indexes to an HDF5 file
         with h5py.File(output_file, 'w') as f:
