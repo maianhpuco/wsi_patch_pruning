@@ -70,24 +70,18 @@ def main(args):
         # You can add other transformations like RandomHorizontalFlip, RandomRotation, etc.
     ])
 
-    print("log1")
-
     start_slide = time.time()    
     
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
     
-    print("log2")
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # Resize the image to 224x224
         transforms.ToTensor(),          # Convert the image to tensor
         #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),  # Normalize with ImageNet stats
     ]) 
     
-    print("len(wsi_paths)", len(wsi_paths))
-    print("wsi_paths", wsi_paths)
     for wsi_path in wsi_paths:
-        print("wsi_path", wsi_path)
         start_slide = time.time()
         slide_basename = os.path.basename(wsi_path).split(".")[0]
         
@@ -102,7 +96,6 @@ def main(args):
         _patch_idxes = []
         
         for batch in dataloader:
-            print("batch", batch)
             batch_image = batch['image']
             batch_patch_info = batch['patch_info']
             
