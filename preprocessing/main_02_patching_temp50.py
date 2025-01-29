@@ -266,7 +266,7 @@ if __name__ == '__main__':
         wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
         wsi_name = [os.path.basename(path).split(".")[0] for path in wsi_paths if os.path.basename(path).split(".")[0]] 
         print(wsi_name)
-        example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json') and i in wsi_name] 
+        example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json') and i.split(".")[0] in wsi_name] 
         
         print("Json count", len(example_list))
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
