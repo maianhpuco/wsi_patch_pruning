@@ -269,17 +269,20 @@ if __name__ == '__main__':
         print("Available items:", len(avai_items))
         items_not_in_json = [item for item in example_list if item not in avai_items]
         removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091']
+        
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
         sorted_list = sorted(items_not_in_json) 
-        last_50 = items_not_in_json[-50:] 
+        
+        last_50 = sorted_list[-50:] 
         # last_50 = 
-        the_rest = items_not_in_json[:-50]
+        the_rest = sorted_list[:-50]
         final_example_list = last_50 
+        
         print(last_50)
      
         print("Total number to process:", len(final_example_list))
         
-    main(args) 
+    # main(args) 
     
     # ['normal_003.tif', 'normal_047.tif', 'normal_051.tif', 'normal_016.tif', 'normal_093.tif', 'normal_084.tif', 'normal_022.tif', 'normal_087.tif', 'normal_088.tif', 'normal_024.tif', 'normal_031.tif', 'normal_039.tif', 'normal_101.tif', 'normal_078.tif', 'normal_114.tif', 'normal_148.tif', 'normal_155.tif', 'tumor_049.tif', 'tumor_048.tif', 'tumor_009.tif', 'tumor_024.tif', 'tumor_010.tif', 'tumor_012.tif', 'tumor_067.tif', 'tumor_014.tif', 'tumor_015.tif', 'tumor_057.tif', 'tumor_084.tif', 'tumor_086.tif', 'tumor_101.tif']
