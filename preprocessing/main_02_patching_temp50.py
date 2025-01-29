@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
         # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
         wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
-        wsi_name = [path for path in wsi_paths if os.path.basename(path).split(".")[0]] 
+        wsi_name = [os.path.basename(path).split(".")[0] for path in wsi_paths if os.path.basename(path).split(".")[0]] 
         print(wsi_name)
         example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json') and i in wsi_paths] 
         
@@ -272,6 +272,7 @@ if __name__ == '__main__':
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
         print("Available items:", len(avai_items))
         items_not_in_json = [item for item in example_list if item not in avai_items]
+        
         removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091']
         
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
