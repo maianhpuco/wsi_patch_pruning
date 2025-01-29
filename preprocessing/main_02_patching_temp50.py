@@ -274,7 +274,7 @@ if __name__ == '__main__':
         print("Available items:", len(avai_items))
         items_not_in_json = [item for item in example_list if item not in avai_items]
         
-        removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091']
+        removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091', 'normal_037']
         
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
