@@ -268,13 +268,14 @@ if __name__ == '__main__':
         avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
         print("Available items:", len(avai_items))
         items_not_in_json = [item for item in example_list if item not in avai_items]
-        removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030']
+        removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091']
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
         sorted_list = sorted(items_not_in_json) 
         last_50 = items_not_in_json[-50:] 
         the_rest = items_not_in_json[:-50]
         final_example_list = last_50 
+        print(last_50)
      
         print("Total number to process:", len(final_example_list))
         
