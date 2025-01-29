@@ -219,9 +219,9 @@ def plot_foreground_boundaries_on_original_image(original_image, superpixel_labe
 
 def processing_superpixel(slide_path, JSON_SAVE_PATH):
     
-    print("Start processing: ", slide_path)
-    basename = os.path.basename(slide_path).split('.')[0]
-    os.makedirs(os.path.dirname(JSON_SAVE_PATH), exist_ok=True)
+    # print("Start processing: ", slide_path)
+    # basename = os.path.basename(slide_path).split('.')[0]
+    # os.makedirs(os.path.dirname(JSON_SAVE_PATH), exist_ok=True)
     # print(os.listdir(os.path.dirname(JSON_SAVE_PATH)))
 
     ############################segment ############################################
@@ -324,6 +324,7 @@ if __name__=='__main__':
     wsi_basenames = items_not_in_json    
 
     print(">>>>count", len(wsi_basenames))
+    print("example wsi_basenames", wsi_basenames)
     
     
      
