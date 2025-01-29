@@ -272,11 +272,11 @@ if __name__ == '__main__':
         
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
-        sorted_list = sorted(items_not_in_json) 
+        # sorted_list = sorted(items_not_in_json) 
         
-        last_50 = sorted_list[-50:] 
+        last_50 = items_not_in_json[-50:] 
         # last_50 = 
-        the_rest = sorted_list[:-50]
+        the_rest = items_not_in_json[:-50]
         final_example_list = last_50 
         
         print(last_50)
