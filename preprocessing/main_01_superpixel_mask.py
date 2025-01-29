@@ -276,7 +276,7 @@ def processing_superpixel(slide_path, JSON_SAVE_PATH):
         json.dump(data_to_save, json_file)
 
     # Print confirmation
-    print("All results saved successfully in one JSON file!")
+    print(f"----> All results saved successfully in one JSON file: {JSON_SAVE_PATH}")
     
 def main(args):
     total = len(wsi_basenames)
@@ -290,7 +290,7 @@ def main(args):
         print(JSON_SAVE_PATH) 
         processing_superpixel(slide_path, JSON_SAVE_PATH) 
         count += 1 
-        print("Time (mins): ", (time.time()-start)/60.00) 
+        print(" -> Time (mins): ", (time.time()-start)/60.00) 
 
 
 
@@ -324,7 +324,7 @@ if __name__=='__main__':
     wsi_basenames = items_not_in_json    
 
     print(">>>>count", len(wsi_basenames))
-    print("example wsi_basenames", wsi_basenames)
+    print("example wsi_basenames", wsi_basenames[:10])
     
     
      
