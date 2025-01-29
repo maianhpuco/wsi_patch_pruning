@@ -184,64 +184,64 @@ def main(args):
     count=0
     
     for slide_index in range(len(superpixel_dataset)):
-        try:  
-            print("-----------Counting", count+1,'/', len(superpixel_dataset)) 
-            
-            superpixel_datas, wsi_path = superpixel_dataset[slide_index]
-            print(wsi_path)
-            slide = openslide.open_slide(wsi_path)  
-            print(len(superpixel_datas))
-            
-            slide_basename = os.path.basename(wsi_path).split(".")[0]
-            print("Basename:", slide_basename)
-            
-            save_dir = os.path.join(args.patch_path, slide_basename) 
-            
-            if os.path.exists(save_dir):
-                shutil.rmtree(save_dir)  # Remove the existing directory and its contents
-            os.makedirs(save_dir) 
-            
-            start_slide = time.time()
-            total = 0 
-            
-            for each_superpixel in tqdm(superpixel_datas):
-                foreground_idx = each_superpixel['foreground_idx'] 
-                # print("Processing foreground:", foreground_idx)
-                
-                xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
-                superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
-
-                
-                region_cropped = get_region_original_size(slide, xywh_abs_bbox)
-                superpixel_np = np.array(region_cropped)
-                
-                # superpixel_np = utils.read_region_from_npy(
-                #     args.spixel_path, 
-                #     slide_basename, 
-                #     foreground_idx
-                #     )
-                
-                num_patch = save_patches_with_updated_bboxes(
-                    superpixel_np, 
-                    superpixel_extrapolated, 
-                    xywh_abs_bbox, 
-                    patch_size=(args.patch_size, args.patch_size), 
-                    coverage_threshold=0.5, 
-                    edge_threshold=20, 
-                    spixel_idx=foreground_idx, 
-                    save_dir=save_dir)
-
-                total += num_patch 
-                
-            print("Total patch in this slide: ", total)
-            print("Finish after ", time.time()-start_slide)
-            # print('Complete an Slide after: ', time.time()-start_slide)
-            count+=1 
+        # try:  
+        print("-----------Counting", count+1,'/', len(superpixel_dataset)) 
         
-        except Exception as e:
-            print(f"Error processing slide {slide_index}: {e}")
-            count+=1 
-            continue
+        superpixel_datas, wsi_path = superpixel_dataset[slide_index]
+        print(wsi_path)
+        slide = openslide.open_slide(wsi_path)  
+        print(len(superpixel_datas))
+        
+        slide_basename = os.path.basename(wsi_path).split(".")[0]
+        print("Basename:", slide_basename)
+        
+        save_dir = os.path.join(args.patch_path, slide_basename) 
+        
+        if os.path.exists(save_dir):
+            shutil.rmtree(save_dir)  # Remove the existing directory and its contents
+        os.makedirs(save_dir) 
+        
+        start_slide = time.time()
+        total = 0 
+        
+        for each_superpixel in tqdm(superpixel_datas):
+            foreground_idx = each_superpixel['foreground_idx'] 
+            # print("Processing foreground:", foreground_idx)
+            
+            xywh_abs_bbox = each_superpixel['xywh_abs_bbox']
+            superpixel_extrapolated = each_superpixel['superpixel_extrapolated']
+
+            
+            region_cropped = get_region_original_size(slide, xywh_abs_bbox)
+            superpixel_np = np.array(region_cropped)
+            
+            # superpixel_np = utils.read_region_from_npy(
+            #     args.spixel_path, 
+            #     slide_basename, 
+            #     foreground_idx
+            #     )
+            
+            num_patch = save_patches_with_updated_bboxes(
+                superpixel_np, 
+                superpixel_extrapolated, 
+                xywh_abs_bbox, 
+                patch_size=(args.patch_size, args.patch_size), 
+                coverage_threshold=0.5, 
+                edge_threshold=20, 
+                spixel_idx=foreground_idx, 
+                save_dir=save_dir)
+
+            total += num_patch 
+            
+        print("Total patch in this slide: ", total)
+        print("Finish after ", time.time()-start_slide)
+        # print('Complete an Slide after: ', time.time()-start_slide)
+        count+=1 
+        
+        # except Exception as e:
+        #     print(f"Error processing slide {slide_index}: {e}")
+        #     count+=1 
+        #     continue
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=bool, default=False)
