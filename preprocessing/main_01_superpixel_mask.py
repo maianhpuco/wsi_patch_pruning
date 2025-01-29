@@ -314,7 +314,6 @@ if __name__=='__main__':
     items_not_in_json = [item for item in slide_items if item not in json_items] 
     wsi_basenames = items_not_in_json    
     print(len(json_items))
-    print(len(set(json_items)))
     print(">>>>count", len(wsi_basenames))
     
     
