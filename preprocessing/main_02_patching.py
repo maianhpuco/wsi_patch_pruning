@@ -259,21 +259,34 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
 
         # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
-        example_list = [i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json')] 
+        wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
+        wsi_name = [os.path.basename(path).split(".")[0] for path in wsi_paths if os.path.basename(path).split(".")[0]] 
+        # print(wsi_name)
+        example_list =set([i.split('.')[0] for i in os.listdir(args.json_path) if i.endswith('.json') and i.split(".")[0] in wsi_name])
         
         print("Json count", len(example_list))
-        avai_items = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+        avai_items = set([i.split('.')[0] for i in os.listdir(args.patch_path)])
         print("Available items:", len(avai_items))
         items_not_in_json = [item for item in example_list if item not in avai_items]
-        removed =['tumor_057', 'tumor_075', 'tumor_014', 'normal_025', 'tumor_050', 'tumor_030', 'normal_091']
+        
+        removed =['tumor_057', 'tumor_075', 'tumor_014','tumor_050', 'tumor_030','normal_091', 'normal_037']
+        
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
-        sorted_list = sorted(items_not_in_json) 
-        last_50 = items_not_in_json[-50:] 
-        the_rest = items_not_in_json[:-50]
-        example_list = the_rest 
+        # sorted_list = sorted(items_not_in_json) 
+        # last_100 = ['tumor_061', 'tumor_007', 'tumor_008', 'tumor_062', 'tumor_011', 'tumor_066', 'tumor_065', 'tumor_013', 'tumor_063', 'tumor_016', 'tumor_069', 'tumor_017', 'tumor_108', 'tumor_072', 'tumor_019', 'tumor_070', 'tumor_018', 'tumor_020', 'tumor_071', 'tumor_074', 'tumor_077', 'tumor_079', 'tumor_076', 'tumor_080', 'tumor_081', 'tumor_082', 'tumor_085', 'tumor_083', 'tumor_087', 'tumor_088', 'tumor_093', 'tumor_090', 'tumor_094', 'tumor_089', 'tumor_092', 'tumor_096', 'tumor_098', 'tumor_097', 'tumor_099', 'tumor_095', 'tumor_100', 'tumor_101', 'tumor_105', 'tumor_104', 'tumor_107', 'tumor_106', 'tumor_102', 'tumor_109', 'tumor_110', 'tumor_111']
+        last_50 = ['test_108', 'test_109', 'tumor_052', 'test_105', 'test_110', 'test_111', 'test_112', 'tumor_064', 'test_116', 'tumor_091', 'test_115', 'test_113', 'tumor_103', 'test_114', 'tumor_055', 'test_117', 'tumor_035', 'tumor_073', 'test_118', 'test_119', 'test_122', 'tumor_051', 'test_121', 'tumor_042', 'tumor_044', 'test_120', 'test_124', 'test_123', 'tumor_054', 'test_128', 'test_125', 'tumor_058', 'test_129', 'tumor_068', 'test_126', 'tumor_022', 'tumor_078', 'test_130', 'tumor_056', 'tumor_002', 'tumor_059', 'tumor_001', 'tumor_029', 'tumor_046', 'tumor_003', 'tumor_060', 'tumor_005', 'tumor_004', 'tumor_021', 'tumor_028', 'tumor_006', 'tumor_061', 'tumor_007', 'tumor_008', 'tumor_062', 'tumor_011', 'tumor_066', 'tumor_065', 'tumor_013', 'tumor_063', 'tumor_016', 'tumor_069', 'tumor_017', 'tumor_108', 'tumor_072', 'tumor_019', 'tumor_070', 'tumor_018', 'tumor_020', 'tumor_071', 'tumor_074', 'tumor_077', 'tumor_079', 'tumor_076', 'tumor_080', 'tumor_081', 'tumor_082', 'tumor_085', 'tumor_083', 'tumor_087', 'tumor_088', 'tumor_093', 'tumor_090', 'tumor_094', 'tumor_089', 'tumor_092', 'tumor_096', 'tumor_098', 'tumor_097', 'tumor_099', 'tumor_095', 'tumor_100', 'tumor_105', 'tumor_104', 'tumor_107', 'tumor_106', 'tumor_102', 'tumor_109', 'tumor_110', 'tumor_111']
+        # last_50 = items_not_in_json[-100:] 
+        # last_50 = 
+        # the_rest = items_not_in_json[:-50]
+        the_rest = [i for i in items_not_in_json if i not in last_50]
+        
+        final_example_list = last_50 
+        
+        print(last_50)
      
-        print("Total number to process:", len(example_list))
+        print("Total number to process:", len(final_example_list)) 
+        
     main(args) 
     
     # ['normal_003.tif', 'normal_047.tif', 'normal_051.tif', 'normal_016.tif', 'normal_093.tif', 'normal_084.tif', 'normal_022.tif', 'normal_087.tif', 'normal_088.tif', 'normal_024.tif', 'normal_031.tif', 'normal_039.tif', 'normal_101.tif', 'normal_078.tif', 'normal_114.tif', 'normal_148.tif', 'normal_155.tif', 'tumor_049.tif', 'tumor_048.tif', 'tumor_009.tif', 'tumor_024.tif', 'tumor_010.tif', 'tumor_012.tif', 'tumor_067.tif', 'tumor_014.tif', 'tumor_015.tif', 'tumor_057.tif', 'tumor_084.tif', 'tumor_086.tif', 'tumor_101.tif']
