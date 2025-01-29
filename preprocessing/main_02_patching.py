@@ -281,7 +281,7 @@ if __name__ == '__main__':
         # the_rest = items_not_in_json[:-50]
         the_rest = [i for i in items_not_in_json if i not in last_50]
         
-        final_example_list = last_50 
+        final_example_list = the_rest
         
         print(last_50)
      
