@@ -278,10 +278,12 @@ if __name__ == '__main__':
         items_not_in_json = [item for item in items_not_in_json if item not in removed] 
         # example_list = items_not_in_json    
         # sorted_list = sorted(items_not_in_json) 
-        
-        last_50 = items_not_in_json[-50:] 
+        last_50 = ['tumor_061', 'tumor_007', 'tumor_008', 'tumor_062', 'tumor_011', 'tumor_066', 'tumor_065', 'tumor_013', 'tumor_063', 'tumor_016', 'tumor_069', 'tumor_017', 'tumor_108', 'tumor_072', 'tumor_019', 'tumor_070', 'tumor_018', 'tumor_020', 'tumor_071', 'tumor_074', 'tumor_077', 'tumor_079', 'tumor_076', 'tumor_080', 'tumor_081', 'tumor_082', 'tumor_085', 'tumor_083', 'tumor_087', 'tumor_088', 'tumor_093', 'tumor_090', 'tumor_094', 'tumor_089', 'tumor_092', 'tumor_096', 'tumor_098', 'tumor_097', 'tumor_099', 'tumor_095', 'tumor_100', 'tumor_101', 'tumor_105', 'tumor_104', 'tumor_107', 'tumor_106', 'tumor_102', 'tumor_109', 'tumor_110', 'tumor_111']
+        # last_50 = items_not_in_json[-50:] 
         # last_50 = 
-        the_rest = items_not_in_json[:-50]
+        # the_rest = items_not_in_json[:-50]
+        the_rest = [i for i in items_not_in_json if i not in last_50]
+        
         final_example_list = last_50 
         
         print(last_50)
