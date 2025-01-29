@@ -167,7 +167,7 @@ def main(args):
     start_slide = time.time()
     
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
-    wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in example_list]
+    wsi_paths = [path for path in wsi_paths if os.path.basename(path).split(".")[0] in final_example_list]
     
     json_folder = args.json_path
     # print([os.path.basename(i) for i in wsi_paths])
