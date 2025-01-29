@@ -240,6 +240,7 @@ def main(args):
         
         except Exception as e:
             print(f"Error processing slide {slide_index}: {e}")
+            count+=1 
             continue
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
