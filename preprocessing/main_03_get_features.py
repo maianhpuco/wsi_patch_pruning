@@ -62,7 +62,7 @@ sys.path.append(os.path.join(PROJECT_DIR))
 # SLIDE_DIR = '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16'
 # example_list = ['normal_072', 'normal_001', 'normal_048', 'tumor_026', 'tumor_031', 'tumor_032']
 # example_list = ['tumor_026'] #a, 'tumor_032']
-example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
+# example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
  
 def main(args):
     
@@ -229,17 +229,18 @@ if __name__ == '__main__':
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # example_list = ['normal_031', 'tumor_024', 'normal_047', 'tumor_009', 'tumor_057', 'normal_093', 'normal_051', 'tumor_014', 'tumor_015', 'tumor_067', 'normal_003', 'tumor_084', 'tumor_101', 'normal_148', 'normal_022', 'tumor_012', 'normal_039', 'normal_084', 'normal_101', 'tumor_010', 'normal_088', 'normal_155', 'normal_087', 'normal_016', 'normal_114', 'normal_024', 'tumor_048', 'normal_078', 'tumor_049', 'tumor_086']
-    example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
     
+    example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
     avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
     
-    items_not_in_json = [item for item in example_list if item not in avai_items] 
+    items_to_process = [item for item in example_list if item not in avai_items] 
     
-    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015']
-    
-    items_not_in_json = [item for item in items_not_in_json if item not in remove_item] 
+    # remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015']  
+    remove_item = [] 
+    items_to_process = [item for item in items_to_process if item not in remove_item] 
   
-    example_list = items_not_in_json    
+    example_list = items_to_process    
+    
     
     main(args) 
     
