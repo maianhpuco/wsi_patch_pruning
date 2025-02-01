@@ -232,7 +232,7 @@ if __name__ == '__main__':
     
     example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
     avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
-    
+    print("number of available h5", len(avai_items)) 
     items_to_process = [item for item in example_list if item not in avai_items] 
     
     # remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015']  
