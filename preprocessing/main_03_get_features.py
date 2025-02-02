@@ -235,7 +235,7 @@ if __name__ == '__main__':
     print("number of available h5", len(avai_items)) 
     items_to_process = [item for item in example_list if item not in avai_items] 
     
-    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076']  
+    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070']  
     items_to_process = [item for item in items_to_process if item not in remove_item] 
   
     example_list = items_to_process    
