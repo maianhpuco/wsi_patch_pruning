@@ -31,3 +31,5 @@ Test Loss = 0.6931, Test Accuracy = 0.8703
 Epoch 10/10: 100%|██████████| 80/80 [00:09<00:00,  8.06it/s, acc=0.85, loss=0.693]
 Epoch 10: Train Loss = 0.6931, Train Accuracy = 0.8504
 Test Loss = 0.6931, Test Accuracy = 0.8703
+
+
