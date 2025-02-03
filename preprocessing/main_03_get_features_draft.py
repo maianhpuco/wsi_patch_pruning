@@ -11,11 +11,16 @@ import timm
 from tqdm import tqdm
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from data.merge_dataset import SlidePatchesDataset
 
 PROJECT_DIR = os.environ.get('PROJECT_DIR')
-sys.path.append(PROJECT_DIR)
+print("PROJECT DIR", PROJECT_DIR)
+sys.path.append(PROJECT_DIR)  
 
+
+from data.merge_dataset import SlidePatchesDataset
+
+
+ 
 def load_config(config_file):
     with open(config_file, 'r') as f:
         return yaml.safe_load(f)
