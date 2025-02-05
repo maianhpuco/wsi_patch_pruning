@@ -59,10 +59,17 @@ class PruningFeaturesDataset(Dataset):
         file_basename = os.path.basename(file_path).split(".")
         
         # Load the HDF5 file
-        with h5py.File(file_path,  "r") as f:
+        # with h5py.File(file_path,  "r") as f:
+        #     features = f['features'][:]
+        #     patch_indices = f['patch_indices'][:] # how to get these indice 
+        #     label = f['label'][:]
+        
+        with h5py.File(file_path, "r") as f:
             features = f['features'][:]
-            patch_indices = f['patch_indices'][:] # how to get these indice 
-            label = f['label'][:]
+            patch_indices = f['patch_indices'][:]  # Patch indices
+            label = f['label'][()]  # Extract scalar value
+            # coordinates = f['coordinates'][:]
+            # spixels_indices = f['spixel_idx'][:]  
             
         # print(features.shape)
         # print(patch_indices.shape)
