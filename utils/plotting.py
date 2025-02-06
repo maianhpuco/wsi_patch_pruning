@@ -202,7 +202,6 @@ def plot_heatmap_with_bboxes(scale_x,scale_y, new_height, new_width, coordinates
     plt.show()
 
 
-
 def min_max_scale(array):
     min_val = np.min(array)
     max_val = np.max(array)
