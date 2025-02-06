@@ -3,6 +3,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, WeightedRandomSampler
 from tqdm import tqdm
 import os
+import torch
+import torch.nn as nn 
 
 def save_checkpoint(model, optimizer, epoch, best_auc, checkpoint_path="best_mil_model.pth"):
     """
