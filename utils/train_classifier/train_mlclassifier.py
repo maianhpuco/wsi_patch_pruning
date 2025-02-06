@@ -3,8 +3,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, WeightedRandomSampler
 from tqdm import tqdm
 import os
-import torch
 import torch.nn as nn 
+
 
 def save_checkpoint(model, optimizer, epoch, best_auc, checkpoint_path="best_mil_model.pth"):
     """
@@ -28,7 +28,7 @@ def load_checkpoint(model, optimizer, checkpoint_path="best_mil_model.pth", devi
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         epoch = checkpoint["epoch"]
-        best_auc = checkpoint.get("best_auc", 0.0)  # ✅ Fix: Default to 0.0 if missing
+        best_auc = checkpoint.get("best_auc", 0.0)  # Fix: Default to 0.0 if missing
         print(f"Loaded model checkpoint from {checkpoint_path} (Epoch {epoch}, Best AUC: {best_auc:.4f})")
         return model, optimizer, epoch, best_auc
     else:
@@ -60,7 +60,7 @@ def train_mil_classifier(
     )
 
     # Compute class weights dynamically
-    labels = [int(sample["label"].item()) for sample in train_dataset]  # ✅ Fix: Ensure integer labels
+    labels = [int(sample["label"].item()) for sample in train_dataset]  # Fix: Ensure integer labels
     normal_count = sum(1 for l in labels if l == 0)
     tumor_count = sum(1 for l in labels if l == 1)
 
@@ -68,7 +68,7 @@ def train_mil_classifier(
 
     # Create weighted sampling
     class_counts = [normal_count, tumor_count]
-    weights = [1.0 / class_counts[label] for label in labels]  # ✅ Fix: Assign weights correctly
+    weights = [1.0 / class_counts[label] for label in labels]  # Fix: Assign weights correctly
     sampler = WeightedRandomSampler(weights, len(weights), replacement=True)
 
     # Data Loaders
