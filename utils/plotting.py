@@ -8,11 +8,8 @@ import math
 import numpy as np
 from torchvision import transforms
 from skimage.transform import resize
-import matplotlib.cm as cm 
 import os 
-import matplotlib.cm as cm
 from tqdm import tqdm  
-
 
 def rescaling_stat_for_segmentation(obj, downsampling_size=1024):
     """
@@ -204,18 +201,9 @@ def plot_heatmap_with_bboxes(scale_x,scale_y, new_height, new_width, coordinates
     # Show the heatmap
     plt.show()
 
-import numpy as np
+
 
 def min_max_scale(array):
-    """
-    Scales a NumPy array to the range [0, 1] using Min-Max Scaling.
-
-    Args:
-        array (np.ndarray): Input NumPy array.
-
-    Returns:
-        np.ndarray: Scaled array where min=0 and max=1.
-    """
     min_val = np.min(array)
     max_val = np.max(array)
 
@@ -224,8 +212,6 @@ def min_max_scale(array):
 
     return (array - min_val) / (max_val - min_val) 
 
-import numpy as np
-import matplotlib.pyplot as plt
 
 def replace_outliers_with_bounds(array):
     q1 = np.percentile(array, 25)
