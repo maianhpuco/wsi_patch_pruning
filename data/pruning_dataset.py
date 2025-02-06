@@ -70,7 +70,7 @@ class PruningFeaturesDataset(Dataset):
             label = f['label'][()]  # Extract scalar value
             # coordinates = f['coordinates'][:]
             # spixels_indices = f['spixel_idx'][:]  
-            
+
         # print(features.shape)
         # print(patch_indices.shape)
         if self.pruning_function:
