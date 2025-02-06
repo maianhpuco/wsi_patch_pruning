@@ -11,6 +11,30 @@ from skimage.transform import resize
 import os 
 from tqdm import tqdm  
 
+def min_max_scale(array):
+    min_val = np.min(array)
+    max_val = np.max(array)
+
+    if max_val - min_val == 0:  # Avoid division by zero
+        return np.zeros_like(array)
+
+    return (array - min_val) / (max_val - min_val) 
+
+
+def replace_outliers_with_bounds(array):
+    q1 = np.percentile(array, 25)
+    q3 = np.percentile(array, 75)
+    iqr = q3 - q1
+
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+
+    # Replace values below lower bound with lower bound and above upper bound with upper bound
+    array = np.where(array < lower_bound, lower_bound, array)
+    array = np.where(array > upper_bound, upper_bound, array)
+
+    return array  
+
 def rescaling_stat_for_segmentation(obj, downsampling_size=1024):
     """
     Rescale the image to a new size and return the downsampling factor.
@@ -202,26 +226,3 @@ def plot_heatmap_with_bboxes(scale_x,scale_y, new_height, new_width, coordinates
     plt.show()
 
 
-def min_max_scale(array):
-    min_val = np.min(array)
-    max_val = np.max(array)
-
-    if max_val - min_val == 0:  # Avoid division by zero
-        return np.zeros_like(array)
-
-    return (array - min_val) / (max_val - min_val) 
-
-
-def replace_outliers_with_bounds(array):
-    q1 = np.percentile(array, 25)
-    q3 = np.percentile(array, 75)
-    iqr = q3 - q1
-
-    lower_bound = q1 - 1.5 * iqr
-    upper_bound = q3 + 1.5 * iqr
-
-    # Replace values below lower bound with lower bound and above upper bound with upper bound
-    array = np.where(array < lower_bound, lower_bound, array)
-    array = np.where(array > upper_bound, upper_bound, array)
-
-    return array 
