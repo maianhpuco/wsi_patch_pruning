@@ -1,10 +1,10 @@
 # encoding_size = 1024
-# settings = {'num_splits': args.k, 
+# settings = {'num_splits': args.k,
 #             'k_start': args.k_start,
 #             'k_end': args.k_end,
 #             'task': args.task,
-#             'max_epochs': args.max_epochs, 
-#             'results_dir': args.results_dir, 
+#             'max_epochs': args.max_epochs,
+#             'results_dir': args.results_dir,
 #             'lr': args.lr,
 #             'experiment': args.exp_code,
 #             'reg': args.reg,
@@ -20,18 +20,20 @@
 # if args.model_type in ['clam_sb', 'clam_mb']:
 #    settings.update({'bag_weight': args.bag_weight,
 #                     'inst_loss': args.inst_loss,
-#                     'B': args.B}) 
+#                     'B': args.B})
 
 # TODO
 # [ ] adding the Early Stoping
 # [ ] adjusting the train_one_epoch
-# [ ] adjusting the train 
+# [ ] adjusting the train
 
 import torch
 import numpy as np
 import torch
 from utils.utils import *
 import os
+from sklearn.metrics import accuracy_score, roc_auc_score
+
 # from dataset_modules.dataset_generic import save_splits
 # from models.model_mil import MIL_fc, MIL_fc_mc
 # from models.model_clam import CLAM_MB, CLAM_SB
@@ -39,10 +41,71 @@ from src.bag_classifier.clam import CLAM_MB, CLAM_SB
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.metrics import auc as calc_auc
-device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def convert_tensor(tensor):
+    """
+    Convert a PyTorch tensor into a plain Python number if it has a single element.
+    If the tensor contains more than one element, convert it to a python list.
+    """
+    # When the tensor has only one element, return a Python scalar.
+    if tensor.numel() == 1:
+        return tensor.item()
+    else:
+        # Convert to numpy array first
+        np_array = tensor.detach().numpy()
+        # If it's a 2D array with one row, return the row as a list.
+        if np_array.ndim == 2 and np_array.shape[0] == 1:
+            return np_array[0].tolist()
+        else:
+            return np_array.tolist()
+
+
+def compute_accuracy(y_true, y_pred_binary):
+    """
+    Computes Accuracy (ACC).
+    """
+    return accuracy_score(y_true, y_pred_binary)
+
+
+def compute_auc(y_true, y_pred_prob):
+    """
+    Computes the Area Under the ROC Curve (AUC).
+    """
+    return roc_auc_score(y_true, y_pred_prob)
+
+
+def compute_ece(y_true, y_pred_prob, n_bins=10):
+    """
+    Computes Expected Calibration Error (ECE).
+    """
+    y_true = np.array(y_true)
+    y_pred_prob = np.array(y_pred_prob)
+
+    # Create bin edges from 0.0 to 1.0
+    bin_edges = np.linspace(0, 1, n_bins + 1)
+    # Determine the bin index for each probability
+    bin_indices = (
+        np.digitize(y_pred_prob, bin_edges) - 1
+    )  # subtract 1 to make 0-indexed
+
+    ece = 0.0
+    for i in range(n_bins):
+        in_bin = bin_indices == i
+        if not np.any(in_bin):
+            continue
+        avg_pred_prob = np.mean(y_pred_prob[in_bin])
+        frac_positives = np.mean(y_true[in_bin])
+        prop_in_bin = np.sum(in_bin) / len(y_true)
+        ece += np.abs(avg_pred_prob - frac_positives) * prop_in_bin
+    return ece
+
 
 class Accuracy_Logger(object):
     """Accuracy logger"""
+
     def __init__(self, n_classes):
         super().__init__()
         self.n_classes = n_classes
@@ -50,13 +113,13 @@ class Accuracy_Logger(object):
 
     def initialize(self):
         self.data = [{"count": 0, "correct": 0} for i in range(self.n_classes)]
-    
+
     def log(self, Y_hat, Y):
         Y_hat = int(Y_hat)
         Y = int(Y)
         self.data[Y]["count"] += 1
-        self.data[Y]["correct"] += (Y_hat == Y)
-    
+        self.data[Y]["correct"] += Y_hat == Y
+
     def log_batch(self, Y_hat, Y):
         Y_hat = np.array(Y_hat).astype(int)
         Y = np.array(Y).astype(int)
@@ -64,27 +127,29 @@ class Accuracy_Logger(object):
             cls_mask = Y == label_class
             self.data[label_class]["count"] += cls_mask.sum()
             self.data[label_class]["correct"] += (Y_hat[cls_mask] == Y[cls_mask]).sum()
-    
+
     def get_summary(self, c):
-        count = self.data[c]["count"] 
+        count = self.data[c]["count"]
         correct = self.data[c]["correct"]
-        
-        if count == 0: 
+
+        if count == 0:
             acc = None
         else:
             acc = float(correct) / count
-        
+
         return acc, correct, count
+
 
 class EarlyStopping:
     """Early stops the training if validation loss doesn't improve after a given patience."""
+
     def __init__(self, patience=20, stop_epoch=50, verbose=False):
         """
         Args:
             patience (int): How long to wait after last time validation loss improved.
                             Default: 20
             stop_epoch (int): Earliest epoch possible for stopping
-            verbose (bool): If True, prints a message for each validation loss improvement. 
+            verbose (bool): If True, prints a message for each validation loss improvement.
                             Default: False
         """
         self.patience = patience
@@ -95,7 +160,7 @@ class EarlyStopping:
         self.early_stop = False
         self.val_loss_min = np.Inf
 
-    def __call__(self, epoch, val_loss, model, ckpt_name = 'checkpoint.pt'):
+    def __call__(self, epoch, val_loss, model, ckpt_name="checkpoint.pt"):
 
         score = -val_loss
 
@@ -104,7 +169,7 @@ class EarlyStopping:
             self.save_checkpoint(val_loss, model, ckpt_name)
         elif score < self.best_score:
             self.counter += 1
-            print(f'EarlyStopping counter: {self.counter} out of {self.patience}')
+            print(f"EarlyStopping counter: {self.counter} out of {self.patience}")
             if self.counter >= self.patience and epoch > self.stop_epoch:
                 self.early_stop = True
         else:
@@ -113,39 +178,51 @@ class EarlyStopping:
             self.counter = 0
 
     def save_checkpoint(self, val_loss, model, ckpt_name):
-        '''Saves model when validation loss decrease.'''
+        """Saves model when validation loss decrease."""
         if self.verbose:
-            print(f'Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ...')
+            print(
+                f"Validation loss decreased ({self.val_loss_min:.6f} --> {val_loss:.6f}).  Saving model ..."
+            )
         torch.save(model.state_dict(), ckpt_name)
         self.val_loss_min = val_loss
- 
+
 
 def calculate_error(Y_hat, Y):
-	error = 1. - Y_hat.float().eq(Y.float()).float().mean().item()
+    error = 1.0 - Y_hat.float().eq(Y.float()).float().mean().item()
 
-	return error 
+    return error
 
-def temp_train_loop(features, label, model, optimizer, n_classes, bag_weight, loss_fn=None, device=None):
-    logits, Y_prob, Y_hat, _, instance_dict = model(features, label=label, instance_eval=True) 
+
+def temp_train_loop(
+    features, label, model, optimizer, n_classes, bag_weight, loss_fn=None, device=None
+):
+    logits, Y_prob, Y_hat, _, instance_dict = model(
+        features, label=label, instance_eval=True
+    )
     loss = loss_fn(logits, label)
-    loss_value = loss.item() 
-    
-    instance_loss = instance_dict['instance_loss']
+    loss_value = loss.item()
+
+    instance_loss = instance_dict["instance_loss"]
     # inst_count+=1
     instance_loss_value = instance_loss.item()
     # train_inst_loss += instance_loss_value
-    
-    total_loss = bag_weight * loss + (1-bag_weight) * instance_loss 
 
-    inst_preds = instance_dict['inst_preds']
-    inst_labels = instance_dict['inst_labels'] 
+    total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss
+
+    inst_preds = instance_dict["inst_preds"]
+    inst_labels = instance_dict["inst_labels"]
     # train_loss += loss_value
-    print('loss: {:.4f}, instance_loss: {:.4f}, weighted_loss: {:.4f}, '.format(loss_value, instance_loss_value, total_loss.item()) + 
-        'label: {}, bag_size: {}'.format(label.item(), features.size(0)))
+    print(
+        "loss: {:.4f}, instance_loss: {:.4f}, weighted_loss: {:.4f}, ".format(
+            loss_value, instance_loss_value, total_loss.item()
+        )
+        + "label: {}, bag_size: {}".format(label.item(), features.size(0))
+    )
 
     error = calculate_error(Y_hat, label)
     print("error", error)
-    
+
+
 def train_all_epochs(datasets, cur, logger):
     """
     Train the model for a single fold across multiple epochs
@@ -191,17 +268,26 @@ def train_all_epochs(datasets, cur, logger):
     # # Setup early stopping
     # logger.info('\nSetup EarlyStopping...')
     early_stopping = EarlyStopping(patience=20, stop_epoch=50, verbose=True)
-    logger.info('Done!')
+    logger.info("Done!")
 
     # Run the training loop across all epochs
     for epoch in range(args.max_epochs):
-        stop = train_epoch(epoch, model, train_loader, optimizer, args.n_classes, args.bag_weight, logger, loss_fn)
+        stop = train_epoch(
+            epoch,
+            model,
+            train_loader,
+            optimizer,
+            args.n_classes,
+            args.bag_weight,
+            logger,
+            loss_fn,
+        )
 
         if stop:
             break
 
         # Validate the model after every epoch
-        
+
         # stop = validate_epoch(cur, epoch, model, val_loader, args.n_classes, early_stopping, logger, loss_fn, args.results_dir)
 
         # if stop:
@@ -221,74 +307,70 @@ def train_all_epochs(datasets, cur, logger):
     # test_error, test_auc = print_results(model, test_loader, args.n_classes)
     # logger.info(f'Test error: {test_error:.4f}, ROC AUC: {test_auc:.4f}')
 
-    return train_acc #, test_auc, val_auc
- 
-          
+    return train_acc  # , test_auc, val_auc
+
+
 def train_epoch(
-    epoch, 
-    model, 
-    dataset, 
-    optimizer, 
-    n_classes, 
-    bag_weight, 
-    logger=None, 
-    loss_fn=None
+    epoch, model, dataset, optimizer, n_classes, bag_weight, logger=None, loss_fn=None
 ):
     # Set model to training mode
     model.train()
-    
+
     # Initialize accuracy loggers for both overall and instance-level accuracy
     acc_logger = Accuracy_Logger(n_classes=n_classes)
     inst_logger = Accuracy_Logger(n_classes=n_classes)
-    
+
     # Initialize loss and error accumulators
-    train_loss = 0.
-    train_error = 0.
-    train_inst_loss = 0.
+    train_loss = 0.0
+    train_error = 0.0
+    train_inst_loss = 0.0
     inst_count = 0
 
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
-    
+
     # Move data to device (GPU or CPU)
-    for data in dataset: 
-        features, label, patch_indices, coordinates, spixels_indices, file_basename= data    
+    for data in dataset:
+        features, label, patch_indices = data
 
         label = label.long()
         # print("features", features.shape)
         # print("indices", patch_indices)
-        # print("label shape: ", label.shape) 
-        
+        # print("label shape: ", label.shape)
+
         features, label = features.to(device), label[0].to(device)
 
         # Perform forward pass through the model
         logits, Y_prob, Y_hat, _, instance_dict = model(
-            features, label=label, instance_eval=True)
+            features, label=label, instance_eval=True
+        )
 
         # Log overall accuracy
         acc_logger.log(Y_hat, label)
-        
+        print("Logit: ", logits)
+        print(type(logits))
+        print("Label: ", label)
+        print(type(label))
         # Calculate loss
         loss = loss_fn(logits, label)
         loss_value = loss.item()
 
         # Instance-level loss
-        instance_loss = instance_dict['instance_loss']
+        instance_loss = instance_dict["instance_loss"]
         inst_count += 1
         instance_loss_value = instance_loss.item()
         train_inst_loss += instance_loss_value
-        
+
         # Total loss is a weighted combination of the bag-level and instance-level losses
-        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
-       
+        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss
 
         # print(f"bag loss {loss.item()}, instance loss {instance_loss.item()}, total loss {total_loss}")
         # train_losses.append(total_loss.item())
-        
+
         # Log instance-level accuracy
-        inst_preds = instance_dict['inst_preds']
-        inst_labels = instance_dict['inst_labels']
-        
+        inst_preds = instance_dict["inst_preds"]
+        inst_labels = instance_dict["inst_labels"]
+
         inst_logger.log_batch(inst_preds, inst_labels)
 
         # Accumulate the loss
@@ -297,96 +379,111 @@ def train_epoch(
         # Calculate training error
         error = calculate_error(Y_hat, label)
         train_error += error
-        
+
         # Perform backward pass and optimizer step
         total_loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-    
+
     # Calculate and log the average loss and error for the epoch
-    train_loss /= len(dataset)  # Since we're not dealing with batches, we just use the single example
+    train_loss /= len(
+        dataset
+    )  # Since we're not dealing with batches, we just use the single example
     train_error /= len(dataset)
-    
+
     if inst_count > 0:
         train_inst_loss /= inst_count
         # Log instance accuracy for each class
         for i in range(n_classes):
             acc, correct, count = inst_logger.get_summary(i)
-            logger.info(f"Class {i} Clustering Accuracy: {acc}, Correct: {correct}/{count}")
+            logger.info(
+                f"Class {i} Clustering Accuracy: {acc}, Correct: {correct}/{count}"
+            )
 
-    logger.info(f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Clustering Loss: {train_inst_loss:.4f}, Train Error: {train_error:.4f}")
+    logger.info(
+        f"Epoch {epoch}, Train Loss: {train_loss:.4f}, Clustering Loss: {train_inst_loss:.4f}, Train Error: {train_error:.4f}"
+    )
 
     for i in range(n_classes):
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
-    
-    return train_loss 
+
+    return train_loss
 
 
-def eval(
-    epoch, 
-    model, 
-    dataset, 
-    n_classes, 
-    bag_weight, 
-    logger=None, 
-    loss_fn=None
-):
-    # Set model to training mode
+def eval(epoch, model, dataset, n_classes, bag_weight, logger=None, loss_fn=None):
+    # Set model to eval mode
     model.eval()
-    
+
     # Initialize accuracy loggers for both overall and instance-level accuracy
     acc_logger = Accuracy_Logger(n_classes=n_classes)
     inst_logger = Accuracy_Logger(n_classes=n_classes)
-    
+
     # Initialize loss and error accumulators
-    train_loss = 0.
-    train_error = 0.
-    train_inst_loss = 0.
+    train_loss = 0.0
+    train_error = 0.0
+    train_inst_loss = 0.0
     inst_count = 0
 
     # Log header for the epoch
     logger.info(f"Starting epoch {epoch}...")
-    
+
+    _label = []
+    _predict = []
+    _score_pre = []
+
     # Move data to device (GPU or CPU)
-    for data in dataset: 
-        features, label, patch_indices, coordinates, spixels_indices, file_basename= data    
+    for data in dataset:
+        features, label, patch_indices, coordinates, spixels_indices, file_basename = (
+            data
+        )
 
         label = label.long()
         # print("features", features.shape)
         # print("indices", patch_indices)
-        # print("label shape: ", label.shape) 
-        
+        # print("label shape: ", label.shape)
+
         features, label = features.to(device), label[0].to(device)
 
         # Perform forward pass through the model
         logits, Y_prob, Y_hat, _, instance_dict = model(
-            features, label=label, instance_eval=True)
+            features, label=label, instance_eval=True
+        )
+        print("Label: ", label)
+        print("Y_hat: ", Y_hat)
+        print("logits: ", logits)
+        print("Y_prob: ", Y_prob)
+        label_np = convert_tensor(label)
+        predict_np = convert_tensor(Y_hat)
+        prob = convert_tensor(Y_prob)
+
+        _label.append(label_np)
+        _predict.append(predict_np)
+        _score_pre.append(prob)
 
         # Log overall accuracy
         acc_logger.log(Y_hat, label)
-        
+
         # Calculate loss
         loss = loss_fn(logits, label)
         loss_value = loss.item()
 
         # Instance-level loss
-        instance_loss = instance_dict['instance_loss']
+        instance_loss = instance_dict["instance_loss"]
         inst_count += 1
         instance_loss_value = instance_loss.item()
         train_inst_loss += instance_loss_value
-        
+
         # Total loss is a weighted combination of the bag-level and instance-level losses
-        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss 
-       
+        total_loss = bag_weight * loss + (1 - bag_weight) * instance_loss
 
         # print(f"bag loss {loss.item()}, instance loss {instance_loss.item()}, total loss {total_loss}")
         # train_losses.append(total_loss.item())
-        
+
         # Log instance-level accuracy
-        inst_preds = instance_dict['inst_preds']
-        inst_labels = instance_dict['inst_labels']
-        
+        inst_preds = instance_dict["inst_preds"]
+        inst_labels = instance_dict["inst_labels"]
+
         inst_logger.log_batch(inst_preds, inst_labels)
 
         # Accumulate the loss
@@ -395,16 +492,18 @@ def eval(
         # Calculate training error
         error = calculate_error(Y_hat, label)
         train_error += error
-        
+
         # # Perform backward pass and optimizer step
         # total_loss.backward()
         # optimizer.step()
         # optimizer.zero_grad()
-    
+
     # Calculate and log the average loss and error for the epoch
-    train_loss /= len(dataset)  # Since we're not dealing with batches, we just use the single example
+    train_loss /= len(
+        dataset
+    )  # Since we're not dealing with batches, we just use the single example
     train_error /= len(dataset)
-    
+
     if inst_count > 0:
         train_inst_loss /= inst_count
         # Log instance accuracy for each class
@@ -412,21 +511,25 @@ def eval(
             acc, correct, count = inst_logger.get_summary(i)
             # logger.info(f"Class {i} Clustering Accuracy: {acc}, Correct: {correct}/{count}")
 
-    logger.info(f"Loss: {train_loss:.4f}, Clustering Loss: {train_inst_loss:.4f}, Train Error: {train_error:.4f}")
-
+    logger.info(
+        f"Loss: {train_loss:.4f}, Clustering Loss: {train_inst_loss:.4f}, Train Error: {train_error:.4f}"
+    )
+    print(_label)
+    print(_predict)
+    print(_score_pre)
+    y_pred_prob = [score[1] for score in _score_pre]
+    print("Acc: ", accuracy_score(_label, _predict))
+    print("ROC AUC: ", roc_auc_score(_label, y_pred_prob))
+    print("ECE eval: ", compute_ece(_label, y_pred_prob))
     for i in range(n_classes):
         acc, correct, count = acc_logger.get_summary(i)
         logger.info(f"Class {i}: Accuracy: {acc}, Correct: {correct}/{count}")
-    
-    
 
     # print("train loss:", train_losses)
+
 
 # if __name__=='__main__':
 #     logger = setup_logger("./logs/training_log.txt")
 #     epoch = 0
 #     model = CLAM_SB()
 #     train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, logger, loss_fn)
- 
- 
-

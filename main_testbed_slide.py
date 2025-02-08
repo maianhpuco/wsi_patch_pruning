@@ -173,11 +173,6 @@ def main(args):
             f"Indices after stratified_sampling: {selected_indices_stratified.tolist()[:5]}"
         )
 
-
-# 1. adding scoring + pruning here;
-# input: slide_features
-# output: reduced_slide_features
-
 # 2. SSL apply on reduced_slide_features
 # 3. Bag Classifier (DSMIL, DTFD-MIL, Snuffy, Camil)
 # 4. Compute metric: GLOP, AUC, Acc, etc.

@@ -1,0 +1,178 @@
+2025-02-06 01:35:55,888 - Starting epoch 0...
+2025-02-06 01:58:39,162 - Starting epoch 0...
+2025-02-06 02:09:19,814 - Starting epoch 0...
+2025-02-06 02:17:37,815 - Starting epoch 0...
+2025-02-06 02:24:52,063 - Starting epoch 0...
+2025-02-07 00:35:39,486 - Starting epoch 0...
+2025-02-08 22:05:51,275 - Starting epoch 0...
+2025-02-08 22:05:55,319 - Class 0 Clustering Accuracy: 0.41, Correct: 41/100
+2025-02-08 22:05:55,320 - Class 1 Clustering Accuracy: 0.61, Correct: 61/100
+2025-02-08 22:05:55,320 - Epoch 0, Train Loss: 0.5301, Clustering Loss: 0.7274, Train Error: 0.5000
+2025-02-08 22:05:55,320 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:05:55,320 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:05:55,320 - Starting epoch 0...
+2025-02-08 22:05:55,501 - Loss: 0.5063, Clustering Loss: 0.6650, Train Error: 0.5000
+2025-02-08 22:05:55,501 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:05:55,501 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:05:55,504 - Starting epoch 1...
+2025-02-08 22:05:59,662 - Class 0 Clustering Accuracy: 0.45, Correct: 45/100
+2025-02-08 22:05:59,663 - Class 1 Clustering Accuracy: 0.71, Correct: 71/100
+2025-02-08 22:05:59,663 - Epoch 1, Train Loss: 0.4818, Clustering Loss: 0.6386, Train Error: 0.5000
+2025-02-08 22:05:59,663 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:05:59,663 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:05:59,663 - Starting epoch 1...
+2025-02-08 22:05:59,825 - Loss: 0.5082, Clustering Loss: 0.5742, Train Error: 0.5000
+2025-02-08 22:05:59,826 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:05:59,826 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:05:59,832 - Starting epoch 2...
+2025-02-08 22:06:04,039 - Class 0 Clustering Accuracy: 0.67, Correct: 67/100
+2025-02-08 22:06:04,040 - Class 1 Clustering Accuracy: 0.89, Correct: 89/100
+2025-02-08 22:06:04,040 - Epoch 2, Train Loss: 0.4633, Clustering Loss: 0.5366, Train Error: 0.5000
+2025-02-08 22:06:04,040 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:04,040 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:04,040 - Starting epoch 2...
+2025-02-08 22:06:04,180 - Loss: 0.5094, Clustering Loss: 0.5118, Train Error: 0.5000
+2025-02-08 22:06:04,180 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:04,180 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:04,183 - Starting epoch 3...
+2025-02-08 22:06:08,250 - Class 0 Clustering Accuracy: 0.72, Correct: 72/100
+2025-02-08 22:06:08,251 - Class 1 Clustering Accuracy: 0.96, Correct: 96/100
+2025-02-08 22:06:08,251 - Epoch 3, Train Loss: 0.4485, Clustering Loss: 0.4722, Train Error: 0.5000
+2025-02-08 22:06:08,251 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:08,251 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:08,251 - Starting epoch 3...
+2025-02-08 22:06:08,400 - Loss: 0.5104, Clustering Loss: 0.4913, Train Error: 0.5000
+2025-02-08 22:06:08,400 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:08,400 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:08,403 - Starting epoch 4...
+2025-02-08 22:06:12,621 - Class 0 Clustering Accuracy: 0.72, Correct: 72/100
+2025-02-08 22:06:12,622 - Class 1 Clustering Accuracy: 0.97, Correct: 97/100
+2025-02-08 22:06:12,622 - Epoch 4, Train Loss: 0.4347, Clustering Loss: 0.4287, Train Error: 0.5000
+2025-02-08 22:06:12,622 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:12,622 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:12,623 - Starting epoch 4...
+2025-02-08 22:06:12,775 - Loss: 0.5112, Clustering Loss: 0.4877, Train Error: 0.5000
+2025-02-08 22:06:12,775 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:12,775 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:12,777 - Starting epoch 5...
+2025-02-08 22:06:17,233 - Class 0 Clustering Accuracy: 0.72, Correct: 72/100
+2025-02-08 22:06:17,233 - Class 1 Clustering Accuracy: 0.93, Correct: 93/100
+2025-02-08 22:06:17,233 - Epoch 5, Train Loss: 0.4212, Clustering Loss: 0.3929, Train Error: 0.5000
+2025-02-08 22:06:17,233 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:17,233 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:17,234 - Starting epoch 5...
+2025-02-08 22:06:17,386 - Loss: 0.5118, Clustering Loss: 0.5124, Train Error: 0.5000
+2025-02-08 22:06:17,386 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:17,386 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:17,389 - Starting epoch 6...
+2025-02-08 22:06:21,740 - Class 0 Clustering Accuracy: 0.83, Correct: 83/100
+2025-02-08 22:06:21,740 - Class 1 Clustering Accuracy: 0.9, Correct: 90/100
+2025-02-08 22:06:21,740 - Epoch 6, Train Loss: 0.4068, Clustering Loss: 0.3571, Train Error: 0.5000
+2025-02-08 22:06:21,740 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:21,740 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:21,740 - Starting epoch 6...
+2025-02-08 22:06:21,888 - Loss: 0.5121, Clustering Loss: 0.4743, Train Error: 0.5000
+2025-02-08 22:06:21,888 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:21,888 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:21,890 - Starting epoch 7...
+2025-02-08 22:06:26,290 - Class 0 Clustering Accuracy: 0.86, Correct: 86/100
+2025-02-08 22:06:26,290 - Class 1 Clustering Accuracy: 0.9, Correct: 90/100
+2025-02-08 22:06:26,290 - Epoch 7, Train Loss: 0.3905, Clustering Loss: 0.3313, Train Error: 0.5000
+2025-02-08 22:06:26,290 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:26,290 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:26,290 - Starting epoch 7...
+2025-02-08 22:06:26,435 - Loss: 0.5121, Clustering Loss: 0.4220, Train Error: 0.5000
+2025-02-08 22:06:26,435 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:26,435 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:26,437 - Starting epoch 8...
+2025-02-08 22:06:30,861 - Class 0 Clustering Accuracy: 0.94, Correct: 94/100
+2025-02-08 22:06:30,861 - Class 1 Clustering Accuracy: 0.86, Correct: 86/100
+2025-02-08 22:06:30,861 - Epoch 8, Train Loss: 0.3732, Clustering Loss: 0.3051, Train Error: 0.5000
+2025-02-08 22:06:30,861 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:30,861 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:30,862 - Starting epoch 8...
+2025-02-08 22:06:31,003 - Loss: 0.5115, Clustering Loss: 0.3643, Train Error: 0.5000
+2025-02-08 22:06:31,003 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:31,003 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:31,006 - Starting epoch 9...
+2025-02-08 22:06:34,168 - Class 0 Clustering Accuracy: 0.98, Correct: 98/100
+2025-02-08 22:06:34,169 - Class 1 Clustering Accuracy: 0.77, Correct: 77/100
+2025-02-08 22:06:34,169 - Epoch 9, Train Loss: 0.3534, Clustering Loss: 0.3144, Train Error: 0.5000
+2025-02-08 22:06:34,169 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:34,169 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:34,169 - Starting epoch 9...
+2025-02-08 22:06:34,315 - Loss: 0.5103, Clustering Loss: 0.3206, Train Error: 0.5000
+2025-02-08 22:06:34,315 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:34,315 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:34,318 - Starting epoch 10...
+2025-02-08 22:06:38,658 - Class 0 Clustering Accuracy: 0.97, Correct: 97/100
+2025-02-08 22:06:38,658 - Class 1 Clustering Accuracy: 0.83, Correct: 83/100
+2025-02-08 22:06:38,658 - Epoch 10, Train Loss: 0.3318, Clustering Loss: 0.3100, Train Error: 0.5000
+2025-02-08 22:06:38,658 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:38,658 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:38,659 - Starting epoch 10...
+2025-02-08 22:06:38,810 - Loss: 0.5084, Clustering Loss: 0.2752, Train Error: 1.0000
+2025-02-08 22:06:38,810 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:38,810 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:38,813 - Starting epoch 11...
+2025-02-08 22:06:43,085 - Class 0 Clustering Accuracy: 0.96, Correct: 96/100
+2025-02-08 22:06:43,085 - Class 1 Clustering Accuracy: 0.87, Correct: 87/100
+2025-02-08 22:06:43,085 - Epoch 11, Train Loss: 0.3105, Clustering Loss: 0.2797, Train Error: 0.0000
+2025-02-08 22:06:43,085 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:43,085 - Class 1: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:43,086 - Starting epoch 11...
+2025-02-08 22:06:43,234 - Loss: 0.5061, Clustering Loss: 0.2366, Train Error: 0.5000
+2025-02-08 22:06:43,234 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:06:43,234 - Class 1: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:06:43,237 - Starting epoch 12...
+2025-02-08 22:09:06,466 - Starting epoch 0...
+2025-02-08 22:09:10,539 - Class 0 Clustering Accuracy: 0.46, Correct: 46/100
+2025-02-08 22:09:10,539 - Class 1 Clustering Accuracy: 0.52, Correct: 52/100
+2025-02-08 22:09:10,539 - Epoch 0, Train Loss: 0.5664, Clustering Loss: 0.7181, Train Error: 0.5000
+2025-02-08 22:09:10,539 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:09:10,539 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:09:10,539 - Starting epoch 0...
+2025-02-08 22:09:10,755 - Loss: 0.5093, Clustering Loss: 0.6688, Train Error: 0.5000
+2025-02-08 22:09:10,756 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:09:10,756 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:26:39,023 - Starting epoch 0...
+2025-02-08 22:26:43,053 - Class 0 Clustering Accuracy: 0.58, Correct: 58/100
+2025-02-08 22:26:43,053 - Class 1 Clustering Accuracy: 0.37, Correct: 37/100
+2025-02-08 22:26:43,053 - Epoch 0, Train Loss: 0.5590, Clustering Loss: 0.7468, Train Error: 1.0000
+2025-02-08 22:26:43,053 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:26:43,053 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:26:43,054 - Starting epoch 0...
+2025-02-08 22:26:43,235 - Loss: 0.5019, Clustering Loss: 0.6404, Train Error: 0.5000
+2025-02-08 22:27:31,255 - Starting epoch 0...
+2025-02-08 22:27:35,470 - Class 0 Clustering Accuracy: 0.34, Correct: 34/100
+2025-02-08 22:27:35,470 - Class 1 Clustering Accuracy: 0.52, Correct: 52/100
+2025-02-08 22:27:35,470 - Epoch 0, Train Loss: 0.5662, Clustering Loss: 0.7727, Train Error: 0.5000
+2025-02-08 22:27:35,470 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:27:35,470 - Class 1: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:27:35,470 - Starting epoch 0...
+2025-02-08 22:27:35,657 - Loss: 0.5037, Clustering Loss: 0.6272, Train Error: 0.5000
+2025-02-08 22:30:22,768 - Starting epoch 0...
+2025-02-08 22:30:26,744 - Class 0 Clustering Accuracy: 0.17, Correct: 17/100
+2025-02-08 22:30:26,744 - Class 1 Clustering Accuracy: 0.75, Correct: 75/100
+2025-02-08 22:30:26,744 - Epoch 0, Train Loss: 0.5563, Clustering Loss: 0.7325, Train Error: 0.5000
+2025-02-08 22:30:26,744 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:30:26,744 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:30:26,745 - Starting epoch 0...
+2025-02-08 22:30:56,115 - Starting epoch 0...
+2025-02-08 22:31:00,138 - Class 0 Clustering Accuracy: 0.57, Correct: 57/100
+2025-02-08 22:31:00,138 - Class 1 Clustering Accuracy: 0.59, Correct: 59/100
+2025-02-08 22:31:00,138 - Epoch 0, Train Loss: 0.5378, Clustering Loss: 0.6846, Train Error: 0.5000
+2025-02-08 22:31:00,138 - Class 0: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:31:00,138 - Class 1: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:31:00,139 - Starting epoch 0...
+2025-02-08 22:31:00,320 - Loss: 0.5086, Clustering Loss: 0.5295, Train Error: 0.5000
+2025-02-08 22:33:00,237 - Starting epoch 0...
+2025-02-08 22:33:04,129 - Class 0 Clustering Accuracy: 0.19, Correct: 19/100
+2025-02-08 22:33:04,129 - Class 1 Clustering Accuracy: 0.58, Correct: 58/100
+2025-02-08 22:33:04,129 - Epoch 0, Train Loss: 0.5482, Clustering Loss: 0.8130, Train Error: 0.5000
+2025-02-08 22:33:04,129 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:33:04,129 - Class 1: Accuracy: 1.0, Correct: 1/1
+2025-02-08 22:33:04,129 - Starting epoch 0...
+2025-02-08 22:33:04,323 - Loss: 0.5022, Clustering Loss: 0.6915, Train Error: 0.5000
+2025-02-08 22:33:04,328 - Class 0: Accuracy: 0.0, Correct: 0/1
+2025-02-08 22:33:04,328 - Class 1: Accuracy: 1.0, Correct: 1/1
