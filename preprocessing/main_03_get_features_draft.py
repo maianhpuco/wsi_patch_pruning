@@ -126,8 +126,21 @@ if __name__ == '__main__':
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        
+    example_list = [i.split('.')[0] for i in os.listdir(args.patch_path)]
+    avai_items = [i.split('.')[0] for i in os.listdir(args.features_h5_path) if i.endswith("h5")]
+    print("number of available h5", len(avai_items)) 
+    items_to_process = [item for item in example_list if item not in avai_items] 
+    
+    # remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']  
+    # items_to_process = [item for item in items_to_process if item not in remove_item] 
+  
+    example_list = np.random.permutation(items_to_process)
+     
+    
     # args.example_list = ['tumor_026']  # Modify for testing
-    args.example_list = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']   
-
+    # args.example_list = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']   
+    args.example_list = example_list 
+    
     main(args)
  
