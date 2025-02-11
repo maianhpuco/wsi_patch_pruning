@@ -221,6 +221,8 @@ def plot_heatmap_with_bboxes(scale_x,scale_y, new_height, new_width, coordinates
 
     # Add color bar
     fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
+
+
     plt.title(name, fontsize=10, fontweight='bold') 
     # Show the heatmap
     plt.show()
