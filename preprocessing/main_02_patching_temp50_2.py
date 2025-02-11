@@ -284,11 +284,13 @@ if __name__ == '__main__':
         # last_50 = items_not_in_json[-100:] 
         # last_50 = 
         # the_rest = items_not_in_json[:-50]
+        next_50 = ['test_053', 'test_039', 'test_095', 'test_068', 'test_011', 'test_031', 'test_099', 'test_055', 'test_012', 'normal_156', 'test_062', 'test_014', 'test_097', 'test_085', 'normal_151', 'tumor_038', 'test_081', 'test_003', 'test_076', 'test_075', 'test_027', 'test_090', 'test_080', 'test_102', 'test_064', 'test_067', 'test_059', 'normal_157', 'test_018', 'test_107', 'test_021', 'tumor_043', 'test_010', 'test_086', 'test_037', 'tumor_023', 'test_101', 'normal_160', 'test_052', 'test_022', 'test_065', 'tumor_039', 'test_034', 'test_070', 'test_017', 'test_077', 'test_057', 'test_083', 'test_058', 'normal_152']
+
         the_rest = [i for i in items_not_in_json if i not in last_50]
         
-        final_example_list = [i for i in last_50 if i in items_not_in_json] 
+        final_example_list = [i for i in next_50 if i in items_not_in_json and i not in last_50] 
         
-        print(the_rest)
+        print(final_example_list)
      
         print("Total number to process:", len(final_example_list))
         

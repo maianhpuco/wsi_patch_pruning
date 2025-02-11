@@ -284,11 +284,11 @@ if __name__ == '__main__':
         # last_50 = items_not_in_json[-100:] 
         # last_50 = 
         # the_rest = items_not_in_json[:-50]
-        the_rest = [i for i in items_not_in_json if i not in last_50]
+        # the_rest = [i for i in items_not_in_json if i not in last_50]
         
         final_example_list = [i for i in last_50 if i in items_not_in_json] 
-        
-        print(the_rest)
+         
+        # print(the_rest)
      
         print("Total number to process:", len(final_example_list))
         
