@@ -40,7 +40,7 @@ def main(args):
 
     wsi_paths = glob.glob(os.path.join(args.slide_path, '*.tif'))
     wsi_paths = [p for p in wsi_paths if os.path.basename(p).split(".")[0] in args.example_list]
-
+    
     for count, wsi_path in enumerate(wsi_paths, start=1):
         
         slide_basename = os.path.basename(wsi_path).split(".")[0]
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     print("number of available h5", len(avai_items)) 
     items_to_process = [item for item in example_list if item not in avai_items] 
     
-    remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']  
+    remove_item = ['normal_144','normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']  
     items_to_process = [item for item in items_to_process if item not in remove_item] 
   
     # example_list = np.random.permutation(items_to_process)
