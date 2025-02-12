@@ -42,14 +42,15 @@ def main(args):
     wsi_paths = [p for p in wsi_paths if os.path.basename(p).split(".")[0] in args.example_list]
 
     for count, wsi_path in enumerate(wsi_paths, start=1):
-        try: 
-            slide_basename = os.path.basename(wsi_path).split(".")[0]
-            print(f">------ Processing {count}/{len(wsi_paths)}: {slide_basename}")
+        
+        slide_basename = os.path.basename(wsi_path).split(".")[0]
+        print(f">------ Processing {count}/{len(wsi_paths)}: {slide_basename}")
 
-            slide_patch_dataset = SlidePatchesDataset(
-                patch_dir=os.path.join(args.patch_path, slide_basename),
-                transform=transform
-            )
+        slide_patch_dataset = SlidePatchesDataset(
+            patch_dir=os.path.join(args.patch_path, slide_basename),
+            transform=transform
+        )
+        try: 
             dataloader = DataLoader(slide_patch_dataset, batch_size=args.batch_size, shuffle=True)
 
             slide_features_list = []
