@@ -137,7 +137,7 @@ if __name__ == '__main__':
   
     example_list = np.random.permutation(items_to_process)
     
-    print("----> Total example list:" len(example_list)) 
+    print("----> Total example list:", len(example_list)) 
     
     # args.example_list = ['tumor_026']  # Modify for testing
     # args.example_list = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']   
