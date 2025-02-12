@@ -240,7 +240,7 @@ if __name__ == '__main__':
   
     example_list = items_to_process    
     print(items_to_process)
-    print("len(example_list)", len(example_list)) 
+    print("len(example_list): ", len(example_list)) 
     
     main(args) 
     
