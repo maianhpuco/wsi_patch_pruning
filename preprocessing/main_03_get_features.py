@@ -239,7 +239,7 @@ if __name__ == '__main__':
     items_to_process = [item for item in items_to_process if item not in remove_item] 
   
     example_list = items_to_process    
-    
+    print("len(example_list)", len(example_list)) 
     
     main(args) 
     
