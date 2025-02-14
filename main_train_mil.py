@@ -43,10 +43,13 @@ def load_config(config_file):
 def main(args):
     
     example_list = [i for i in args.features_h5_path if i.split(".h5")[0].split("_")[0] != "test"]
-    
+   
+    print("num h5 files", os.listdir(args.feature_h5_path))
     print(len(example_list))
     print("- total files", len(example_list))
+    
     train_num = int(len(example_list)*0.8)
+    
     random.shuffle(example_list)  # Shuffle the list in-place
     train_files = example_list[:train_num]  # First 80% as train
     test_files = example_list[train_num:]  # Remaining 20% as test
