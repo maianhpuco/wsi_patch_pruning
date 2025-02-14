@@ -18,7 +18,11 @@ import random
 
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
 from data.feature_dataset import FeaturesDataset  # in the repo
-from utils.train_classifier.train_mlclassifier import save_checkpoint, load_checkpoint
+from utils.train_classifier.train_mlclassifier import (
+    save_checkpoint, 
+    load_checkpoint, 
+    train_mil_classifier
+)
 
 from utils.plotting import (
     plot_heatmap_with_bboxes,
@@ -26,8 +30,8 @@ from utils.plotting import (
     downscaling,
     rescaling_stat_for_segmentation, 
     min_max_scale,
-    
     replace_outliers_with_bounds)
+
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
@@ -74,7 +78,6 @@ def main(args):
     optimizer = optim.AdamW(mil_model.parameters(), lr=0.0005)
 
     # Define checkpoint path
-    # checkpoint_path = "/content/drive/MyDrive/2024_Houston/02 - AIMAPathologyProject/Common/Superpixels/bag_classifier_checkpoint.pth"
     checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
     model, optimizer, start_epoch, best_auc = load_checkpoint(mil_model, optimizer, checkpoint_path)
 
@@ -89,7 +92,17 @@ def main(args):
     with torch.no_grad():
         bag_output = model(test_features, [test_features.shape[0]])  # Forward pass
     print(bag_output.shape)
-
+    
+    print("- Start training:")
+    
+    train_mil_classifier(
+        model, 
+        train_dataset, 
+        test_dataset, 
+        num_epoch=30, 
+        batch_size=32, 
+        checkpoint_path=checkpoint_path
+        )
 
 if __name__ == '__main__': 
     arg_file_name = 'ma_exp002' 

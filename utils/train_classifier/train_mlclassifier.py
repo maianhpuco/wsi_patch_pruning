@@ -5,6 +5,9 @@ from tqdm import tqdm
 import os
 import torch.nn as nn 
 
+import numpy as np
+from sklearn.metrics import roc_auc_score, precision_recall_curve 
+
 
 def save_checkpoint(model, optimizer, epoch, best_auc, checkpoint_path="best_mil_model.pth"):
     """
@@ -34,6 +37,7 @@ def load_checkpoint(model, optimizer, checkpoint_path="best_mil_model.pth", devi
     else:
         print(f"No checkpoint found at {checkpoint_path}, starting fresh training.")
         return model, optimizer, 0, 0.0  # Start from scratch
+
 
 def train_mil_classifier(
     model,
@@ -155,10 +159,6 @@ class FocalLoss(nn.Module):
         pt = torch.exp(-BCE_loss)  # Probability of the true class
         focal_loss = self.alpha * (1 - pt) ** self.gamma * BCE_loss
         return focal_loss.mean()  # Average loss for batch
-
-
-import numpy as np
-from sklearn.metrics import roc_auc_score, precision_recall_curve
 
 def find_best_threshold(all_labels, all_probs):
     """
