@@ -41,7 +41,9 @@ def load_config(config_file):
 
  
 def main(args):
+    
     example_list = [i for i in args.features_h5_path if i.split(".h5")[0].split("_")[0] != "test"]
+    
     print(len(example_list))
     print("- total files", len(example_list))
     train_num = int(len(example_list)*0.8)
