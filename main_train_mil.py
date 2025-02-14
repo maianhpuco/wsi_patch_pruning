@@ -104,7 +104,7 @@ def main(args):
         model, 
         train_dataset, 
         test_dataset, 
-        num_epochs=30, 
+        num_epochs=1, 
         batch_size=32, 
         checkpoint_path=checkpoint_path
         )
