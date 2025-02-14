@@ -7,6 +7,8 @@ FEATURES_H5_PATH: '/project/hnguyen2/mvu9/camelyon16/features_h5_files'
 CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoints'
 IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
 IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2'
+CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoint_path' 
+
 scoring_function: get_scoring_do_nothing 
 pruning_function: get_pruning_do_nothing
 batch_size: 256

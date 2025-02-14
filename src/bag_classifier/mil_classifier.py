@@ -21,7 +21,7 @@ class MILClassifier(nn.Module):
 
         self.feature_extractor = nn.Sequential(*layers)  # Feature extractor (before pooling)
 
-        # ✅ Fix: Attention should be applied BEFORE final classification!
+        # Fix: Attention should be applied BEFORE final classification!
         if self.pooling == 'attention':
             self.attention = nn.Sequential(
                 nn.Linear(hidden_dims[-1], 128),  # Learnable attention mechanism
