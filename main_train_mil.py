@@ -93,13 +93,13 @@ def main(args):
         bag_output = model(test_features, [test_features.shape[0]])  # Forward pass
     print(bag_output.shape)
     
-    print("- Start training:")
+    print("- Start training")
     
     train_mil_classifier(
         model, 
         train_dataset, 
         test_dataset, 
-        num_epoch=30, 
+        num_epochs=30, 
         batch_size=32, 
         checkpoint_path=checkpoint_path
         )
