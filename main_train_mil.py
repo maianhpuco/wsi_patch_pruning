@@ -44,7 +44,7 @@ def main(args):
     
     example_list = [i for i in args.features_h5_path if i.split(".h5")[0].split("_")[0] != "test"]
    
-    print("num h5 files", os.listdir(args.feature_h5_path))
+    print("num h5 files", os.listdir(args.features_h5_path))
     print(len(example_list))
     print("- total files", len(example_list))
     
@@ -110,7 +110,7 @@ def main(args):
         )
 
 if __name__ == '__main__': 
-    arg_file_name = 'ma_exp002' 
+    arg_file_name = 'ma_exp001' 
     parser = argparse.ArgumentParser() 
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default=arg_file_name)
