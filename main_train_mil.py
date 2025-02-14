@@ -42,9 +42,9 @@ def load_config(config_file):
  
 def main(args):
     
-    example_list = [i for i in args.features_h5_path if i.split(".h5")[0].split("_")[0] != "test"]
+    example_list = [i for i in os.listdir(args.features_h5_path) if i.split(".h5")[0].split("_")[0] != "test"]
    
-    print("num h5 files", os.listdir(args.features_h5_path))
+    print("num h5 files", len(os.listdir(args.features_h5_path)))
     print(len(example_list))
     print("- total files", len(example_list))
     
