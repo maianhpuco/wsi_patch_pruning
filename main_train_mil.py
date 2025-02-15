@@ -81,7 +81,7 @@ def main(args):
     # Define model & optimizer
     input_dim = 768  # Adjust according to dataset
     model = MILClassifier(input_dim=input_dim, pooling='attention')
-    optimizer = optim.AdamW(mil_model.parameters(), lr=0.001)
+    optimizer = optim.AdamW(model.parameters(), lr=0.001)
 
     # Define checkpoint path
     checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
