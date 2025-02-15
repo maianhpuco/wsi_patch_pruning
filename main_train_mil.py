@@ -19,10 +19,11 @@ import random
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
 from data.feature_dataset import FeaturesDataset  # in the repo
 from utils.train_classifier.train_mlclassifier import (
-    save_checkpoint, 
-    load_checkpoint, 
-    train_mil_classifier
+    save_checkpoint, FocalLoss, 
+    load_checkpoint,collate_mil_fn,  
+    train_mil_classifier, evaluate_mil_classifier
 )
+from torch.utils.data import DataLoader
 
 from utils.plotting import (
     plot_heatmap_with_bboxes,
@@ -104,11 +105,17 @@ def main(args):
         model, 
         train_dataset, 
         test_dataset, 
-        num_epochs=100, 
+        num_epochs=5, 
         batch_size=64, 
         checkpoint_path=checkpoint_path
         )
     
+    print("------Run evaluation----")
+    mil_model, optimizer, start_epoch, best_auc = load_checkpoint(model, optimizer, checkpoint_path) 
+    criterion = FocalLoss(gamma=1, alpha=0.8)
+    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, collate_fn=collate_mil_fn) 
+    test_loss, test_acc, test_auc = evaluate_mil_classifier(
+        mil_model, test_loader, criterion, device)
     
 
 if __name__ == '__main__': 

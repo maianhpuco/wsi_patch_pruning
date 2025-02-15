@@ -241,7 +241,7 @@ def evaluate_mil_classifier(model, test_loader, criterion, device):
     acc_class_0 = correct_class_0 / total_class_0 if total_class_0 > 0 else 0
     acc_class_1 = correct_class_1 / total_class_1 if total_class_1 > 0 else 0
     overall_acc = (correct_class_0 + correct_class_1) / len(all_labels) if len(all_labels) > 0 else 0
-    print("-----> Evaluation result: ")
+    print("---- Evaluation result: ")
     print(f"Test Loss = {total_loss/len(test_loader):.4f}, Test Accuracy = {overall_acc:.4f}")
     print(f"AUC = {auc_score:.4f}")
     print(f"Best Threshold: {best_threshold:.4f}")
