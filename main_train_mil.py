@@ -48,7 +48,7 @@ def main(args):
     print(len(example_list))
     print("- total files", len(example_list))
     
-    train_num = int(len(example_list)*0.8)
+    train_num = int(len(example_list)*0.9)
     
     random.shuffle(example_list)  # Shuffle the list in-place
     train_files = example_list[:train_num]  # First 80% as train
@@ -80,7 +80,7 @@ def main(args):
     # Define model & optimizer
     input_dim = 768  # Adjust according to dataset
     mil_model = MILClassifier(input_dim=input_dim, pooling='attention')
-    optimizer = optim.AdamW(mil_model.parameters(), lr=0.0005)
+    optimizer = optim.AdamW(mil_model.parameters(), lr=0.001)
 
     # Define checkpoint path
     checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
