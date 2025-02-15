@@ -80,12 +80,12 @@ def main(args):
     
     # Define model & optimizer
     input_dim = 768  # Adjust according to dataset
-    mil_model = MILClassifier(input_dim=input_dim, pooling='attention')
+    model = MILClassifier(input_dim=input_dim, pooling='attention')
     optimizer = optim.AdamW(mil_model.parameters(), lr=0.001)
 
     # Define checkpoint path
     checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
-    model, optimizer, start_epoch, best_auc = load_checkpoint(mil_model, optimizer, checkpoint_path)
+    # model, optimizer, start_epoch, best_auc = load_checkpoint(mil_model, optimizer, checkpoint_path)
 
     print("--- check the model ----")
     device = "cuda" if torch.cuda.is_available() else "cpu"
