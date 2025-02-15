@@ -47,7 +47,7 @@ def train_mil_classifier(
     batch_size=32,
     gamma=1,
     alpha=0.8,
-    lr=0.0005,
+    lr=0.001,
     weight_decay=1e-4,
     device="cuda" if torch.cuda.is_available() else "cpu",
     scheduler_patience=3,
