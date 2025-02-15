@@ -108,6 +108,8 @@ def main(args):
         batch_size=64, 
         checkpoint_path=checkpoint_path
         )
+    
+    
 
 if __name__ == '__main__': 
     arg_file_name = 'ma_exp001' 
