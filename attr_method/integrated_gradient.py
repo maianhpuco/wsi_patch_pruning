@@ -43,11 +43,6 @@ class IntegratedGradients(CoreSaliency):
             baseline_num = 1 
             gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(baseline_num, x_value.shape[0], x_value.shape[1])
             gradients_avg = gradients_batch.reshape(-1, x_value.shape[-1])
-            x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
-            print("--")
-            print(gradients_avg.shape)
-            print(x_diff.shape)
-            
+            x_diff = x_diff.reshape(-1, x_value.shape[-1])             
             attribution_values += (gradients_avg * x_diff)
-        # print("result"attribution_values.shape)
         return attribution_values 
