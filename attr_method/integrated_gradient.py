@@ -24,6 +24,7 @@ class IntegratedGradients(CoreSaliency):
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
 
         alphas = np.linspace(0, 1, x_steps)
+        
         for step_idx, alpha in enumerate(tqdm(alphas, desc="Computing:", ncols=100), start=1):
             sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
             x_baseline_batch = baseline_features[sampled_indices]
@@ -41,9 +42,10 @@ class IntegratedGradients(CoreSaliency):
             self.format_and_check_call_model_output(call_model_output, x_step_batch_tensor.shape, self.expected_keys)
             baseline_num = 1 
             gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(baseline_num, x_value.shape[0], x_value.shape[1])
-            gradients_avg = gradients_batch.squeeze(0)
-            # print("gradients_avg.shape:", gradients_avg.shape)
-            torch.cuda.empty_cache()
+            gradients_avg = gradients_batch
+            print("--")
+            print(gradients_avg.shape)
+            print(x_diff.shape)
             x_diff = x_diff.reshape(-1, x_value.shape[1])
             attribution_values += (gradients_avg * x_diff)
 
