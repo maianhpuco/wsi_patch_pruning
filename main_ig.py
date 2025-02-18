@@ -52,9 +52,11 @@ def main(args):
     Output: save scores into a json folder
     '''
     pass
-    if args.ig_name=='vanilla_gradient':
+    if args.ig_name=='ig':
         from attr_method.integrated_gradient import get_ig 
         print("Running for Integrated Gradient Attribution method")
+        #adding more args relating to the ig here 
+        
     scores = get_ig()
     dataset = IG_dataset(
         args.features_h5_path,
@@ -88,5 +90,5 @@ if __name__=="__main__":
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-    
+        args.ig_name = "ig"
     main(args) 
