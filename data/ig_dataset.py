@@ -27,7 +27,7 @@ class IG_dataset(Dataset):
         self.feature_h5_path = features_h5_path
         
     def __len__(self):
-        return len(self.keys)
+        return len(self.basenames)
     
     def __getitem__(self, idx):
         basename = self.basenames[idx]
