@@ -54,19 +54,20 @@ def main(args):
     Output: save scores into a json folder
     '''
     
-    if args.ig_name=='integrated_gradient':
+    if args.ig_name=='integrated_gradients':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
         print("Running for Integrated Gradient Attribution method")
         score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
         print("score_save_path", score_save_path)
-        if os.path.exists(score_save_path):
-            shutil.rmtree(score_save_path)  # Delete the existing directory
-        # Recreate the directory
-        os.makedirs(score_save_path)
         #adding more args relating to the ig here 
     else:
         print("No attribution method is valid")
+        
+    if os.path.exists(score_save_path):
+        shutil.rmtree(score_save_path)  # Delete the existing directory
+        # Recreate the directory
+        os.makedirs(score_save_path) 
     checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
     mil_model = load_model(checkpoint_path)
     dataset = IG_dataset(
