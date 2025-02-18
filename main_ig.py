@@ -64,21 +64,20 @@ def main(args):
         args.features_h5_path,
         args.slide_path,
         )
-    dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4)
     print("Total number of sample in dataset:", len(dataset))
-    for batch in dataloader:
-        features = batch['features']  # Shape: (batch_size, num_patches, feature_dim)
-        label = batch['label']
-        patch_indices = batch['patch_indices']
-        coordinates = batch['coordinates']
-        spixel_idx = batch['spixel_idx']
+    for data in dataset:
+        features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
+        label = data['label']
+        patch_indices = data['patch_indices']
+        coordinates = data['coordinates']
+        spixel_idx = data['spixel_idx']
 
         # Run Integrated Gradients on batch
-        scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
+        # scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
 
-        print("IG Scores Shape:", scores.shape)
-        break  # Remove this in actual training loop 
-
+        # print("IG Scores Shape:", scores.shape)
+        print(features.shape)
+        break 
     
 if __name__=="__main__":
     # get config 
