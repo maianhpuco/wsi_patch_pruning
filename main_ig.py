@@ -88,4 +88,5 @@ if __name__=="__main__":
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+    
+    main(args) 
