@@ -76,8 +76,7 @@ def main(args):
         patch_indices = data['patch_indices']
         coordinates = data['coordinates']
         spixel_idx = data['spixel_idx']
-        print("Get the baseline")
-        
+
         start = time.time() 
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(dataset, num_files=20) 
