@@ -82,6 +82,7 @@ def main(args):
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(dataset, num_files=20) 
         stacked_features_baseline = stacked_features_baseline.numpy() 
+        
         if args.ig_name=='ig':
             kwargs = {
                 "x_value": features,  
@@ -92,6 +93,7 @@ def main(args):
             }  
         attribution_values = attribution_method.GetMask(**kwargs) 
         scores = stacked_features_baseline.mean(1) 
+        print("Feature shape:", features.shape)
         print("Scores:", scores.shape)
 
         # print("- Stacked_features.shape: ", stacked_features_baseline.shape)
