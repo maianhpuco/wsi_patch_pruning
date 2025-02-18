@@ -62,5 +62,5 @@ def sample_random_features(dataset, num_files=10):
 
     # Stack all features together along the first dimension
     stacked_features = torch.cat(stacked_features, dim=0)
-
+    print(selected_basenames)
     return stacked_features, selected_basenames
