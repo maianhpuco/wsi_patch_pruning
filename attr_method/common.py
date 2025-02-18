@@ -47,7 +47,8 @@ def get_mean_std_for_normal_dist(dataset):
 
 
 def sample_random_features(dataset, num_files=10):
-    basenames = random.shuffle(dataset.basenames) 
+    basenames = dataset.basenames[:]
+    random.shuffle(basenames)
     selected_basenames = random.sample(basenames, min(num_files, len(dataset)))
     stacked_features = []
     with tqdm(total=len(selected_basenames), desc="Loading Feature Files") as pbar:
