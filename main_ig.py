@@ -95,9 +95,7 @@ def main(args):
 
     # Print results
     print("Mean shape:", mean.shape)
-    print("Mean:", mean)
     print("Std shape:", std.shape)
-    print("Std:", std)
     print("Duration", time.time()-start)
         
  
