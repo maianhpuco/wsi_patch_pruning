@@ -66,6 +66,7 @@ def main(args):
         )
     print("Total number of sample in dataset:", len(dataset))
     for data in dataset:
+        basename = data['basename']
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
         label = data['label']
         patch_indices = data['patch_indices']
@@ -76,6 +77,7 @@ def main(args):
         # scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
 
         # print("IG Scores Shape:", scores.shape)
+        print(basename)
         print(features.shape)
         break 
     
