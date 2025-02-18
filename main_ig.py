@@ -88,9 +88,10 @@ def main(args):
                 "baseline_features": stacked_features_baseline,  # Optional
                 "x_steps": 50,  
             }  
-        scores = attribution_method.GetMask(**kwargs)  
+        attribution_values = attribution_method.GetMask(**kwargs) 
+        scores = stacked_features_baseline.mean(1) 
         print("Scores:", scores.shape)
-        
+
         print("- Stacked_features.shape: ", stacked_features_baseline.shape)
         print("- Processing time to get the stacked features: ", time.time()-start)
         print("- Selected basename:", selected_basenames)    
