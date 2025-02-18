@@ -32,7 +32,7 @@ class IntegratedGradients(CoreSaliency):
             x_step_batch = x_baseline_batch + alpha * x_diff
             x_step_batch_tensor = torch.tensor(x_step_batch, dtype=torch.float32, requires_grad=True)
 
-            call_model_output, logit = call_model_function(
+            call_model_output = call_model_function(
                 x_step_batch_tensor,
                 model,
                 call_model_args=call_model_args,
