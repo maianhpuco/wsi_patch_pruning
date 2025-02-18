@@ -77,7 +77,7 @@ def main(args):
 
     # Iterate over dataset to compute mean and std in a memory-efficient way
     start = time.time()
-    for i in range(len(dataset)):
+    for i in tqdm(range(len(dataset)), desc="Computing the Mean and Std"):
         sample = dataset[i]
         features = torch.tensor(sample['features'], dtype=torch.float32)  # Convert to tensor
 
