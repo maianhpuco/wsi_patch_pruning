@@ -21,6 +21,9 @@ import saliency.core as saliency
 from saliency.core.base import CoreSaliency
 from saliency.core.base import INPUT_OUTPUT_GRADIENTS
 
+import torch 
+from torch.utils.data import DataLoader 
+ 
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
 from data.feature_dataset import FeaturesDataset  # in the repo
 from utils.utils import load_config
@@ -51,7 +54,6 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    pass
     if args.ig_name=='ig':
         from attr_method.integrated_gradient import get_ig 
         print("Running for Integrated Gradient Attribution method")
@@ -62,8 +64,20 @@ def main(args):
         args.features_h5_path,
         args.slide_path,
         )
+    dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4)
     print("Total number of sample in dataset:", len(dataset))
+    for batch in dataloader:
+        features = batch['features']  # Shape: (batch_size, num_patches, feature_dim)
+        label = batch['label']
+        patch_indices = batch['patch_indices']
+        coordinates = batch['coordinates']
+        spixel_idx = batch['spixel_idx']
 
+        # Run Integrated Gradients on batch
+        scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
+
+        print("IG Scores Shape:", scores.shape)
+        break  # Remove this in actual training loop 
 
     
 if __name__=="__main__":
