@@ -8,7 +8,7 @@ import numpy as np
 import argparse
 import time   
 import timm 
-import yaml 
+# import yaml 
  
 import numpy as np
 from src.bag_classifier.mil_classifier import MILClassifier 
