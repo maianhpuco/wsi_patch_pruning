@@ -88,7 +88,7 @@ def main(args):
                 "baseline_features": stacked_features_baseline,  # Optional
                 "x_steps": 50,  
             }  
-        scores = attribution_method.getMask(mil_model, **kwargs)  
+        scores = attribution_method.GetMask(mil_model, **kwargs)  
         print("Scores:", scores.shape)
         
         print("- Stacked_features.shape: ", stacked_features_baseline.shape)
