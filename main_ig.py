@@ -92,14 +92,14 @@ def main(args):
             dataset, num_files=20) 
         stacked_features_baseline = stacked_features_baseline.numpy() 
         
-        if args.ig_name=='ig':
-            kwargs = {
-                "x_value": features,  
-                "call_model_function": call_model_function,  
-                "model": mil_model,  
-                "baseline_features": stacked_features_baseline,  # Optional
-                "x_steps": 50,  
-            }  
+        # if args.ig_name=='ig':
+        kwargs = {
+            "x_value": features,  
+            "call_model_function": call_model_function,  
+            "model": mil_model,  
+            "baseline_features": stacked_features_baseline,  # Optional
+            "x_steps": 50,  
+        }  
             
         attribution_values = attribution_method.GetMask(**kwargs) 
         scores = attribution_values.mean(1) 
