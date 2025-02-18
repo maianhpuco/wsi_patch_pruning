@@ -72,13 +72,6 @@ def main(args):
         args.features_h5_path,
         args.slide_path,
         )
-    
-    print("Get the baseline")
-    start = time.time() 
-    stacked_features, selected_basenames =  sample_random_features(dataset, num_files=10) 
-    print("stacked_features.shape: ", stacked_features.shape)
-    print("Processing time to get the stacked features: ", time.time()-start)
-    print("selected basename")    
 
     print("Total number of sample in dataset:", len(dataset))
     for data in dataset:
@@ -88,7 +81,15 @@ def main(args):
         patch_indices = data['patch_indices']
         coordinates = data['coordinates']
         spixel_idx = data['spixel_idx']
-
+        print("Get the baseline")
+        
+        start = time.time() 
+        stacked_features, selected_basenames =  sample_random_features(dataset, num_files=20) 
+        
+        print("stacked_features.shape: ", stacked_features.shape)
+        print("Processing time to get the stacked features: ", time.time()-start)
+        print("selected basename")    
+    
         # Run Integrated Gradients on batch
         # scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
 
