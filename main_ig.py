@@ -91,7 +91,7 @@ def main(args):
                 "x_steps": 50,  
             }  
         attribution_values = attribution_method.GetMask(**kwargs) 
-        scores = stacked_features_baseline.mean(1) 
+        scores = attribution_values.mean(1) 
         print("Feature shape:", features.shape)
         print("Scores:", scores.shape)
 
