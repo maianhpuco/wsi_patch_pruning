@@ -6,7 +6,7 @@ from saliency.core.base import CoreSaliency
 from saliency.core.base import INPUT_OUTPUT_GRADIENTS
 import torch
 import matplotlib.pyplot as plt
-from common import PreprocessInputs, call_model_function 
+from attr_method.common import PreprocessInputs, call_model_function 
 
 class IntegratedGradients(CoreSaliency):
     """Efficient Integrated Gradients with Counterfactual Attribution"""
