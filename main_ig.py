@@ -58,6 +58,7 @@ def main(args):
         attribution_method = AttrMethod() 
         print("Running for Integrated Gradient Attribution method")
         score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
+        print("score_save_path", score_save_path)
         if os.path.exists(score_save_path):
             shutil.rmtree(score_save_path)  # Delete the existing directory
         # Recreate the directory
