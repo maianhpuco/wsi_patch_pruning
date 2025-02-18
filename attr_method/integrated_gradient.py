@@ -6,24 +6,29 @@ from saliency.core.base import CoreSaliency
 from saliency.core.base import INPUT_OUTPUT_GRADIENTS
 import torch
 import matplotlib.pyplot as plt
-
-
+from common import PreprocessInputs, call_model_function 
 
 class IntegratedGradients(CoreSaliency):
     """Efficient Integrated Gradients with Counterfactual Attribution"""
 
     expected_keys = [INPUT_OUTPUT_GRADIENTS]
 
-    def GetMask(self, 
-                x_value, 
-                call_model_function,
-                model, 
-                call_model_args=None, 
-                baseline_features=None,
-                x_steps=25,  
-                memmap_file="ig_memmap.npy", 
-                gradients_memmap_file="gradients_avg_memmap.npy"
-                ):
+    def GetMask(self, **kwargs): 
+                # x_value, 
+                # call_model_function,
+                # model, 
+                # call_model_args=None, 
+                # baseline_features=None,
+                # x_steps=25,  
+                # memmap_file="ig_memmap.npy", 
+                # gradients_memmap_file="gradients_avg_memmap.npy"
+                # ):
+        x_value = kwargs.get("x_value")
+        call_model_function = kwargs.get("call_model_function")
+        model = kwargs.get("model") 
+        call_model_args = kwargs.get("call_model_args", None)
+        baseline_features = kwargs.get("baseline_features", None)
+        x_steps = kwargs.get("x_steps", 25) 
         
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
 

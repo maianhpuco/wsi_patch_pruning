@@ -48,7 +48,7 @@ from attr_method.common import (
     call_model_function
 )
 
-def load_model(checkpoint_path, model):
+def load_model(checkpoint_path):
     input_dim = 768  # Adjust according to dataset
     mil_model = MILClassifier(input_dim=input_dim, pooling='attention')
     optimizer = optim.AdamW(mil_model.parameters(), lr=0.0005)
@@ -62,18 +62,21 @@ def main(args):
     Output: save scores into a json folder
     '''
     if args.ig_name=='ig':
-        from attr_method.integrated_gradient import get_ig 
+        from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
+        attribution_method = AttrMethod() 
+        
         print("Running for Integrated Gradient Attribution method")
         #adding more args relating to the ig here 
         
-    scores = get_ig()
-    
+    mil_model = load_model(args.checkpoint_path)
+     
     dataset = IG_dataset(
         args.features_h5_path,
         args.slide_path,
         )
 
     print("Total number of sample in dataset:", len(dataset))
+    
     for data in dataset:
         basename = data['basename']
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
@@ -84,16 +87,24 @@ def main(args):
         print("Get the baseline")
         
         start = time.time() 
-        stacked_features, selected_basenames =  sample_random_features(dataset, num_files=20) 
+        # randomly sampling #file to create the baseline 
+        stacked_features_baseline, _ =  sample_random_features(dataset, num_files=20) 
         
-        print("stacked_features.shape: ", stacked_features.shape)
+        if args.ig_name=='ig':
+            kwargs = {
+                "x_value": features,  
+                "call_model_function": call_model_function,  
+                "model": mil_model,  
+                "baseline_features": stacked_features_baseline,  # Optional
+                "x_steps": 50,  
+            }  
+        scores = attribution_method.getMask(mil_model, **kwargs)  
+        print("Scores:", scores.shape)
+        
+        print("stacked_features.shape: ", stacked_features_baseline.shape)
         print("Processing time to get the stacked features: ", time.time()-start)
         print("selected basename")    
     
-        # Run Integrated Gradients on batch
-        # scores = get_ig(features, label, patch_indices, coordinates, spixel_idx)
-
-        # print("IG Scores Shape:", scores.shape)
         print(basename)
         print(features.shape)
         break 
