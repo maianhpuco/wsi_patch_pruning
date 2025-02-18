@@ -18,6 +18,12 @@ def get_region_original_size(slide, xywh_abs_bbox):
     return region.convert('RGB')
 
 
+def load_config(config_file):
+    # Load configuration from the provided YAML file
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
+ 
 
 def read_region_from_npy(dir_folder, slide_basename, foreground_idx):
     # Construct the file path
