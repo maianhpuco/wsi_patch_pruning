@@ -8,6 +8,7 @@ import numpy as np
 import argparse
 import time   
 import timm 
+import shutil 
 # import yaml 
 import random 
 import numpy as np
@@ -44,7 +45,6 @@ def load_model(checkpoint_path):
     input_dim = 768  # Adjust according to dataset
     mil_model = MILClassifier(input_dim=input_dim, pooling='attention')
     optimizer = optim.AdamW(mil_model.parameters(), lr=0.0005)
-
     model, _, _, _ = load_checkpoint(mil_model, optimizer, checkpoint_path)  
     return model 
 
@@ -53,10 +53,15 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    if args.ig_name=='ig':
+    if args.ig_name=='integrated_gradient':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
         print("Running for Integrated Gradient Attribution method")
+        score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
+        if os.path.exists(score_save_path):
+            shutil.rmtree(score_save_path)  # Delete the existing directory
+        # Recreate the directory
+        os.makedirs(score_save_path)
         #adding more args relating to the ig here 
         
     checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
@@ -79,7 +84,8 @@ def main(args):
 
         start = time.time() 
         # randomly sampling #file to create the baseline 
-        stacked_features_baseline, selected_basenames =  sample_random_features(dataset, num_files=20) 
+        stacked_features_baseline, selected_basenames =  sample_random_features(
+            dataset, num_files=20) 
         stacked_features_baseline = stacked_features_baseline.numpy() 
         
         if args.ig_name=='ig':
@@ -90,17 +96,12 @@ def main(args):
                 "baseline_features": stacked_features_baseline,  # Optional
                 "x_steps": 50,  
             }  
+            
         attribution_values = attribution_method.GetMask(**kwargs) 
         scores = attribution_values.mean(1) 
         print("Feature shape:", features.shape)
         print("Scores:", scores.shape)
 
-        # print("- Stacked_features.shape: ", stacked_features_baseline.shape)
-        # print("- Processing time to get the stacked features: ", time.time()-start)
-        # print("- Selected basename:", selected_basenames)    
-    
-        # print(basename)
-        # print(features.shape)
     
 if __name__=="__main__":
     # get config 
@@ -119,10 +120,9 @@ if __name__=="__main__":
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
-        print(args.features_h5_path)
-        
+        args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  
-        
+        os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
