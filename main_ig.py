@@ -30,18 +30,23 @@ from data.feature_dataset import FeaturesDataset  # in the repo
 from utils.utils import load_config
 from utils.train_classifier.train_mlclassifier import (
     save_checkpoint, 
-    load_checkpoint, 
-    PreprocessInputs, 
-    call_model_function)
+    load_checkpoint
+)
 
 from utils.plotting import (
     plot_heatmap_with_bboxes,
     get_region_original_size,
     downscaling,
-    rescaling_stat_for_segmentation) 
+    rescaling_stat_for_segmentation
+) 
 
 from data.ig_dataset import IG_dataset 
-from attr_method.common import sample_random_features, get_mean_std_for_normal_dist 
+from attr_method.common import (
+    sample_random_features, 
+    get_mean_std_for_normal_dist, 
+    PreprocessInputs, 
+    call_model_function
+)
 
 def load_model(checkpoint_path, model):
     input_dim = 768  # Adjust according to dataset
