@@ -28,13 +28,20 @@ from torch.utils.data import DataLoader
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
 from data.feature_dataset import FeaturesDataset  # in the repo
 from utils.utils import load_config
-from utils.train_classifier.train_mlclassifier import save_checkpoint, load_checkpoint
+from utils.train_classifier.train_mlclassifier import (
+    save_checkpoint, 
+    load_checkpoint, 
+    PreprocessInputs, 
+    call_model_function)
+
 from utils.plotting import (
     plot_heatmap_with_bboxes,
     get_region_original_size,
     downscaling,
     rescaling_stat_for_segmentation) 
+
 from data.ig_dataset import IG_dataset 
+from attr_method.common import sample_random_features, get_mean_std_for_normal_dist 
 
 def load_model(checkpoint_path, model):
     input_dim = 768  # Adjust according to dataset
@@ -43,12 +50,6 @@ def load_model(checkpoint_path, model):
 
     model, _, _, _ = load_checkpoint(mil_model, optimizer, checkpoint_path)  
     return model 
-
-def get_data(feature_h5_path):
-    pass 
-
-def get_baseline():
-    pass 
 
 def main(args): 
     '''
@@ -66,40 +67,14 @@ def main(args):
         args.features_h5_path,
         args.slide_path,
         )
+    
     print("Get the baseline")
-    import torch
-    import numpy as np
+    start = time.time() 
+    stacked_features, selected_basenames =  sample_random_features(dataset, num_files=10) 
+    print("stacked_features.shape: ", stacked_features.shape)
+    print("Processing time to get the stacked features: ", time.time()-start)
+    print("selected basename")    
 
-    # Initialize accumulators
-    feature_sum = None
-    feature_sq_sum = None
-    total_samples = 0
-
-    # Iterate over dataset to compute mean and std in a memory-efficient way
-    start = time.time()
-    for i in tqdm(range(len(dataset)), desc="Computing the Mean and Std"):
-        sample = dataset[i]
-        features = torch.tensor(sample['features'], dtype=torch.float32)  # Convert to tensor
-
-        if feature_sum is None:
-            feature_sum = torch.zeros_like(features.sum(dim=0))
-            feature_sq_sum = torch.zeros_like(features.sum(dim=0))
-
-        feature_sum += features.sum(dim=0)
-        feature_sq_sum += (features ** 2).sum(dim=0)
-        total_samples += features.shape[0]  # Number of patches
-
-    # Compute mean and std
-    mean = feature_sum / total_samples
-    std = torch.sqrt((feature_sq_sum / total_samples) - (mean ** 2))
-
-    # Print results
-    print("Mean shape:", mean.shape)
-    print("Std shape:", std.shape)
-    print("Duration", time.time()-start)
-        
- 
-        
     print("Total number of sample in dataset:", len(dataset))
     for data in dataset:
         basename = data['basename']
@@ -142,4 +117,5 @@ if __name__=="__main__":
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         args.ig_name = "ig"
+        
     main(args) 
