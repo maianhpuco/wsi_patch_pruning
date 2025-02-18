@@ -67,7 +67,9 @@ def main(args):
         )
     print("Total number of sample in dataset:", len(dataset))
     
-    for data in dataset:
+    for idx, data in enumerate(dataset):
+        total_file = len(dataset)
+        print(f"Processing the file numner {idx+1}/{total_file}")
         basename = data['basename']
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
         label = data['label']
@@ -92,13 +94,12 @@ def main(args):
         scores = stacked_features_baseline.mean(1) 
         print("Scores:", scores.shape)
 
-        print("- Stacked_features.shape: ", stacked_features_baseline.shape)
-        print("- Processing time to get the stacked features: ", time.time()-start)
-        print("- Selected basename:", selected_basenames)    
+        # print("- Stacked_features.shape: ", stacked_features_baseline.shape)
+        # print("- Processing time to get the stacked features: ", time.time()-start)
+        # print("- Selected basename:", selected_basenames)    
     
-        print(basename)
-        print(features.shape)
-        break 
+        # print(basename)
+        # print(features.shape)
     
 if __name__=="__main__":
     # get config 
