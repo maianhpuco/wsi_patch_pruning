@@ -14,15 +14,6 @@ class IntegratedGradients(CoreSaliency):
     expected_keys = [INPUT_OUTPUT_GRADIENTS]
 
     def GetMask(self, **kwargs): 
-                # x_value, 
-                # call_model_function,
-                # model, 
-                # call_model_args=None, 
-                # baseline_features=None,
-                # x_steps=25,  
-                # memmap_file="ig_memmap.npy", 
-                # gradients_memmap_file="gradients_avg_memmap.npy"
-                # ):
         x_value = kwargs.get("x_value")
         call_model_function = kwargs.get("call_model_function")
         model = kwargs.get("model") 
