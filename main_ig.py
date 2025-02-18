@@ -79,7 +79,7 @@ def main(args):
         start = time.time() 
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(dataset, num_files=20) 
-        
+        stacked_features_baseline = stacked_features_baseline.numpy() 
         if args.ig_name=='ig':
             kwargs = {
                 "x_value": features,  
