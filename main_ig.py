@@ -53,6 +53,7 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
+    
     if args.ig_name=='integrated_gradient':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
@@ -64,7 +65,8 @@ def main(args):
         # Recreate the directory
         os.makedirs(score_save_path)
         #adding more args relating to the ig here 
-        
+    else:
+        print("No attribution method is valid")
     checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
     mil_model = load_model(checkpoint_path)
     dataset = IG_dataset(
@@ -123,11 +125,10 @@ if __name__=="__main__":
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
         args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  
-        print(args.attribution_scores_folder)
         os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-        args.ig_name = "ig"
+        args.ig_name = "integrated_gradients"
         
     main(args) 
