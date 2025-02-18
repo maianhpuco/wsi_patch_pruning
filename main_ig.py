@@ -9,7 +9,8 @@ import argparse
 import time   
 import timm 
 # import yaml 
- 
+import random 
+
 import numpy as np
 from src.bag_classifier.mil_classifier import MILClassifier 
 
@@ -23,7 +24,7 @@ from saliency.core.base import INPUT_OUTPUT_GRADIENTS
 
 import torch 
 from torch.utils.data import DataLoader 
- 
+
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
 from data.feature_dataset import FeaturesDataset  # in the repo
 from utils.utils import load_config
@@ -60,10 +61,47 @@ def main(args):
         #adding more args relating to the ig here 
         
     scores = get_ig()
+    
     dataset = IG_dataset(
         args.features_h5_path,
         args.slide_path,
         )
+    print("Get the baseline")
+    import torch
+    import numpy as np
+
+    # Initialize accumulators
+    feature_sum = None
+    feature_sq_sum = None
+    total_samples = 0
+
+    # Iterate over dataset to compute mean and std in a memory-efficient way
+    start = time.time()
+    for i in range(len(dataset)):
+        sample = dataset[i]
+        features = torch.tensor(sample['features'], dtype=torch.float32)  # Convert to tensor
+
+        if feature_sum is None:
+            feature_sum = torch.zeros_like(features.sum(dim=0))
+            feature_sq_sum = torch.zeros_like(features.sum(dim=0))
+
+        feature_sum += features.sum(dim=0)
+        feature_sq_sum += (features ** 2).sum(dim=0)
+        total_samples += features.shape[0]  # Number of patches
+
+    # Compute mean and std
+    mean = feature_sum / total_samples
+    std = torch.sqrt((feature_sq_sum / total_samples) - (mean ** 2))
+
+    # Print results
+    print("Mean shape:", mean.shape)
+    print("Mean:", mean)
+    print("Std shape:", std.shape)
+    print("Std:", std)
+    print("Duration", time.time()-start)
+        
+ 
+        
     print("Total number of sample in dataset:", len(dataset))
     for data in dataset:
         basename = data['basename']
