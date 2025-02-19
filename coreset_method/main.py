@@ -16,8 +16,10 @@ method_dict = {"uniform": uniform_method, "kcenter": k_center, "imp_scr": imp_sc
 def main():
     list_path_h5 = list_files(path_h5)
     # print(len(list_path_h5))
-    # print(list_path_h5[0])
-    list_path_h5 = list_path_h5[:1]
+    # print(list_path_h5)
+    list_path_h5 = [
+        "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
+    ]
     data = {"time": 0}
     start_time = time.time()
     for data_path in list_path_h5:
@@ -25,8 +27,8 @@ def main():
             continue
         img_path = os.path.basename(data_path)
         data_sample = read_h5_data(data_path)
-        check_data(data_sample)
-
+        check_data(data_sample, data_path)
+        break
         # change_method
         # list_store = uniform_method(data_sample["features"])
         # data_sample["features"] = data_sample["features"][:50]

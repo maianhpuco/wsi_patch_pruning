@@ -39,12 +39,17 @@ def read_h5_data(file_path, dataset_name=None):
     return data
 
 
-def check_data(data):
+def check_data(data, data_path):
+    print("Data path: ", data_path)
     for key, value in data.items():
         if hasattr(value, "shape"):
             print(f"{key}: shape {value.shape}")
         else:
             print(f"{key}: does not have shape attribute")
+
+    print(data["coordinates"], data["coordinates"].shape[0], type(data["coordinates"]))
+    print(data["coordinates"][0], type(data["coordinates"][0]))
+    print(data["features"])
 
 
 def store_json(data, method):
