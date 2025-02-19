@@ -47,8 +47,14 @@ def main(args):
     #----------------------------------------------------    
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     
+    
     # print("Total number of sample in dataset:", len(dataset))
-    all_scores_paths = glob.glob(os.path.join(scores_dir, "tumor_026.npy"))
+    if args.dry_run==1:
+        all_scores_paths = glob.glob(os.path.join(scores_dir, "tumor_026.npy"))
+    else:
+        all_scores_paths = glob.glob(os.path.join(scores_dir, "*.npy"))  
+        
+        
     for idx, scores_path in enumerate(all_scores_paths):
         print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
         print(scores_path)
