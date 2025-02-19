@@ -59,8 +59,13 @@ def main(args):
     if args.ig_name=='integrated_gradients':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
-        print("Running for Integrated Gradient Attribution method")
-
+       
+    elif args.ig_name=='vanilla_gradients':
+        from attr_method.vanilla_gradients import VanillaGradients as AttrMethod 
+        attribution_method = AttrMethod() 
+        
+    print(f"Running for {args.ig_name} Attribution method") 
+    
     score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     print("score_save_path", score_save_path) 
     if os.path.exists(score_save_path):
@@ -82,7 +87,7 @@ def main(args):
             # basenames=['tumor_026']
             )
         
-    print("Total number of sample in dataset:", len(dataset))
+    print(">>>>>>> ----- Total number of sample in dataset:", len(dataset))
     
     for idx, data in enumerate(dataset):
         total_file = len(dataset)
@@ -120,7 +125,7 @@ if __name__=="__main__":
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
                     choices=[
-                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', ''],
+                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', 'vanilla_gradients'],
                     help='Choose the attribution method to use.') 
     args = parser.parse_args()
     
