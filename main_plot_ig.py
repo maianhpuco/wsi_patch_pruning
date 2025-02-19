@@ -40,7 +40,7 @@ def main(args):
         attribution_method = AttrMethod() 
        
     elif args.ig_name=='vanilla_gradients':
-        from attr_method.vanilla_gradients import VanillaGradients as AttrMethod 
+        from attr_method.vanilla_gradient import VanillaGradients as AttrMethod 
         attribution_method = AttrMethod() 
         
     print(f"Running for {args.ig_name} Attribution method") 

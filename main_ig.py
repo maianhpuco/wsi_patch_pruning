@@ -56,14 +56,24 @@ def main(args):
     Output: save scores into a json folder
     '''
     #---------------------------------------------------- 
-    if args.ig_name=='integrated_gradients':
+    if args.ig_name=='integrated_gradient':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
        
-    elif args.ig_name=='vanilla_gradients':
-        from attr_method.vanilla_gradients import VanillaGradients as AttrMethod 
+    elif args.ig_name=='vanilla_gradient':
+        from attr_method.vanilla_gradient import VanillaGradients as AttrMethod 
         attribution_method = AttrMethod() 
-        
+    
+    elif args.ig_name=='contrastive_gradient':
+        from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
+        attribution_method = AttrMethod()   
+    
+    # elif args.ig_name == 'squareintegrated_gradient':
+    #    from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
+       
+    # elif args.ig_name == 'expected_gradients':
+    #    from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
+       
     print(f"Running for {args.ig_name} Attribution method") 
     #----------------------------------------------------   
     score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
@@ -125,8 +135,13 @@ if __name__=="__main__":
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
                     choices=[
-                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', 'vanilla_gradients'],
+                        'integrated_gradient', 
+                        'expected_gradient', 
+                        'guided_gradient', 
+                        'contrastive_gradient', 
+                        'vanilla_gradient'],
                     help='Choose the attribution method to use.') 
+    
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -149,3 +164,4 @@ if __name__=="__main__":
      
     main(args) 
     
+    # python main_ig.py --ig_name=contrastive_gradient --dry_run=1 
