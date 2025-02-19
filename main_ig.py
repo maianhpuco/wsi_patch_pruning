@@ -82,10 +82,6 @@ def main(args):
         basename = data['basename']
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
         label = data['label']
-        patch_indices = data['patch_indices']
-        coordinates = data['coordinates']
-        spixel_idx = data['spixel_idx']
-
         start = time.time() 
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(

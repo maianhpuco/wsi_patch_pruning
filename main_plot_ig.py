@@ -32,7 +32,6 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    
     if args.ig_name=='integrated_gradients':
         score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
         print("score_save_path", score_save_path)
