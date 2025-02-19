@@ -9,6 +9,7 @@ CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoints'
 IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
 IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2'
 SCORE_FOLDER: '/project/hnguyen2/mvu9/camelyon16/attribution_scores'
+PLOT_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting'
 # CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoint_path' 
 batch_size: 256
 patch_size: 224 

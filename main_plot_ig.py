@@ -7,9 +7,8 @@ import pandas as pd
 import numpy as np
 import argparse
 import time   
-import timm 
 import shutil 
-
+import h5py
 import random 
 import numpy as np
 import torch
@@ -21,37 +20,37 @@ from utils.plotting import (
     plot_heatmap_with_bboxes,
     get_region_original_size,
     downscaling,
-    rescaling_stat_for_segmentation
+    rescaling_stat_for_segmentation, 
+    min_max_scale, 
+    replace_outliers_with_bounds 
 ) 
 from data.ig_dataset import IG_dataset 
 import openslide
-
-
+import glob 
+import matplotlib.pyplot as plt
+ 
 def main(args): 
     '''
     Input: h5 file
     Output: save scores into a json folder
     '''
     if args.ig_name=='integrated_gradients':
-        score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
-        print("score_save_path", score_save_path)
-    else:
-        print("No attribution method is valid")
-        dataset = IG_dataset(
-        args.features_h5_path,
-        args.slide_path,
-        )
-    print("Total number of sample in dataset:", len(dataset))
+        from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
+        attribution_method = AttrMethod() 
+        print("Running for Integrated Gradient Attribution method")
+
+    scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
+
     
-    for idx, data in enumerate(dataset):
-        total_file = len(dataset)
-        print(f"Processing the file numner {idx+1}/{total_file}")
-        basename = data['basename']
-        features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
-        label = data['label']
-        patch_indices = data['patch_indices']
-        coordinates = data['coordinates']
-        spixel_idx = data['spixel_idx']  
+    
+    # print("Total number of sample in dataset:", len(dataset))
+    all_scores_paths = glob.glob(os.path.join(scores_dir, "*.npy"))
+    for idx, scores_path in enumerate(all_scores_paths):
+        print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
+        print(scores_path)
+        scores_array = np.load(scores_path)
+        print("scores array shape", scores_array.shape)
+        basename = os.path.basename(scores_path).split(".")[0]
         slide = openslide.open_slide(os.path.join(args.slide_path, f'{basename}.tif'))
         (
             downsample_factor,
@@ -64,7 +63,27 @@ def main(args):
 
         scale_x = new_width / original_width
         scale_y = new_height / original_height
+        h5_file_path = os.path.join(args.feature_h5_path, f'{basename}.h5') 
         
+        result = {} 
+        with h5py.File(h5_file_path, "r") as f:
+            coordinates= f['coordinates'][:]
+        scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
+
+        
+        plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
+        if os.path.exists(plot_dir):
+            shutil.rmtree(plot_dir)  # Delete the existing directory
+        os.makedirs(plot_dir)  
+        plot_path = os.path.join(plot_dir, f'{basename}.png')
+        plot_heatmap_with_bboxes(
+            scale_x, scale_y, new_height, new_width,
+            coordinates,
+            scaled_scores,
+            name = "expected gradient, background mean of normal",
+            save_path = plot_path
+        ) 
+        print("-> Save the plot at: ", plot_path)
         # scale_x, scale_y, new_height, new_width  
 
 
@@ -84,7 +103,9 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
-        args.attribution_scores_folder = config.get("SCORE_FOLDER")    
+        args.attribution_scores_folder = config.get("SCORE_FOLDER")   
+        args.plot_path = config.get("PLOT_PATH")
+        os.makedirs(args.plot_path, exist_ok=True)  
         os.makedirs(args.features_h5_path, exist_ok=True)  
         os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         args.batch_size = config.get('batch_size')
