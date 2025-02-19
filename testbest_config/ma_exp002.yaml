@@ -1,13 +1,13 @@
-SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
-JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files_v2' # replace your path 
+SLIDE_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/images' #replace you path 
+JSON_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/json_files_v2' # replace your path 
 # JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
-SPIXEL_PATH: '/project/hnguyen2/mvu9/camelyon16/spixel_paths'
-PATCH_PATH: '/project/hnguyen2/mvu9/camelyon16/patch_paths'
-FEATURES_H5_PATH: '/project/hnguyen2/mvu9/camelyon16/features_h5_files' 
-CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoints'
-IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
-IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2' 
-SCORE_FOLDER: '/project/hnguyen2/mvu9/camelyon16/attribution_scores'
+SPIXEL_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/spixel_paths'
+PATCH_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/patch_paths'
+FEATURES_H5_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/features_h5_files' 
+CHECKPOINT_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/checkpoints'
+IMPORTANT_SCORES_PATH: '/home/genai24gb/Desktop/Ngoc/Dataset/important_scores_path'
+IMPORTANT_SCORES_PATH2: '/home/genai24gb/Desktop/Ngoc/Dataset/important_scores_path2' 
+SCORE_FOLDER: '/home/genai24gb/Desktop/Ngoc/Dataset/attribution_scores'
 batch_size: 256
 patch_size: 224 
 feature_extraction_model: 'vit_base_patch16_224' 
