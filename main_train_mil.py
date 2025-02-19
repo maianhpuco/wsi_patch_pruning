@@ -189,7 +189,9 @@ if __name__ == '__main__':
         args.feature_mean_std_path = config.get("FEATURE_MEAN_STD_PATH") 
         args.recompute_mean_std = True
     os.makedirs(args.checkpoint_folder, exist_ok=True)    
-    os.makedirs(args.feature_mean_std_path, exist_ok=True)   
+    os.makedirs(os.path.dirname(args.feature_mean_std_path), exist_ok=True)   
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
     
+    # CHECK_POINT_FILE = 'mil_checkpoint.pth' 
+    CHECK_POINT_FILE = 'mil_checkpoint_draft.pth'
     main(args)
