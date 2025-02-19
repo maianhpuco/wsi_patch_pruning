@@ -25,20 +25,53 @@ from utils.train_classifier.train_mlclassifier import (
 )
 from torch.utils.data import DataLoader
 
-from utils.plotting import (
-    plot_heatmap_with_bboxes,
-    get_region_original_size,
-    downscaling,
-    rescaling_stat_for_segmentation, 
-    min_max_scale,
-    replace_outliers_with_bounds)
-
-
 def load_config(config_file):
     # Load configuration from the provided YAML file
     with open(config_file, 'r') as f:
         config = yaml.safe_load(f)
     return config
+
+
+def get_mean_std_for_normal_dist(feature_folder, basename_list, save_path):
+    paths = glob.glob(os.path.join(feature_folder, '*.h5'))  # Get all HDF5 files
+    paths = [i for i in paths if os.path.basename(i).split(".h5")[0] in basename_list] 
+    # Initialize accumulators
+    feature_sum = None
+    feature_sq_sum = None
+    total_samples = 0
+    start = time.time()
+    
+    print("Start computing the mean and std for normalization...")
+
+    for file_path in tqdm(paths, desc="Computing the Mean and Std"):
+        with h5py.File(file_path, "r") as f:
+            features = f['features'][:]  # Extract features
+            
+        features = torch.tensor(features, dtype=torch.float32)  # Convert to tensor
+
+        # Initialize accumulators on first iteration
+        if feature_sum is None:
+            feature_sum = torch.zeros_like(features.sum(dim=0))
+            feature_sq_sum = torch.zeros_like(features.sum(dim=0))
+
+        feature_sum += features.sum(dim=0)
+        feature_sq_sum += (features ** 2).sum(dim=0)
+        total_samples += features.shape[0]  # Number of patches
+
+    # Compute mean and std
+    mean = feature_sum / total_samples
+    std = torch.sqrt((feature_sq_sum / total_samples) - (mean ** 2))
+
+    print(f"Completed computation in {time.time() - start:.2f} seconds.")
+
+    # Save to HDF5 (convert to NumPy before saving)
+    with h5py.File(save_path, "w") as f:
+        f.create_dataset("mean", data=mean.numpy())
+        f.create_dataset("std", data=std.numpy())
+
+    print(f"Mean and Std saved to {save_path}")  
+    return mean, std
+
 
  
 def main(args):
@@ -59,18 +92,34 @@ def main(args):
     test_list = [i.split(".h5")[0] for i in test_files]
 
     print("Prepare the dataset for training")
-    
+
+    if args.recompute_mean_std:
+        mean, std = get_mean_std_for_normal_dist(
+            args.features_h5_path,
+            train_list, 
+            args.feature_mean_std_path
+            )
+    else:
+        with h5py.File(args.feature_mean_std_path, "r") as f:
+            mean = torch.tensor(f["mean"][:], dtype=torch.float32)
+            std = torch.tensor(f["std"][:], dtype=torch.float32) 
+         
     train_dataset = FeaturesDataset(
         feature_folder = args.features_h5_path,
         basename_list = train_list,
-        transform=None
+        transform=None, 
+        mean=mean,
+        std=std, 
     )
 
     test_dataset = FeaturesDataset(
         feature_folder = args.features_h5_path,
         basename_list = test_list,
-        transform=None
+        transform=None, 
+        mean=mean, 
+        std=std, 
     )
+    
 
     print("train dataset", len(train_dataset))
     print("test dataset", len(test_dataset)) 
@@ -84,7 +133,8 @@ def main(args):
     optimizer = optim.AdamW(model.parameters(), lr=0.001)
 
     # Define checkpoint path
-    checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
+    checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint_draft.pth') 
+    # checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
     # model, optimizer, start_epoch, best_auc = load_checkpoint(mil_model, optimizer, checkpoint_path)
 
     print("--- check the model ----")
@@ -119,7 +169,7 @@ def main(args):
     
 
 if __name__ == '__main__': 
-    arg_file_name = 'ma_exp001' 
+    arg_file_name = 'ma_exp002' 
     parser = argparse.ArgumentParser() 
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default=arg_file_name)
@@ -136,8 +186,10 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.checkpoint_folder = config.get('CHECKPOINT_PATH')
-        
-    os.makedirs(args.checkpoint_folder, exist_ok=True)   
+        args.feature_mean_std_path = config.get("FEATURE_MEAN_STD_PATH") 
+        args.recompute_mean_std = True
+    os.makedirs(args.checkpoint_folder, exist_ok=True)    
+    os.makedirs(args.feature_mean_std_path, exist_ok=True)   
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
     
     main(args)

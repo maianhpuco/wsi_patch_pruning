@@ -68,8 +68,8 @@ def main(args):
     elif args.ig_name=='squareintegrated_gradient':
        from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
        
-    elif args.ig_name=='expected_gradients':
-       from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
+    # elif args.ig_name=='expected_gradients':
+    #    from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
        
     print(f"Running for {args.ig_name} Attribution method") 
     
