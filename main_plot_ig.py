@@ -54,6 +54,7 @@ def main(args):
     
     #----------------------------------------------------    
     attribution_method = AttrMethod()   
+    
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     
     
