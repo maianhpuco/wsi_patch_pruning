@@ -98,13 +98,12 @@ def main(args):
             args.slide_path,
             # basenames=['tumor_026']
             )
-        
-    print(">>>>>>> ----- Total number of sample in dataset:", len(dataset))
     if args.do_normalizing: 
         with h5py.File(args.feature_mean_std_path, "r") as f:
             mean = torch.tensor(f["mean"][:], dtype=torch.float32)
-            std = torch.tensor(f["std"][:], dtype=torch.float32)
-         
+            std = torch.tensor(f["std"][:], dtype=torch.float32)     
+    print(">>>>>>> ----- Total number of sample in dataset:", len(dataset)) 
+    
     for idx, data in enumerate(dataset):
         total_file = len(dataset)
         print(f"Processing the file numner {idx+1}/{total_file}")
@@ -112,7 +111,11 @@ def main(args):
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
         label = data['label']
         start = time.time() 
-        features = (features - mean) / (std + 1e-8)  
+            
+    
+        if args.do_normalizing:   
+            print("----- normalizing")
+            features = (features - mean) / (std + 1e-8)  
         
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(
@@ -169,6 +172,7 @@ if __name__=="__main__":
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
+        args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
         # args.ig_name = "integrated_gradients"
         args.do_normalizing = True
     main(args) 

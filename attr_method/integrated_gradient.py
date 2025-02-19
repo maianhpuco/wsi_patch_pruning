@@ -24,8 +24,8 @@ class IntegratedGradients(CoreSaliency):
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
         # total_grad =  np.zeros_like(x_value, dtype=np.float32) 
         alphas = np.linspace(0, 1, x_steps)
-        print("Use the zero baseline")
-        baseline_features = np.zeros_like(1, x_value.shape[-1])
+        # print("Use the zero baseline")
+        # baseline_features = np.zeros_like(1, x_value.shape[-1])
         sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
         x_baseline_batch = baseline_features[sampled_indices]
         x_diff = x_value - x_baseline_batch 
