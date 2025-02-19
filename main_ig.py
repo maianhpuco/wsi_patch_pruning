@@ -27,6 +27,7 @@ from utils.train_classifier.train_mlclassifier import (
     save_checkpoint, 
     load_checkpoint
 )
+import h5py 
 import pickle 
 
 from utils.plotting import (
@@ -84,6 +85,7 @@ def main(args):
 
     checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
     mil_model = load_model(checkpoint_path)
+   
     if args.dry_run==1:
         dataset = IG_dataset(
             args.features_h5_path,
@@ -98,7 +100,11 @@ def main(args):
             )
         
     print(">>>>>>> ----- Total number of sample in dataset:", len(dataset))
-    
+    if args.do_normalizing: 
+        with h5py.File(args.feature_mean_std_path, "r") as f:
+            mean = torch.tensor(f["mean"][:], dtype=torch.float32)
+            std = torch.tensor(f["std"][:], dtype=torch.float32)
+         
     for idx, data in enumerate(dataset):
         total_file = len(dataset)
         print(f"Processing the file numner {idx+1}/{total_file}")
@@ -106,6 +112,8 @@ def main(args):
         features = data['features']  # Shape: (batch_size, num_patches, feature_dim)
         label = data['label']
         start = time.time() 
+        features = (features - mean) / (std + 1e-8)  
+        
         # randomly sampling #file to create the baseline 
         stacked_features_baseline, selected_basenames =  sample_random_features(
             dataset, num_files=20) 
@@ -162,8 +170,8 @@ if __name__=="__main__":
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         # args.ig_name = "integrated_gradients"
-     
+        args.do_normalizing = True
     main(args) 
-    
+    # python main_ig.py --ig_name=integrated_gradient --dry_run=1  
     # python main_ig.py --ig_name=contrastive_gradient --dry_run=1
     # python main_ig.py --ig_name=squareintegrated_gradient --dry_run=1   
