@@ -55,7 +55,7 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    
+    #---------------------------------------------------- 
     if args.ig_name=='integrated_gradients':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
@@ -65,7 +65,7 @@ def main(args):
         attribution_method = AttrMethod() 
         
     print(f"Running for {args.ig_name} Attribution method") 
-    
+    #----------------------------------------------------   
     score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     print("score_save_path", score_save_path) 
     if os.path.exists(score_save_path):

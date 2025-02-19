@@ -34,11 +34,17 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
+    #---------------------------------------------------- 
     if args.ig_name=='integrated_gradients':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
-        print("Running for Integrated Gradient Attribution method")
-
+       
+    elif args.ig_name=='vanilla_gradients':
+        from attr_method.vanilla_gradients import VanillaGradients as AttrMethod 
+        attribution_method = AttrMethod() 
+        
+    print(f"Running for {args.ig_name} Attribution method") 
+    #----------------------------------------------------    
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     
     # print("Total number of sample in dataset:", len(dataset))
@@ -86,9 +92,15 @@ def main(args):
 
 
 if __name__ == '__main__':
+    # get config 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=bool, default=False)
+    parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
+    parser.add_argument('--ig_name', 
+                    default='integrated_gradients', 
+                    choices=[
+                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', 'vanilla_gradients'],
+                    help='Choose the attribution method to use.') 
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -101,15 +113,13 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
-        args.attribution_scores_folder = config.get("SCORE_FOLDER")   
-        args.plot_path = config.get("PLOT_PATH")
-        os.makedirs(args.plot_path, exist_ok=True)  
+        args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  
         os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-        args.ig_name = "integrated_gradients"
-        print(">>>>>>>> NOTE: THIS CODE PLOT THE TUMOR ONLY !!!!!")
+        # args.ig_name = "integrated_gradients"
+     
     main(args) 
     
