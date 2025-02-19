@@ -69,11 +69,19 @@ def main(args):
 
     checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
     mil_model = load_model(checkpoint_path)
-    dataset = IG_dataset(
-        args.features_h5_path,
-        args.slide_path,
-        # basenames=['tumor_026']
-        )
+    if args.dry_run:
+        dataset = IG_dataset(
+            args.features_h5_path,
+            args.slide_path,
+            basenames=['tumor_026']
+        )   
+    else:
+        dataset = IG_dataset(
+            args.features_h5_path,
+            args.slide_path,
+            # basenames=['tumor_026']
+            )
+        
     print("Total number of sample in dataset:", len(dataset))
     
     for idx, data in enumerate(dataset):
@@ -107,7 +115,7 @@ def main(args):
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--dry_run', type=bool, default=False)
+    parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp002')
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
