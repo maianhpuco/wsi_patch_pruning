@@ -21,15 +21,15 @@ class IntegratedGradients(CoreSaliency):
         baseline_features = kwargs.get("baseline_features", None)
         x_steps = kwargs.get("x_steps", 25) 
         
-        attribution_values =  np.zeros_like(x_value, dtype=np.float32)
+        # attribution_values =  np.zeros_like(x_value, dtype=np.float32)
         total_grad =  np.zeros_like(x_value, dtype=np.float32) 
         alphas = np.linspace(0, 1, x_steps)
         
+        sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
+        x_baseline_batch = baseline_features[sampled_indices]
+        x_diff = x_value - x_baseline_batch 
+        
         for step_idx, alpha in enumerate(tqdm(alphas, desc="Computing:", ncols=100), start=1):
-            sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
-            x_baseline_batch = baseline_features[sampled_indices]
-            x_diff = x_value - x_baseline_batch
-
             x_step_batch = x_baseline_batch + alpha * x_diff
             x_step_batch_tensor = torch.tensor(x_step_batch, dtype=torch.float32, requires_grad=True)
 
@@ -45,5 +45,5 @@ class IntegratedGradients(CoreSaliency):
             gradients_avg = gradients_batch.reshape(-1, x_value.shape[-1])
             x_diff = x_diff.reshape(-1, x_value.shape[-1])       
             total_grad += gradients_avg      
-            attribution_values += (gradients_avg * x_diff)
-        return total_grad 
+        attribution_values = (total_grad * x_diff)/x_steps
+        return attribution_values
