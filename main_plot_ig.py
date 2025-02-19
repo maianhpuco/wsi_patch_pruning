@@ -63,7 +63,7 @@ def main(args):
 
         scale_x = new_width / original_width
         scale_y = new_height / original_height
-        h5_file_path = os.path.join(args.feature_h5_path, f'{basename}.h5') 
+        h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
         
         result = {} 
         with h5py.File(h5_file_path, "r") as f:
