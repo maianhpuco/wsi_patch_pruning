@@ -126,6 +126,8 @@ if __name__ == '__main__':
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         # args.ig_name = "integrated_gradients"
+        
+        args.plot_path = config.get("PLOT_PATH")
      
     main(args) 
     
