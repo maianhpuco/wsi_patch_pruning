@@ -107,8 +107,13 @@ def main(args):
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=bool, default=False)
+    # parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default='ma_exp002')
+    parser.add_argument('--ig_name', 
+                    default='integrated_gradients', 
+                    choices=[
+                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', ''],
+                    help='Choose the attribution method to use.') 
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -127,6 +132,7 @@ if __name__=="__main__":
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-        args.ig_name = "integrated_gradients"
-        
+        # args.ig_name = "integrated_gradients"
+     
     main(args) 
+    
