@@ -27,9 +27,12 @@ class VanillaGradients(CoreSaliency):
             call_model_args=call_model_args,
             expected_keys=self.expected_keys
         ) 
-        print("all_model_output.shape", call_model_output.shape) 
+        # print("all_model_output.shape", call_model_output.shape) 
         self.format_and_check_call_model_output(call_model_output, x_value_tensor.shape, self.expected_keys) 
+    
         gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(1, x_value.shape[0], x_value.shape[1]) 
         gradients = gradients_batch.reshape(-1, x_value.shape[-1])  
+        print("1", gradients_batch.shape)
+        print("2", gradients.shape)
         return gradients
         
