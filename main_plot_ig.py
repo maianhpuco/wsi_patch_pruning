@@ -35,16 +35,28 @@ def main(args):
     Output: save scores into a json folder
     '''
     #---------------------------------------------------- 
-    if args.ig_name=='integrated_gradients':
+    if args.ig_name=='integrated_gradient':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
        
-    elif args.ig_name=='vanilla_gradients':
+    elif args.ig_name=='vanilla_gradient':
         from attr_method.vanilla_gradient import VanillaGradients as AttrMethod 
         attribution_method = AttrMethod() 
-        
+    
+    elif args.ig_name=='contrastive_gradient':
+        from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
+        attribution_method = AttrMethod()   
+    
+    elif args.ig_name=='squareintegrated_gradient':
+       from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
+       
+    elif args.ig_name=='expected_gradients':
+       from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
+       
     print(f"Running for {args.ig_name} Attribution method") 
+    
     #----------------------------------------------------    
+    
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     
     
@@ -109,7 +121,9 @@ if __name__ == '__main__':
                         'expected_gradient', 
                         'guided_gradient', 
                         'contrastive_gradient', 
-                        'vanilla_gradient'],
+                        'vanilla_gradient', 
+                        'squareintegrated_gradient'
+                        ],
                     help='Choose the attribution method to use.') 
     
     args = parser.parse_args()
