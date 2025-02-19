@@ -112,6 +112,6 @@ if __name__ == '__main__':
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         args.ig_name = "integrated_gradients"
-        
+        print(">>>>>>>> NOTE: THIS CODE PLOT THE TUMOR ONLY !!!!!")
     main(args) 
     
