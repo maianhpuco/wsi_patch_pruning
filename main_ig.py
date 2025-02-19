@@ -27,6 +27,8 @@ from utils.train_classifier.train_mlclassifier import (
     save_checkpoint, 
     load_checkpoint
 )
+import pickle 
+
 from utils.plotting import (
     plot_heatmap_with_bboxes,
     get_region_original_size,
@@ -58,12 +60,13 @@ def main(args):
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
         attribution_method = AttrMethod() 
         print("Running for Integrated Gradient Attribution method")
-        score_save_path = os.path.join(args.attribution_scores_folder, 'integrated_gradient')
-        print("score_save_path", score_save_path)
+        
+        
         #adding more args relating to the ig here 
     else:
         print("No attribution method is valid")
-        
+    score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
+    print("score_save_path", score_save_path) 
     if os.path.exists(score_save_path):
         shutil.rmtree(score_save_path)  # Delete the existing directory
         # Recreate the directory
@@ -102,11 +105,12 @@ def main(args):
         }  
             
         attribution_values = attribution_method.GetMask(**kwargs) 
-        scores = attribution_values.mean(1) 
-        print("Feature shape:", features.shape)
-        print("Scores:", scores.shape)
-
+        scores = attribution_values.mean(1)
+        _save_path = os.path.join(score_save_path, f'{basename}.npy')
+        np.save(_save_path, scores)
+        print(f"Done save result numpy file at shape {scores.shape} at {_save_path}")
     
+         
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
