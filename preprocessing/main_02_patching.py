@@ -283,6 +283,8 @@ if __name__ == '__main__':
         the_rest = [i for i in items_not_in_json if i not in last_50 and i not in next_50]
     
         final_example_list = the_rest
+
+        final_example_list = ['normal_091', 'tumor_030', 'tumor_050']
         
         print(the_rest[-50:])
 
