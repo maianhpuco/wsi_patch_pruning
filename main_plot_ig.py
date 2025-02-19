@@ -40,11 +40,9 @@ def main(args):
         print("Running for Integrated Gradient Attribution method")
 
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
-
-    
     
     # print("Total number of sample in dataset:", len(dataset))
-    all_scores_paths = glob.glob(os.path.join(scores_dir, "tumor_*.npy"))
+    all_scores_paths = glob.glob(os.path.join(scores_dir, "tumor_029.npy"))
     for idx, scores_path in enumerate(all_scores_paths):
         print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
         print(scores_path)
