@@ -120,7 +120,7 @@ def main(args):
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=bool, default=False)
+    parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
