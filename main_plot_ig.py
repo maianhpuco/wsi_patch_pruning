@@ -37,15 +37,12 @@ def main(args):
     #---------------------------------------------------- 
     if args.ig_name=='integrated_gradient':
         from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
-        attribution_method = AttrMethod() 
        
     elif args.ig_name=='vanilla_gradient':
         from attr_method.vanilla_gradient import VanillaGradients as AttrMethod 
-        attribution_method = AttrMethod() 
     
     elif args.ig_name=='contrastive_gradient':
         from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
-        attribution_method = AttrMethod()   
     
     elif args.ig_name=='squareintegrated_gradient':
        from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
@@ -56,7 +53,7 @@ def main(args):
     print(f"Running for {args.ig_name} Attribution method") 
     
     #----------------------------------------------------    
-    
+    attribution_method = AttrMethod()   
     scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
     
     
