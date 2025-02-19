@@ -100,8 +100,8 @@ def main(args):
             )
     if args.do_normalizing: 
         with h5py.File(args.feature_mean_std_path, "r") as f:
-            mean = torch.tensor(f["mean"][:], dtype=torch.float32)
-            std = torch.tensor(f["std"][:], dtype=torch.float32)     
+            mean = f["mean"][:]
+            std = f["std"][:]
     print(">>>>>>> ----- Total number of sample in dataset:", len(dataset)) 
     
     for idx, data in enumerate(dataset):
@@ -176,6 +176,8 @@ if __name__=="__main__":
         # args.ig_name = "integrated_gradients"
         args.do_normalizing = True
     main(args) 
+    
+    
     # python main_ig.py --ig_name=integrated_gradient --dry_run=1  
     # python main_ig.py --ig_name=contrastive_gradient --dry_run=1
     # python main_ig.py --ig_name=squareintegrated_gradient --dry_run=1   
