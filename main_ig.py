@@ -72,6 +72,7 @@ def main(args):
     dataset = IG_dataset(
         args.features_h5_path,
         args.slide_path,
+        basenames=['tumor_029']
         )
     print("Total number of sample in dataset:", len(dataset))
     
