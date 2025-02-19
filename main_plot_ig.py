@@ -105,8 +105,13 @@ if __name__ == '__main__':
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
                     choices=[
-                        'integrated_gradients', 'expected_gradients', 'guided_gradients', 'contrastive_gradient', 'vanilla_gradients'],
+                        'integrated_gradient', 
+                        'expected_gradient', 
+                        'guided_gradient', 
+                        'contrastive_gradient', 
+                        'vanilla_gradient'],
                     help='Choose the attribution method to use.') 
+    
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -130,4 +135,9 @@ if __name__ == '__main__':
         args.plot_path = config.get("PLOT_PATH")
      
     main(args) 
+    # python main_plot_ig.py --ig_name=contrastive_gradient --dry_run=1  
     
+    
+    # get the plot 
+    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/vanilla_gradients/tumor_026.png .
+    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/contrastive_gradient/tumor_026.png .   

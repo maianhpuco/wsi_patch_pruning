@@ -139,7 +139,8 @@ if __name__=="__main__":
                         'expected_gradient', 
                         'guided_gradient', 
                         'contrastive_gradient', 
-                        'vanilla_gradient'],
+                        'vanilla_gradient', 
+                        'squareintegrated_gradient'],
                     help='Choose the attribution method to use.') 
     
     args = parser.parse_args()
@@ -164,4 +165,5 @@ if __name__=="__main__":
      
     main(args) 
     
-    # python main_ig.py --ig_name=contrastive_gradient --dry_run=1 
+    # python main_ig.py --ig_name=contrastive_gradient --dry_run=1
+    # python main_ig.py --ig_name=squareintegrated_gradient --dry_run=1   
