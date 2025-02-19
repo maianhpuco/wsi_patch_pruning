@@ -284,7 +284,7 @@ if __name__ == '__main__':
     
         final_example_list = the_rest
 
-        final_example_list = ['tumor_030', 'tumor_050']
+        final_example_list = ['normal_091', 'tumor_030', 'tumor_050']
         
         print(the_rest[-50:])
 

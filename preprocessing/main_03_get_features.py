@@ -238,7 +238,8 @@ if __name__ == '__main__':
     remove_item = ['normal_114', 'tumor_026', 'tumor_009', 'tumor_024', 'tumor_015', 'normal_076','normal_070', 'normal_066', 'normal_053', 'normal_104','normal_112']  
     items_to_process = [item for item in items_to_process if item not in remove_item] 
   
-    example_list = items_to_process    
+    #example_list = items_to_process  
+    example_list = ['normal_091']  
     print(items_to_process)
     print("len(example_list): ", len(example_list)) 
     
