@@ -22,7 +22,7 @@ class IntegratedGradients(CoreSaliency):
         x_steps = kwargs.get("x_steps", 25) 
         
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
-
+        total_grad =  np.zeros_like(x_value, dtype=np.float32) 
         alphas = np.linspace(0, 1, x_steps)
         
         for step_idx, alpha in enumerate(tqdm(alphas, desc="Computing:", ncols=100), start=1):
@@ -43,6 +43,7 @@ class IntegratedGradients(CoreSaliency):
             baseline_num = 1 
             gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(baseline_num, x_value.shape[0], x_value.shape[1])
             gradients_avg = gradients_batch.reshape(-1, x_value.shape[-1])
-            x_diff = x_diff.reshape(-1, x_value.shape[-1])             
+            x_diff = x_diff.reshape(-1, x_value.shape[-1])       
+            total_grad += gradients_avg      
             attribution_values += (gradients_avg * x_diff)
-        return attribution_values 
+        return total_grad 

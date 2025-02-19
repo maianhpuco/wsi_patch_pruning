@@ -78,7 +78,7 @@ def main(args):
             scale_x, scale_y, new_height, new_width,
             coordinates,
             scaled_scores,
-            name = "expected gradient, background mean of normal",
+            name = "",
             save_path = plot_path
         ) 
         print("-> Save the plot at: ", plot_path)
