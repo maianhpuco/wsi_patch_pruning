@@ -19,7 +19,7 @@ class VanillaGradients(CoreSaliency):
         model = kwargs.get("model") 
         call_model_args = kwargs.get("call_model_args", None)
 
-        x_value_tensor = torch.tensor(x_step_batch, dtype=torch.float32, requires_grad=True) 
+        x_value_tensor = torch.tensor(x_value, dtype=torch.float32, requires_grad=True) 
         
         call_model_output = call_model_function(
             x_value_tensor,
