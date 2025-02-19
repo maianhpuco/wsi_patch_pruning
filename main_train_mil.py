@@ -63,7 +63,7 @@ def get_mean_std_for_normal_dist(feature_folder, basename_list, save_path):
     std = torch.sqrt((feature_sq_sum / total_samples) - (mean ** 2))
 
     print(f"Completed computation in {time.time() - start:.2f} seconds.")
-
+    print(">>>>> mean and std shape", mean.shape, std.shape)
     # Save to HDF5 (convert to NumPy before saving)
     with h5py.File(save_path, "w") as f:
         f.create_dataset("mean", data=mean.numpy())
