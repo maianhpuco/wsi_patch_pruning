@@ -44,7 +44,7 @@ def main(args):
     
     
     # print("Total number of sample in dataset:", len(dataset))
-    all_scores_paths = glob.glob(os.path.join(scores_dir, "*.npy"))
+    all_scores_paths = glob.glob(os.path.join(scores_dir, "tumor_*.npy"))
     for idx, scores_path in enumerate(all_scores_paths):
         print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
         print(scores_path)
