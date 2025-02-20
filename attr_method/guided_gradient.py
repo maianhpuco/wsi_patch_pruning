@@ -133,7 +133,8 @@ class GuidedGradients(CoreSaliency):
                 # be changed toward `x_max` to close the gap between current L1 and target
                 # L1.
                 if l1_s > 0:
-                    gamma = (l1_current - l1_target) / l1_s
+                    gamma = max((l1_current - l1_target) / l1_s, 0) 
+                    # gamma = (l1_current - l1_target) / l1_s
                 else:
                     gamma = np.inf 
                     
