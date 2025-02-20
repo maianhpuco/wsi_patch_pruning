@@ -5,6 +5,7 @@ from shapely.geometry import Polygon, Point
 from tqdm import tqdm
 from rtree import index  # R-tree for fast spatial lookup
 from joblib import Parallel, delayed
+from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib 
 import os 
 
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
@@ -28,9 +29,7 @@ def upscale_coordinates(points, scale_factor):
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
 
-
-    
-def extract_coordinates_parallel(file_path, save_dir):
+def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
     """
     Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
     """
@@ -58,27 +57,79 @@ def extract_coordinates_parallel(file_path, save_dir):
     x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
     y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
 
+    def process_patch(x, y):
+        return (x, y) if polygon.contains(Point(x, y)) else None
+
     inside_points = []
 
-    # Use tqdm with joblib (manual update)
-    with tqdm(total=len(x_patches) * len(y_patches), desc="Processing Patches", ncols=100) as pbar:
-        def process_patch(x, y):
-            result = (x, y) if polygon.contains(Point(x, y)) else None
-            pbar.update(1)  # Update progress manually
-            return result
-
-        inside_points = Parallel(n_jobs=-1)(
+    # Use tqdm with joblib (ensuring correct updates)
+    with tqdm_joblib(tqdm(desc="Processing Patches", total=len(x_patches) * len(y_patches), ncols=100)):
+        inside_points = Parallel(n_jobs=max_cpus)(
             delayed(process_patch)(x, y) for x in x_patches for y in y_patches
         )
 
     inside_points = [p for p in inside_points if p]  # Remove None values
-    original_size_points = upscale_coordinates(inside_points, PATCH_SIZE) 
+    original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
 
     result_df = pd.DataFrame({"File": basename, 
-                         "X": [p[0] for p in original_size_points], 
-                         "Y": [p[1] for p in original_size_points]})
-    result_df.to_csv(save_path, index_col=0)
-    return result_df 
+                              "X": [p[0] for p in original_size_points], 
+                              "Y": [p[1] for p in original_size_points]})
+
+    result_df.to_csv(save_path, index=False)  # Fix `index_col=0` (not needed)
+    
+    return result_df
+ 
+
+    
+# def extract_coordinates_parallel(file_path, save_dir):
+#     """
+#     Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
+#     """
+#     basename = os.path.basename(file_path).split(".")[0]
+#     save_path = os.path.join(save_dir, f'{basename}.csv') 
+    
+#     # Parse XML
+#     root = parse_xml(file_path)
+#     if root is None:
+#         return None  
+
+#     contour = [
+#         (float(coord.attrib["X"]), float(coord.attrib["Y"]))
+#         for coord in root.findall(".//Coordinate")
+#     ]
+
+#     if not contour:
+#         return None  
+
+#     # Downscale & create polygon
+#     downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
+#     polygon = Polygon(downscaled_contour)
+
+#     min_x, min_y, max_x, max_y = polygon.bounds
+#     x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+#     y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
+
+#     inside_points = []
+
+#     # Use tqdm with joblib (manual update)
+#     with tqdm(total=len(x_patches) * len(y_patches), desc="Processing Patches", ncols=100) as pbar:
+#         def process_patch(x, y):
+#             result = (x, y) if polygon.contains(Point(x, y)) else None
+#             pbar.update(1)  # Update progress manually
+#             return result
+
+#         inside_points = Parallel(n_jobs=-1)(
+#             delayed(process_patch)(x, y) for x in x_patches for y in y_patches
+#         )
+
+#     inside_points = [p for p in inside_points if p]  # Remove None values
+#     original_size_points = upscale_coordinates(inside_points, PATCH_SIZE) 
+
+#     result_df = pd.DataFrame({"File": basename, 
+#                          "X": [p[0] for p in original_size_points], 
+#                          "Y": [p[1] for p in original_size_points]})
+#     result_df.to_csv(save_path, index_col=0)
+#     return result_df 
  
  
 def extract_coordinates(file_path):
