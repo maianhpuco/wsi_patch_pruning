@@ -7,6 +7,7 @@ from rtree import index  # R-tree for fast spatial lookup
 from joblib import Parallel, delayed
 from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib 
 import os 
+from time import time 
 
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
 
@@ -61,7 +62,7 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
         return (x, y) if polygon.contains(Point(x, y)) else None
 
     inside_points = []
-
+    start = time.time()
     # Use tqdm with joblib (ensuring correct updates)
     with tqdm_joblib(tqdm(desc="Processing Patches", total=len(x_patches) * len(y_patches), ncols=100)):
         inside_points = Parallel(n_jobs=max_cpus)(
@@ -76,7 +77,7 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
                               "Y": [p[1] for p in original_size_points]})
 
     result_df.to_csv(save_path, index=False)  # Fix `index_col=0` (not needed)
-    
+    print(f"Complete process computing coordinate ground truth after: {(time.time()-start)/60.000}")
     return result_df
  
 
