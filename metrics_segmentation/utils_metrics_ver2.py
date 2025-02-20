@@ -217,7 +217,7 @@ def extract_coordinates_batch(file_path, save_dir, batch_size=500):
     downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
     polygon = Polygon(downscaled_contour)
 
-    # ✅ **Use np.meshgrid() to properly create a grid**
+    # **Use np.meshgrid() to properly create a grid**
     min_x, min_y, max_x, max_y = polygon.bounds
     x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
     y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
@@ -433,7 +433,7 @@ def extract_coordinates_batch(file_path, save_dir, batch_size=500):
 #     return result_df 
  
  
-def extract_coordinates(file_path):
+def extract_coordinates(file_path, save_path):
     """
     Fast extraction of (X, Y) coordinates **inside** a contour using downscaling and R-tree.
     """
@@ -484,7 +484,8 @@ def extract_coordinates(file_path):
 
     # Convert to DataFrame
     df_inside_points = pd.DataFrame({"File": file_path.split("/")[-1], "X": [p[0] for p in original_size_points], "Y": [p[1] for p in original_size_points]})
-    
+    basename = os.path.basename(file_path).split("."[0])
+    df_inside_points.to_csv(os.path.join(save_path, f'{basename}.csv'))
     return df_inside_points
 
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
