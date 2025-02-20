@@ -94,14 +94,18 @@ class GuidedGradients(CoreSaliency):
             x_max =  x_baseline_batch + alpha_max * x_diff 
             
             l1_target = l1_total * (1 - (step + 1) / x_steps) 
-            x_old = x_old.reshape(-1, x_value.shape[-1])
+            
+            
+            x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
             x = x.reshape(-1, x_value.shape[-1])
             x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
             x_max = x_max.reshape(-1, x_max.shape[-1]) 
             
+            
             gamma = np.inf 
             while gamma > 1.0: 
                 x_old = x_value.copy()
+                x_old = x_old.reshape(-1, x_value.shape[-1]) 
                 x_alpha = x_baseline_batch + alpha * x_diff             
                 x_alpha[np.isnan(x_alpha)] = alpha_max 
                 x_value[x_alpha < alpha_min] = x_min[x_alpha < alpha_min] 
