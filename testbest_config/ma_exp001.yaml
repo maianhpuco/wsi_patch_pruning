@@ -1,16 +1,16 @@
-SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
-JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files_v2' # replace your path 
-# JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
-SPIXEL_PATH: '/project/hnguyen2/mvu9/camelyon16/spixel_paths'
-PATCH_PATH: '/project/hnguyen2/mvu9/camelyon16/patch_paths'
-FEATURES_H5_PATH: '/project/hnguyen2/mvu9/camelyon16/features_h5_files'
+# SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
+# JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files_v2' # replace your path 
+# # JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
+# SPIXEL_PATH: '/project/hnguyen2/mvu9/camelyon16/spixel_paths'
+# PATCH_PATH: '/project/hnguyen2/mvu9/camelyon16/patch_paths'
 # FEATURES_H5_PATH: '/project/hnguyen2/mvu9/camelyon16/features_h5_files'
-CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoints'
-IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
-IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2'
-SCORE_FOLDER: '/project/hnguyen2/mvu9/camelyon16/attribution_scores'
-PLOT_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting'
-# CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoint_path' 
-batch_size: 256
-patch_size: 224 
-feature_extraction_model: 'vit_base_patch16_224' 
+# # FEATURES_H5_PATH: '/project/hnguyen2/mvu9/camelyon16/features_h5_files'
+# CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoints'
+# IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
+# IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2'
+# SCORE_FOLDER: '/project/hnguyen2/mvu9/camelyon16/attribution_scores'
+# PLOT_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting'
+# # CHECKPOINT_PATH: '/project/hnguyen2/mvu9/camelyon16/checkpoint_path' 
+# batch_size: 256
+# patch_size: 224 
+# feature_extraction_model: 'vit_base_patch16_224' 

@@ -104,7 +104,7 @@ def save_patches_with_updated_bboxes(
             # Only include patches that satisfy the coverage threshold
             if mask_coverage > coverage_threshold:
                 edge_mean = filter_by_edge_detection(patch, patch_area)
-
+                # check slg foreground trong patch 
                 if edge_mean > edge_threshold:
                     # Update the bounding box position (keep the size of the patch the same)
                     # Calculate the new position relative to the superpixel's bounding box

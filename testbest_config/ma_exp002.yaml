@@ -10,6 +10,7 @@ IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path
 SCORE_FOLDER: '/project/hnguyen2/mvu9/camelyon16/attribution_scores'
 PLOT_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting'
 FEATURE_MEAN_STD_PATH: '/project/hnguyen2/mvu9/camelyon16/feature_mean_std_path/mean_std.h5'
+ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations' 
 batch_size: 256
 patch_size: 224 
 feature_extraction_model: 'vit_base_patch16_224' 

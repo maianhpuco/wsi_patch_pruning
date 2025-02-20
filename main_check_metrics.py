@@ -1,0 +1,149 @@
+import os
+import sys 
+import torch
+from tqdm import tqdm 
+import glob
+import pandas as pd
+import numpy as np
+import argparse
+import time   
+import timm 
+import shutil 
+# import yaml 
+import random 
+import numpy as np
+from src.bag_classifier.mil_classifier import MILClassifier 
+import torch
+import torch.nn as nn 
+import torch.optim as optim
+import saliency.core as saliency
+from saliency.core.base import CoreSaliency
+from saliency.core.base import INPUT_OUTPUT_GRADIENTS
+from torch.utils.data import DataLoader 
+from src.bag_classifier.mil_classifier import MILClassifier # in the repo
+from data.feature_dataset import FeaturesDataset  # in the repo
+from utils.utils import load_config
+from utils.train_classifier.train_mlclassifier import (
+    save_checkpoint, 
+    load_checkpoint
+)
+import h5py 
+import pickle 
+
+from utils.plotting import (
+    plot_heatmap_with_bboxes,
+    get_region_original_size,
+    downscaling,
+    rescaling_stat_for_segmentation
+) 
+from data.ig_dataset import IG_dataset 
+import numpy as np
+np.random.seed(0)
+
+from metrics_segmentation.method import (
+    calculate_dice_score,
+    calculate_iou_score,
+    calculate_fp,
+    calculate_fn,
+    calculate_tn,
+    calculate_tp,
+)
+from metrics_segmentation.utils_metrics import (
+    read_all_xml_file_base_tumor,
+    check_xy_in_coordinates,
+    read_h5_data,
+    extract_coordinates, 
+) 
+
+def main(args):
+
+    # Assume that have path of h5 file
+    h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
+    xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
+    
+    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
+    # h5_name = path.split("/")[-1].replace("h5", "xml")
+    
+    df_xml = extract_coordinates(xml_path)
+    
+    print(df_xml, type(df_xml))
+    
+    h5_data = read_h5_data(h5_path)
+    
+    
+    mask = check_xy_in_coordinates(df_xml, h5_data["coordinates"])
+    print("shape of mask", mask.shape)
+    
+    # 0 is back ground, 1 is tumor
+    predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
+    print("predict.shape", predict.shape)
+    
+    tp = calculate_tp(mask, predict)
+    fp = calculate_fp(mask, predict)
+    tn = calculate_tn(mask, predict)
+    fn = calculate_fn(mask, predict)
+    dice = calculate_dice_score(mask, predict)
+    iou = calculate_iou_score(mask, predict)
+
+    print(f"True Positives (TP): {tp}")
+    print(f"False Positives (FP): {fp}")
+    print(f"True Negatives (TN): {tn}")
+    print(f"False Negatives (FN): {fn}")
+    print(f"Dice Score: {dice:.4f}")
+    print(f"IoU Score: {iou:.4f}")
+
+
+if __name__ == "__main__":
+    main()
+ 
+
+def main(args): 
+    '''
+    Input: h5 file
+    Output: save scores into a json folder
+    '''
+   
+    
+         
+if __name__=="__main__":
+    # get config 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dry_run', type=int, default=0)
+    parser.add_argument('--config_file', default='ma_exp002')
+    parser.add_argument('--ig_name', 
+                    default='integrated_gradients', 
+                    choices=[
+                        'integrated_gradient', 
+                        'expected_gradient', 
+                        'guided_gradient', 
+                        'contrastive_gradient', 
+                        'vanilla_gradient', 
+                        'squareintegrated_gradient'],
+                    help='Choose the attribution method to use.') 
+    
+    args = parser.parse_args()
+    
+    if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
+        config = load_config(f'./testbest_config/{args.config_file}.yaml')
+        args.use_features = config.get('use_features', True)
+        
+        args.slide_path = config.get('SLIDE_PATH')
+        args.json_path = config.get('JSON_PATH')
+        args.spixel_path = config.get('SPIXEL_PATH')
+        args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
+        args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
+        args.checkpoints_dir = config.get("CHECKPOINT_PATH")
+        args.attribution_scores_folder = config.get("SCORE_FOLDER")    
+        os.makedirs(args.features_h5_path, exist_ok=True)  
+        os.makedirs(args.attribution_scores_folder, exist_ok=True) 
+        args.batch_size = config.get('batch_size')
+        args.feature_extraction_model = config.get('feature_extraction_model')
+        args.device = "cuda" if torch.cuda.is_available() else "cpu"
+        args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
+        args.annotation_path = config.get("ANNOTATION_PATH")
+        # args.ig_name = "integrated_gradients"
+        args.do_normalizing = True
+        
+
+    main(args) 
+    
