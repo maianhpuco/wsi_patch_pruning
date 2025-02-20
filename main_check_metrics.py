@@ -75,7 +75,7 @@ def main(args):
     
     mask = check_xy_in_coordinates(df_xml, h5_data["coordinates"])
     print("shape of mask", mask.shape)
-    
+    print("sum of mask", np.sum(mask))
     print(">>> MASK: ", mask[:10])
     # 0 is back ground, 1 is tumor
     predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
