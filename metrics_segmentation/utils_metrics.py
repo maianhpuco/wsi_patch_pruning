@@ -104,6 +104,49 @@ def check_list_coor(x, y, list_coor, list_result):
             # print("tumor")
     return list_result
 
+# def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+#     length = coordinates_h5.shape[0]
+#     label = np.zeros(length)  # Initialize label as a 1D array of zeros
+
+#     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
+#         label = check_list_coor(row.X, row.Y, coordinates_h5, label)
+#     return label
+
+import numpy as np
+from scipy.spatial import cKDTree
+from tqdm import tqdm
+
+def check_xy_in_coordinates(coordinates_xml, coordinates_h5, threshold=5):
+    """
+    Optimized function to check if coordinates in coordinates_xml match coordinates in coordinates_h5.
+    Uses KDTree for efficient spatial lookup.
+    
+    Args:
+        coordinates_xml: DataFrame with 'X' and 'Y' coordinates.
+        coordinates_h5: NumPy array of shape (N,2) containing coordinate points.
+        threshold: Maximum distance to consider a match (tunable based on your use case).
+
+    Returns:
+        label: NumPy array indicating matches (1 for matched coordinates, 0 otherwise).
+    """
+    length = coordinates_h5.shape[0]
+    label = np.zeros(length, dtype=int)  # Efficient integer array for labels
+
+    # Build a KDTree for fast nearest-neighbor search
+    tree = cKDTree(coordinates_h5)
+
+    # Convert coordinates_xml to NumPy array
+    xml_coords = np.vstack((coordinates_xml["X"].values, coordinates_xml["Y"].values)).T
+
+    # Query all XML coordinates in one operation
+    distances, indices = tree.query(xml_coords, k=1)  # k=1 -> find the nearest neighbor
+
+    # Apply threshold for matching
+    mask = distances < threshold  # Only consider matches within the threshold distance
+    label[indices[mask]] = 1  # Set matched coordinates in label
+
+    return label
+  
 
 # def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
 #     length = coordinates_h5.shape[0]
@@ -114,11 +157,5 @@ def check_list_coor(x, y, list_coor, list_result):
 #         # print("Already check index: ", index)
 #     return label
 
-def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
-    length = coordinates_h5.shape[0]
-    label = np.zeros(length)  # Initialize label as a 1D array of zeros
 
-    for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
-        label = check_list_coor(row.X, row.Y, coordinates_h5, label)
-    return label
  
