@@ -127,9 +127,7 @@ def check_coor(x, y, box):
 import numpy as np
 from scipy.spatial import cKDTree
 from tqdm import tqdm
-import numpy as np
-from scipy.spatial import cKDTree
-from tqdm import tqdm
+
 
 def check_list_coor(x, y, tree, list_result, threshold=0):
     """

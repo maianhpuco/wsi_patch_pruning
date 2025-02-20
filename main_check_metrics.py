@@ -55,6 +55,8 @@ from metrics_segmentation.utils_metrics import (
     extract_coordinates, 
 ) 
 
+import openslide 
+
 def main(args):
 
     # Assume that have path of h5 file
@@ -78,6 +80,7 @@ def main(args):
     predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
     print("predict.shape", predict.shape)
     
+    
     tp = calculate_tp(mask, predict)
     fp = calculate_fp(mask, predict)
     tn = calculate_tn(mask, predict)
@@ -91,7 +94,45 @@ def main(args):
     print(f"False Negatives (FN): {fn}")
     print(f"Dice Score: {dice:.4f}")
     print(f"IoU Score: {iou:.4f}")    
-         
+    
+    basename = 'tumor_026' 
+    # basename = os.path.basename(scores_path).split(".")[0]
+    slide = openslide.open_slide(os.path.join(args.slide_path, f'{basename}.tif'))
+    (
+        downsample_factor,
+        new_width,
+        new_height,
+        original_width,
+        original_height
+    ) = rescaling_stat_for_segmentation(
+        slide, downsampling_size=1096)
+
+    scale_x = new_width / original_width
+    scale_y = new_height / original_height
+    h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
+    
+    result = {} 
+    with h5py.File(h5_file_path, "r") as f:
+        coordinates= f['coordinates'][:]
+    
+    scaled_scores = mask
+
+    plot_dir = args.sanity_check_path 
+    # plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
+    if os.path.exists(plot_dir):
+        shutil.rmtree(plot_dir)  # Delete the existing directory
+    os.makedirs(plot_dir)  
+    plot_path = os.path.join(plot_dir, f'{basename}.png')
+    plot_heatmap_with_bboxes(
+        scale_x, scale_y, new_height, new_width,
+        coordinates,
+        scaled_scores,
+        name = "",
+        save_path = plot_path
+    ) 
+    print("-> Save the plot at: ", plot_path)
+    # scale_x, scale_y, new_height, new_width       
+
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
@@ -113,7 +154,6 @@ if __name__=="__main__":
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
         config = load_config(f'./testbest_config/{args.config_file}.yaml')
         args.use_features = config.get('use_features', True)
-        
         args.slide_path = config.get('SLIDE_PATH')
         args.json_path = config.get('JSON_PATH')
         args.spixel_path = config.get('SPIXEL_PATH')
@@ -128,9 +168,11 @@ if __name__=="__main__":
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
         args.annotation_path = config.get("ANNOTATION_PATH")
-        # args.ig_name = "integrated_gradients"
-        args.do_normalizing = True
         
+        # args.ig_name = "integrated_gradients"
+        args.sanity_check_path = config.get("SANITY_CHECK_PATH")   
+        os.makedirs(args.sanity_check_path, exist_ok=True)  
+        args.do_normalizing = True
 
     main(args) 
     

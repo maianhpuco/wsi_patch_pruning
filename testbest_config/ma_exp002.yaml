@@ -13,4 +13,5 @@ FEATURE_MEAN_STD_PATH: '/project/hnguyen2/mvu9/camelyon16/feature_mean_std_path/
 ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations' 
 batch_size: 256
 patch_size: 224 
-feature_extraction_model: 'vit_base_patch16_224' 
+feature_extraction_model: 'vit_base_patch16_224'
+SANITY_CHECK_PATH: '/project/hnguyen2/mvu9/camelyon16/sanity_check'     
