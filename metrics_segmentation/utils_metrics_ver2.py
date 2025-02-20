@@ -29,6 +29,13 @@ def upscale_coordinates(points, scale_factor):
     """ Upscale points back to original size. """
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
+from joblib import Parallel, delayed
+from tqdm import tqdm
+import os
+import numpy as np
+import pandas as pd
+from shapely.geometry import Polygon, Point
+from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib
 
 def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
     """
@@ -62,7 +69,7 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
         return (x, y) if polygon.contains(Point(x, y)) else None
 
     inside_points = []
-    start = time.time()
+
     # Use tqdm with joblib (ensuring correct updates)
     with tqdm_joblib(tqdm(desc="Processing Patches", total=len(x_patches) * len(y_patches), ncols=100)):
         inside_points = Parallel(n_jobs=max_cpus)(
@@ -77,8 +84,134 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
                               "Y": [p[1] for p in original_size_points]})
 
     result_df.to_csv(save_path, index=False)  # Fix `index_col=0` (not needed)
-    print(f"Complete process computing coordinate ground truth after: {(time.time()-start)/60.000}")
+    
     return result_df
+ 
+ 
+# import time
+# from joblib import Parallel, delayed
+# from tqdm import tqdm
+# import os
+# import numpy as np
+# import pandas as pd
+# from shapely.geometry import Polygon, Point
+
+def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
+    """
+    Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
+    """
+    basename = os.path.basename(file_path).split(".")[0]
+    save_path = os.path.join(save_dir, f'{basename}.csv') 
+    
+    # Parse XML
+    root = parse_xml(file_path)
+    if root is None:
+        return None  
+
+    contour = [
+        (float(coord.attrib["X"]), float(coord.attrib["Y"]))
+        for coord in root.findall(".//Coordinate")
+    ]
+
+    if not contour:
+        return None  
+
+    # Downscale & create polygon
+    downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
+    polygon = Polygon(downscaled_contour)
+
+    min_x, min_y, max_x, max_y = polygon.bounds
+    x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+    y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
+
+    total_patches = len(x_patches) * len(y_patches)
+
+    print(f"Total CPUs available: {multiprocessing.cpu_count()}")
+    print(f"Using {max_cpus} CPUs for parallel processing")
+
+    # ✅ **Batch Processing: Run groups of patches together instead of single points**
+    def process_patch_batch(batch):
+        return [(x, y) for x, y in batch if polygon.contains(Point(x, y))]
+
+    # Create batches of (x, y) points
+    batch_size = 500  # Adjust for efficiency
+    point_batches = [list(zip(x_patches, y_patches))[i:i+batch_size] for i in range(0, total_patches, batch_size)]
+
+    start = time.time()
+    
+    # Use tqdm to track progress
+    with tqdm(total=len(point_batches), desc="Processing Patches", ncols=100) as pbar:
+        inside_points_batches = Parallel(n_jobs=max_cpus)(
+            delayed(process_patch_batch)(batch) for batch in point_batches
+        )
+        pbar.update(len(point_batches))
+
+    # Flatten the list
+    inside_points = [p for batch in inside_points_batches for p in batch]
+
+    # Upscale coordinates
+    original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
+
+    result_df = pd.DataFrame({"File": basename, 
+                              "X": [p[0] for p in original_size_points], 
+                              "Y": [p[1] for p in original_size_points]})
+
+    result_df.to_csv(save_path, index=False)  # Fix `index_col=0` (not needed)
+    print(f"Complete process computing coordinate ground truth after: {(time.time()-start)/60:.2f} min")
+    
+    return result_df
+ 
+ 
+# def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
+#     """
+#     Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
+#     """
+#     basename = os.path.basename(file_path).split(".")[0]
+#     save_path = os.path.join(save_dir, f'{basename}.csv') 
+    
+#     # Parse XML
+#     root = parse_xml(file_path)
+#     if root is None:
+#         return None  
+
+#     contour = [
+#         (float(coord.attrib["X"]), float(coord.attrib["Y"]))
+#         for coord in root.findall(".//Coordinate")
+#     ]
+
+#     if not contour:
+#         return None  
+
+#     # Downscale & create polygon
+#     downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
+#     polygon = Polygon(downscaled_contour)
+
+#     min_x, min_y, max_x, max_y = polygon.bounds
+#     x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+#     y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
+
+#     def process_patch(x, y):
+#         return (x, y) if polygon.contains(Point(x, y)) else None
+
+#     inside_points = []
+#     start = time.time()
+#     # Use tqdm with joblib (ensuring correct updates)
+#     with tqdm_joblib(tqdm(desc="Processing Patches", total=len(x_patches) * len(y_patches), ncols=100)):
+#         inside_points = Parallel(n_jobs=max_cpus)(
+#             delayed(process_patch)(x, y) for x in x_patches for y in y_patches
+#         )
+
+#     inside_points = [p for p in inside_points if p]  # Remove None values
+#     original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
+
+#     result_df = pd.DataFrame({"File": basename, 
+#                               "X": [p[0] for p in original_size_points], 
+#                               "Y": [p[1] for p in original_size_points]})
+
+#     result_df.to_csv(save_path, index=False)  # Fix `index_col=0` (not needed)
+#     print(f"Complete process computing coordinate ground truth after: {(time.time()-start)/60.000}")
+#     return result_df
+ 
  
 
     
