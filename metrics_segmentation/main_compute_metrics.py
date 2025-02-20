@@ -94,15 +94,9 @@ def main(args):
     h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
     xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
     
-    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
-    # h5_name = path.split("/")[-1].replace("h5", "xml")
     df =  pd.read_csv(os.path.join(args.ground_truth_corr_path, 'tumor_026.csv'))
     print(df.head(3))
-    # mask = pd.read_csv(os.path.join(args.ground_truth_path, "tumor_026.csv"))
-    
-    # df_xml = pd.read_csv()
-    
-    # print(df_xml, type(df_xml))
+
     
     h5_data = read_h5_data(h5_path)
     mask = check_xy_in_coordinates_fast(

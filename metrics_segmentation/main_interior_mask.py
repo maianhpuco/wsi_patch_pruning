@@ -89,9 +89,18 @@ def read_h5_data(file_path, dataset_name=None):
 def main(args):
 
     # Assume that have path of h5 file
-    annotation_list = os.listdir(args.annotation_path)
-    reset_directory(args.ground_truth_corr_path)
-    reset_directory(args.ground_truth_path)  
+    _annotation_list = os.listdir(args.annotation_path)
+    _excluded_list = os.listdir(args.ground_truth_corr_path)
+    _h5_files = os.listdir(args.features_h5_path)
+    
+    annotation_list = [] 
+    for anno_filename in _annotation_list:
+        if f"{anno_filename}.csv" not in _excluded_list and  f"{anno_filename}.h5" in _h5_files: 
+            annotation_list.append(anno_filename)
+    
+    # reset_directory(args.ground_truth_corr_path)
+    # reset_directory(args.ground_truth_path)  
+    
     total_file = len(annotation_list)
     
     for idx, basename in enumerate(annotation_list):
@@ -177,8 +186,8 @@ if __name__=="__main__":
         args.ground_truth_corr_path = config.get("GROUND_TRUTH_CORR_PATH") 
         args.ground_truth_path = config.get("GROUND_TRUTH_PATH") 
         os.makedirs(args.ground_truth_corr_path, exist_ok=True)   
-        # os.makedirs(args.ground_truth_path, exist_ok=True)    
-        # os.makedirs(args.sanity_check_path, exist_ok=True) 
+        os.makedirs(args.ground_truth_path, exist_ok=True)    
+        os.makedirs(args.sanity_check_path, exist_ok=True) 
 
         args.do_normalizing = True
 
