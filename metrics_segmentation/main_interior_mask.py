@@ -103,7 +103,7 @@ def main(args):
     # reset_directory(args.ground_truth_path)  
     
     total_file = len(annotation_list)
-    print("total file to process:", len(total_file))
+    print("total file to process:", total_file)
     for idx, basename in enumerate(annotation_list):
         print(f">>> Processing the annotation file number {idx+1}/{total_file}")
         
