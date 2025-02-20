@@ -178,7 +178,8 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     rtree_index = index.Index()  # <-- Avoid variable conflict
 
     for i, box in enumerate(coordinates_h5):  # Ensure h5 data is a NumPy array
-        ymin, xmin, ymax, xmax = box  # Ensure correct order
+        ymax, xmax, ymin, xmin = box 
+        # ymin, xmin, ymax, xmax = box  # Ensure correct order
         print(box)
         rtree_index.insert(i, (xmin, ymin, xmax, ymax))  # Insert bounding box
 
