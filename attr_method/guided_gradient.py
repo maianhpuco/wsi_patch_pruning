@@ -128,13 +128,14 @@ class GuidedGradients(CoreSaliency):
                 # Find by how much the L1 distance can be reduced by changing only the
                 # selected features.
                 l1_s = (np.abs(x - x_max) * s).sum() 
-                
+                print(f"l1_current: {l1_current}, l1_target: {l1_target}, l1_s: {l1_s}, gamma: {gamma}")
+ 
                 # Calculate ratio `gamma` that show how much the selected features should
                 # be changed toward `x_max` to close the gap between current L1 and target
                 # L1.
                 if l1_s > 0:
-                    gamma = max((l1_current - l1_target) / l1_s, 0) 
-                    # gamma = (l1_current - l1_target) / l1_s
+                    # gamma = max((l1_current - l1_target) / l1_s, 0) 
+                    gamma = (l1_current - l1_target) / l1_s
                 else:
                     gamma = np.inf 
                     
