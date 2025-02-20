@@ -196,6 +196,6 @@ def check_coor(x, y, box):
     """
     Checks if (x, y) is inside the given bounding box.
     """
-    ymin, xmin, ymax, xmax = box  # Ensure correct coordinate ordering
+    ymax, xmax, ymin, xmin = box  
     return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
  
