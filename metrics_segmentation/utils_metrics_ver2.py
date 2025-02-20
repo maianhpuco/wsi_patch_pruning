@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib 
 import os 
 import time 
-
+import multiprocessing 
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
 
 def parse_xml(file_path):
