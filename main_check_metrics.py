@@ -90,20 +90,7 @@ def main(args):
     print(f"True Negatives (TN): {tn}")
     print(f"False Negatives (FN): {fn}")
     print(f"Dice Score: {dice:.4f}")
-    print(f"IoU Score: {iou:.4f}")
-
-
-if __name__ == "__main__":
-    main()
- 
-
-def main(args): 
-    '''
-    Input: h5 file
-    Output: save scores into a json folder
-    '''
-   
-    
+    print(f"IoU Score: {iou:.4f}")    
          
 if __name__=="__main__":
     # get config 
