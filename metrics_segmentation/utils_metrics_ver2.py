@@ -105,9 +105,18 @@ import numpy as np
 import pandas as pd
 from shapely.geometry import Polygon, Point
 
+import time
+import multiprocessing
+from joblib import Parallel, delayed
+from tqdm import tqdm
+import os
+import numpy as np
+import pandas as pd
+from shapely.geometry import Polygon, Point
+
 def extract_coordinates_parallel(file_path, save_dir, max_cpus=8, batch_size=500):
     """
-    Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
+    Parallelized batch extraction of (X, Y) coordinates inside a contour with tqdm.
     """
     basename = os.path.basename(file_path).split(".")[0]
     save_path = os.path.join(save_dir, f'{basename}.csv') 
@@ -144,17 +153,17 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8, batch_size=500
     print(f"Using {max_cpus} CPUs for parallel processing")
     print(f"Total patches to process: {total_patches}")
 
-    # ✅ **Fix: Ensure batch slicing is correct**
+    # ✅ **Batch processing function**
     def process_patch_batch(batch):
         """Check which patches are inside the polygon in a batch."""
         return [(x, y) for x, y in batch if polygon.contains(Point(x, y))]
 
-    # Create **correctly sliced** batches
+    # Create batches of patches
     point_batches = [xy_points[i:i+batch_size] for i in range(0, total_patches, batch_size)]
 
     start = time.time()
     
-    # ✅ **Fix tqdm inside parallel loop**
+    # ✅ **Use tqdm with correct updates in parallel loop**
     inside_points_batches = []
     with tqdm(total=len(point_batches), desc=f"Processing {basename}", ncols=100) as pbar:
         for batch in Parallel(n_jobs=max_cpus)(delayed(process_patch_batch)(b) for b in point_batches):
@@ -175,6 +184,78 @@ def extract_coordinates_parallel(file_path, save_dir, max_cpus=8, batch_size=500
     print(f"Completed {basename} in {(time.time()-start)/60:.2f} min")
     
     return result_df
+
+
+# def extract_coordinates_parallel(file_path, save_dir, max_cpus=8, batch_size=500):
+#     """
+#     Parallelized extraction of (X, Y) coordinates inside a contour with tqdm progress bar.
+#     """
+#     basename = os.path.basename(file_path).split(".")[0]
+#     save_path = os.path.join(save_dir, f'{basename}.csv') 
+    
+#     # Parse XML
+#     root = parse_xml(file_path)
+#     if root is None:
+#         print(f"Skipping {basename} (invalid XML)")
+#         return None  
+
+#     contour = [
+#         (float(coord.attrib["X"]), float(coord.attrib["Y"]))
+#         for coord in root.findall(".//Coordinate")
+#     ]
+
+#     if not contour:
+#         print(f"Skipping {basename} (no contour found)")
+#         return None  
+
+#     # Downscale & create polygon
+#     downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
+#     polygon = Polygon(downscaled_contour)
+
+#     # ✅ **Use np.meshgrid() to properly create a grid**
+#     min_x, min_y, max_x, max_y = polygon.bounds
+#     x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+#     y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
+#     x_grid, y_grid = np.meshgrid(x_patches, y_patches)  # Correct grid formation
+#     xy_points = np.column_stack([x_grid.ravel(), y_grid.ravel()])  # Flatten
+
+#     total_patches = len(xy_points)
+
+#     print(f"Total CPUs available: {multiprocessing.cpu_count()}")
+#     print(f"Using {max_cpus} CPUs for parallel processing")
+#     print(f"Total patches to process: {total_patches}")
+
+#     # ✅ **Fix: Ensure batch slicing is correct**
+#     def process_patch_batch(batch):
+#         """Check which patches are inside the polygon in a batch."""
+#         return [(x, y) for x, y in batch if polygon.contains(Point(x, y))]
+
+#     # Create **correctly sliced** batches
+#     point_batches = [xy_points[i:i+batch_size] for i in range(0, total_patches, batch_size)]
+
+#     start = time.time()
+    
+#     # ✅ **Fix tqdm inside parallel loop**
+#     inside_points_batches = []
+#     with tqdm(total=len(point_batches), desc=f"Processing {basename}", ncols=100) as pbar:
+#         for batch in Parallel(n_jobs=max_cpus)(delayed(process_patch_batch)(b) for b in point_batches):
+#             inside_points_batches.append(batch)
+#             pbar.update(1)  # Update after each batch
+
+#     # Flatten the list correctly
+#     inside_points = [p for batch in inside_points_batches for p in batch]
+
+#     # ✅ **Fix coordinate scaling issue**
+#     original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
+
+#     result_df = pd.DataFrame({"File": basename, 
+#                               "X": [p[0] for p in original_size_points], 
+#                               "Y": [p[1] for p in original_size_points]})
+
+#     result_df.to_csv(save_path, index=False)  
+#     print(f"Completed {basename} in {(time.time()-start)/60:.2f} min")
+    
+#     return result_df
 
  
 # def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
