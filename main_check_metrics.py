@@ -53,6 +53,7 @@ from metrics_segmentation.utils_metrics_ver2 import (
     check_xy_in_coordinates,
     # read_h5_data,
     extract_coordinates, 
+    check_xy_in_coordinates_fast 
 ) 
 
 import openslide 
