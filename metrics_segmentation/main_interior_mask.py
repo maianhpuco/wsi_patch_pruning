@@ -9,6 +9,11 @@ import argparse
 import time   
 import timm 
 import shutil 
+
+PROJECT_DIR = os.environ.get('PROJECT_DIR')
+print("PROJECT DIR", PROJECT_DIR)
+sys.path.append(PROJECT_DIR)   
+
 # import yaml 
 import random 
 import numpy as np
@@ -59,6 +64,7 @@ from metrics_segmentation.utils_metrics_ver2 import (
 import openslide 
 
 
+
 def read_h5_data(file_path, dataset_name=None):
     data = None
     with h5py.File(file_path, "r") as file:
@@ -86,79 +92,28 @@ def read_h5_data(file_path, dataset_name=None):
 def main(args):
 
     # Assume that have path of h5 file
-    h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
-    xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
-    
-    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
-    # h5_name = path.split("/")[-1].replace("h5", "xml")
-    
-    df_xml = extract_coordinates(xml_path)
-    
-    print(df_xml, type(df_xml))
-    
-    h5_data = read_h5_data(h5_path)
-    
-    print("---- run the fast version")
-    mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
-    print("shape of mask", mask.shape)
-    print("sum of mask", np.sum(mask))
-    print(">>> MASK: ", mask[:10])
-    # 0 is back ground, 1 is tumor
-    predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
-    print("predict.shape", predict.shape)
-    
-    
-    tp = calculate_tp(mask, predict)
-    fp = calculate_fp(mask, predict)
-    tn = calculate_tn(mask, predict)
-    fn = calculate_fn(mask, predict)
-    dice = calculate_dice_score(mask, predict)
-    iou = calculate_iou_score(mask, predict)
+    for basename in os.listdir(args.annotation_path): 
+        h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
+        xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
+        
+        # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
+        # h5_name = path.split("/")[-1].replace("h5", "xml")
+        
+        df_xml = extract_coordinates_parallel(
+            xml_path, args.ground_truth_corr_path)
+        
+        print(df_xml, type(df_xml))
+        
+        h5_data = read_h5_data(h5_path)
+        
+        print("---- run the fast version")
+        mask = check_xy_in_coordinates_fast(
+            df_xml, h5_data["coordinates"])
+        
+        print("shape of mask", mask.shape)
+        print("sum of mask", np.sum(mask))
+        print(">>> MASK: ", mask[:10])
 
-    print(f"True Positives (TP): {tp}")
-    print(f"False Positives (FP): {fp}")
-    print(f"True Negatives (TN): {tn}")
-    print(f"False Negatives (FN): {fn}")
-    print(f"Dice Score: {dice:.4f}")
-    print(f"IoU Score: {iou:.4f}")    
-    
-    basename = 'tumor_026' 
-    # basename = os.path.basename(scores_path).split(".")[0]
-    slide = openslide.open_slide(os.path.join(args.slide_path, f'{basename}.tif'))
-    (
-        downsample_factor,
-        new_width,
-        new_height,
-        original_width,
-        original_height
-    ) = rescaling_stat_for_segmentation(
-        slide, downsampling_size=1096)
-
-    scale_x = new_width / original_width
-    scale_y = new_height / original_height
-    h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
-
-    result = {} 
-    with h5py.File(h5_file_path, "r") as f:
-        coordinates= f['coordinates'][:]
-    
-    scaled_scores = mask
-    print(">>>>mask", mask[:5])
-    plot_dir = args.sanity_check_path 
-    # plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
-    if os.path.exists(plot_dir):
-        shutil.rmtree(plot_dir)  # Delete the existing directory
-    os.makedirs(plot_dir)  
-    plot_path = os.path.join(plot_dir, f'{basename}.png')
-    plot_heatmap_with_bboxes(
-        scale_x, scale_y, new_height, new_width,
-        coordinates,
-        scaled_scores,
-        name = "",
-        save_path = plot_path
-    ) 
-    print("-> Save the plot at: ", plot_path)
-    # scale_x, scale_y, new_height, new_width       
 
 if __name__=="__main__":
     # get config 
@@ -198,6 +153,10 @@ if __name__=="__main__":
         
         # args.ig_name = "integrated_gradients"
         args.sanity_check_path = config.get("SANITY_CHECK_PATH")   
+        args.ground_truth_corr_path = config.get("GROUND_TRUTH_CORR_PATH") 
+        args.ground_truth_path = config.get("GROUND_TRUTH_PATH") 
+        os.makedirs(args.ground_truth_corr_path, exist_ok=True)   
+        os.makedirs(args.ground_truth_path, exist_ok=True)    
         os.makedirs(args.sanity_check_path, exist_ok=True)  
         args.do_normalizing = True
 

@@ -5,7 +5,8 @@ from shapely.geometry import Polygon, Point
 from tqdm import tqdm
 from rtree import index  # R-tree for fast spatial lookup
 from joblib import Parallel, delayed
- 
+import os 
+
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
 
 def parse_xml(file_path):
@@ -26,12 +27,13 @@ def upscale_coordinates(points, scale_factor):
     """ Upscale points back to original size. """
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
-from joblib import Parallel, delayed
 
-def extract_coordinates_parallel(file_path):
+def extract_coordinates_parallel(file_path, save_dir):
     """
     Parallelized extraction of (X, Y) coordinates inside a contour.
     """
+    basename = os.path.basename(file_path).split(".")[0]
+    # save_path = 
     root = parse_xml(file_path)
     if root is None:
         return None  

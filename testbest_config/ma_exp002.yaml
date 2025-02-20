@@ -14,4 +14,6 @@ ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAME
 batch_size: 256
 patch_size: 224 
 feature_extraction_model: 'vit_base_patch16_224'
-SANITY_CHECK_PATH: '/project/hnguyen2/mvu9/camelyon16/sanity_check'     
+SANITY_CHECK_PATH: '/project/hnguyen2/mvu9/camelyon16/sanity_check'  
+GROUND_TRUTH_CORR_PATH: '/project/hnguyen2/mvu9/camelyon16/ground_truth_corr_path'   
+GROUND_TRUTH_PATH: '/project/hnguyen2/mvu9/camelyon16/ground_truth_path' 
