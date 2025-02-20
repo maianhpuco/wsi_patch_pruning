@@ -179,15 +179,15 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
 
     for i, box in enumerate(coordinates_h5):  # Ensure h5_data is a NumPy array
         ymax, xmax, ymin, xmin = box  
-        rtree_index.insert(i, (xmin, ymin, xmax, ymax))  # Insert bounding box
+        rtree_index.insert(i, (xmin, ymin, xmax, ymax))  
 
     # Iterate efficiently over DataFrame rows
     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
         x, y = row.X, row.Y
-        possible_matches = list(rtree_index.intersection((x, y, x, y)))  # Find overlapping boxes
-
+        possible_matches = list(rtree_index.intersection((x, y, x, y)))  
+        print(possible_matches)
         for box_index in possible_matches:
-            if check_coor(x, y, coordinates_h5[box_index]):  # ✅ Use NumPy indexing instead of .iloc
+            if check_coor(x, y, coordinates_h5[box_index]): 
                 label[box_index] = 1  # Mark as tumor
 
     return label 
