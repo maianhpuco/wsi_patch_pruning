@@ -96,7 +96,7 @@ class GuidedGradients(CoreSaliency):
             l1_target = l1_total * (1 - (step + 1) / x_steps) 
             x_old = x_old.reshape(-1, x_value.shape[-1])
             x = x.reshape(-1, x_value.shape[-1])
-            x_diff = x_diff.reshape(-1. x_value.shape[-1]) 
+            x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
             x_max = x_max.reshape(-1, x_max.shape[-1]) 
             
             gamma = np.inf 

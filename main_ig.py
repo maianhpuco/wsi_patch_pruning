@@ -178,6 +178,7 @@ if __name__=="__main__":
         args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
         # args.ig_name = "integrated_gradients"
         args.do_normalizing = True
+        
     main(args) 
     
     
