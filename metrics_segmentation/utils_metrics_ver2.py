@@ -9,13 +9,13 @@ import numpy as np
 from tqdm import tqdm
 from rtree import index  # R-tree for efficient spatial queries
  
-# xml_folder = (
-#     "/Users/nam.le/Desktop/research/wsi_patch_pruning/metrics_segmentation/data"
-# )
-# list_xml_file = [os.path.join(xml_folder, name) for name in os.listdir(xml_folder)]
-
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+from shapely.geometry import Polygon, Point
 
 def parse_xml(file_path):
+    """ Parse XML file and return root element. """
     try:
         tree = ET.parse(file_path)  # Load XML file
         root = tree.getroot()  # Get root element
@@ -24,34 +24,46 @@ def parse_xml(file_path):
         print(f"Error parsing {file_path}: {e}")
         return None
 
-
 def extract_coordinates(file_path):
-    all_coordinates = []
+    """
+    Extracts all (X, Y) coordinates **inside** a contour from an XML file.
+    """
     root = parse_xml(file_path)
     if root is None:
-        return  # Skip if parsing failed
+        return None  # Skip if parsing failed
 
     print(f"Processing XML: {file_path}")
 
-    # Loop through all 'Coordinate' elements
+    # Extract contour points
+    contour = []
     for coordinate in root.findall(".//Coordinate"):
         order = coordinate.attrib.get("Order")
         x = coordinate.attrib.get("X")
         y = coordinate.attrib.get("Y")
 
-        # Append extracted data
         if order and x and y:
-            all_coordinates.append(
-                {
-                    "File": file_path.split("/")[-1],  # Extract only the filename
-                    "Order": int(order),
-                    "X": float(x),
-                    "Y": float(y),
-                }
-            )
-    all_coordinates = pd.DataFrame(all_coordinates)
-    return all_coordinates
+            contour.append((float(x), float(y)))
 
+    if not contour:
+        return None  # No contour found
+
+    # Convert to a Shapely polygon
+    polygon = Polygon(contour)
+
+    # Generate a grid of points inside the bounding box
+    min_x, min_y, max_x, max_y = polygon.bounds
+    x_range = np.arange(min_x, max_x, 1)  # Adjust step size for resolution
+    y_range = np.arange(min_y, max_y, 1)
+
+    inside_points = []
+    for x in x_range:
+        for y in y_range:
+            if polygon.contains(Point(x, y)):  # Check if point is inside
+                inside_points.append({"File": file_path.split("/")[-1], "X": x, "Y": y})
+
+    # Convert to DataFrame
+    return pd.DataFrame(inside_points)
+ 
 
 def return_df_xml(xml_path):
     return extract_coordinates(xml_path)
