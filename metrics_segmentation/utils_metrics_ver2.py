@@ -4,7 +4,8 @@ import numpy as np
 from shapely.geometry import Polygon, Point
 from tqdm import tqdm
 from rtree import index  # R-tree for fast spatial lookup
-
+from joblib import Parallel, delayed
+ 
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
 
 def parse_xml(file_path):
@@ -25,6 +26,46 @@ def upscale_coordinates(points, scale_factor):
     """ Upscale points back to original size. """
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
+from joblib import Parallel, delayed
+
+def extract_coordinates_parallel(file_path):
+    """
+    Parallelized extraction of (X, Y) coordinates inside a contour.
+    """
+    root = parse_xml(file_path)
+    if root is None:
+        return None  
+
+    contour = [
+        (float(coord.attrib["X"]), float(coord.attrib["Y"]))
+        for coord in root.findall(".//Coordinate")
+    ]
+
+    if not contour:
+        return None  
+
+    downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
+    polygon = Polygon(downscaled_contour)
+
+    min_x, min_y, max_x, max_y = polygon.bounds
+    x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+    y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
+
+    def process_patch(x, y):
+        return (x, y) if polygon.contains(Point(x, y)) else None
+
+    inside_points = Parallel(n_jobs=-1)(
+        delayed(process_patch)(x, y) for x in x_patches for y in y_patches
+    )
+
+    inside_points = [p for p in inside_points if p]  # Remove None values
+    original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
+
+    return pd.DataFrame({"File": file_path.split("/")[-1], 
+                         "X": [p[0] for p in original_size_points], 
+                         "Y": [p[1] for p in original_size_points]})
+ 
+ 
 def extract_coordinates(file_path):
     """
     Fast extraction of (X, Y) coordinates **inside** a contour using downscaling and R-tree.
@@ -109,3 +150,22 @@ def check_coor(x, y, box):
     """
     ymax, xmax, ymin, xmin = box  
     return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
+
+def check_xy_in_coordinates_fast(coordinates_xml, coordinates_h5):
+    """
+    Vectorized function using R-tree for fast lookup.
+    """
+    label = np.zeros(len(coordinates_h5), dtype=np.int8)  
+
+    rtree_index = index.Index((i, (xmin, ymin, xmax, ymax), None) for i, (ymax, xmax, ymin, xmin) in enumerate(coordinates_h5))
+
+    xy_pairs = np.column_stack((coordinates_xml["X"], coordinates_xml["Y"]))  # Convert to NumPy array for vectorized operations
+
+    for i, (x, y) in enumerate(xy_pairs):
+        possible_matches = list(rtree_index.intersection((x, y, x, y)))  
+        
+        if possible_matches:
+            label[possible_matches] = 1  # Vectorized assignment
+
+    return label
+ 

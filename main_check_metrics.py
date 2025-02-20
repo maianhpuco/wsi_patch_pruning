@@ -98,7 +98,7 @@ def main(args):
     h5_data = read_h5_data(h5_path)
     
     
-    mask = check_xy_in_coordinates(df_xml, h5_data["coordinates"])
+    mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
     print("shape of mask", mask.shape)
     print("sum of mask", np.sum(mask))
     print(">>> MASK: ", mask[:10])
