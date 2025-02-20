@@ -105,12 +105,20 @@ def check_list_coor(x, y, list_coor, list_result):
     return list_result
 
 
+# def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+#     length = coordinates_h5.shape[0]
+#     label = np.zeros(length)  # Initialize label as a 1D array of zeros
+
+#     for index, row in tqdm(coordinates_xml.iterrows(), desc="Checking index:", ncols=100):
+#         label = check_list_coor(row["X"], row["Y"], coordinates_h5, label)
+#         # print("Already check index: ", index)
+#     return label
+
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     length = coordinates_h5.shape[0]
     label = np.zeros(length)  # Initialize label as a 1D array of zeros
 
-    for index, row in tqdm(coordinates_xml.iterrows(), desc="Checking index:", ncols=100):
-        label = check_list_coor(row["X"], row["Y"], coordinates_h5, label)
-        # print("Already check index: ", index)
+    for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
+        label = check_list_coor(row.X, row.Y, coordinates_h5, label)
     return label
-
+ 
