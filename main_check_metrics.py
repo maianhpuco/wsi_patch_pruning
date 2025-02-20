@@ -110,13 +110,13 @@ def main(args):
     scale_x = new_width / original_width
     scale_y = new_height / original_height
     h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
-    
+
     result = {} 
     with h5py.File(h5_file_path, "r") as f:
         coordinates= f['coordinates'][:]
     
     scaled_scores = mask
-
+    print(">>>>mask", mask[:5])
     plot_dir = args.sanity_check_path 
     # plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
     if os.path.exists(plot_dir):
@@ -176,3 +176,4 @@ if __name__=="__main__":
 
     main(args) 
     
+#  scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/sanity_check/tumor_026.png 
