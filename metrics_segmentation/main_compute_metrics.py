@@ -63,14 +63,12 @@ from metrics_segmentation.utils_metrics_ver2 import (
 
 import openslide 
 
-
-
 def read_h5_data(file_path, dataset_name=None):
     data = None
     with h5py.File(file_path, "r") as file:
         if dataset_name is not None:
             if dataset_name in file:
-                dataset = file[dataset_nam]
+                dataset = file[dataset_name]
                 data = dataset[()]
             else:
                 raise KeyError(f"Dataset '{dataset_name}' not found in the file.")
@@ -99,14 +97,16 @@ def main(args):
         # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
         # h5_name = path.split("/")[-1].replace("h5", "xml")
         
-        df_xml = extract_coordinates(xml_path)
+        mask = pd.read_csv(args.ground_truth_path, "tumor_026")
         
-        print(df_xml, type(df_xml))
+        # df_xml = pd.read_csv()
+        
+        # print(df_xml, type(df_xml))
         
         h5_data = read_h5_data(h5_path)
         
         print("---- run the fast version")
-        mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
+        # mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
         
         print("shape of mask", mask.shape)
         print("sum of mask", np.sum(mask))
