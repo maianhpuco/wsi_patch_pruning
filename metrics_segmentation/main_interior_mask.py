@@ -59,7 +59,8 @@ from metrics_segmentation.utils_metrics_ver2 import (
     # read_h5_data,
     extract_coordinates_parallel, 
     extract_coordinates, 
-    check_xy_in_coordinates_fast 
+    check_xy_in_coordinates_fast, 
+    extract_coordinates_batch 
 ) 
 
 import openslide 
@@ -100,7 +101,7 @@ def main(args):
     # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
     # h5_name = path.split("/")[-1].replace("h5", "xml")
     
-    df_xml = extract_coordinates_parallel(
+    df_xml = extract_coordinates_batch(
         xml_path, args.ground_truth_corr_path)
     
     print(df_xml, type(df_xml))

@@ -228,7 +228,7 @@ def extract_coordinates_batch(file_path, save_dir, batch_size=500):
 
     print(f"Processing {basename} | Total patches: {total_patches}")
 
-    # ✅ **Batch processing function**
+    # **Batch processing function**
     def process_patch_batch(batch):
         """Check which patches are inside the polygon in a batch."""
         return [(x, y) for x, y in batch if polygon.contains(Point(x, y))]
@@ -244,7 +244,7 @@ def extract_coordinates_batch(file_path, save_dir, batch_size=500):
             inside_points.extend(process_patch_batch(batch))  # Process batch
             pbar.update(1)  # Update progress bar
 
-    # ✅ **Fix coordinate scaling issue**
+    # **Fix coordinate scaling issue**
     original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
 
     result_df = pd.DataFrame({"File": basename, 
