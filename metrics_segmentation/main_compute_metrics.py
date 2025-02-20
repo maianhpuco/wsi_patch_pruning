@@ -90,29 +90,29 @@ def read_h5_data(file_path, dataset_name=None):
 def main(args):
 
     # Assume that have path of h5 file
-    for basename in os.listdir(args.annotation_path): 
-        h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
-        xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
-        
-        # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
-        # h5_name = path.split("/")[-1].replace("h5", "xml")
-        df =  pd.read_csv(os.path.join(args.ground_truth_corr_path, 'tumor_026.csv'))
-        print(df.head(3))
-        # mask = pd.read_csv(os.path.join(args.ground_truth_path, "tumor_026.csv"))
-        
-        # df_xml = pd.read_csv()
-        
-        # print(df_xml, type(df_xml))
-        
-        h5_data = read_h5_data(h5_path)
-        mask = check_xy_in_coordinates_fast(
-            df, h5_data["coordinates"]) 
-        print("---- run the fast version")
-        # mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
-        
-        print("shape of mask", mask.shape)
-        print("sum of mask", np.sum(mask))
-        print(">>> MASK: ", mask[:10])
+    # for basename in os.listdir(args.annotation_path): 
+    h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
+    xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
+    
+    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
+    # h5_name = path.split("/")[-1].replace("h5", "xml")
+    df =  pd.read_csv(os.path.join(args.ground_truth_corr_path, 'tumor_026.csv'))
+    print(df.head(3))
+    # mask = pd.read_csv(os.path.join(args.ground_truth_path, "tumor_026.csv"))
+    
+    # df_xml = pd.read_csv()
+    
+    # print(df_xml, type(df_xml))
+    
+    h5_data = read_h5_data(h5_path)
+    mask = check_xy_in_coordinates_fast(
+        df, h5_data["coordinates"]) 
+    print("---- run the fast version")
+    # mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
+    
+    print("shape of mask", mask.shape)
+    print("sum of mask", np.sum(mask))
+    print(">>> MASK: ", mask[:10])
     # 0 is back ground, 1 is tumor
     predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
     print("predict.shape", predict.shape)
