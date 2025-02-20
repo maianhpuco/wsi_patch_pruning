@@ -161,14 +161,14 @@ if __name__=="__main__":
         os.makedirs(args.sanity_check_path, exist_ok=True)  
         args.do_normalizing = True
 
-    import multiprocessing
+    # import multiprocessing
 
-    num_cpus = multiprocessing.cpu_count()
-    print(f"Available CPUs: {num_cpus}") 
-    from joblib import parallel_backend
+    # num_cpus = multiprocessing.cpu_count()
+    # print(f"Available CPUs: {num_cpus}") 
+    # from joblib import parallel_backend
 
-    with parallel_backend("loky", n_jobs=8):
-        print(f"Using {multiprocessing.cpu_count()} CPUs for parallel processing.") 
+    # with parallel_backend("loky", n_jobs=8):
+    #     print(f"Using {multiprocessing.cpu_count()} CPUs for parallel processing.") 
 
     main(args) 
     

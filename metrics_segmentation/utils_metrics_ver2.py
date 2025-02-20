@@ -29,13 +29,13 @@ def upscale_coordinates(points, scale_factor):
     """ Upscale points back to original size. """
     return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
 
-from joblib import Parallel, delayed
-from tqdm import tqdm
-import os
-import numpy as np
-import pandas as pd
-from shapely.geometry import Polygon, Point
-from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib
+# from joblib import Parallel, delayed
+# from tqdm import tqdm
+# import os
+# import numpy as np
+# import pandas as pd
+# from shapely.geometry import Polygon, Point
+# from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib
 
 def extract_coordinates_parallel(file_path, save_dir, max_cpus=8):
     """
