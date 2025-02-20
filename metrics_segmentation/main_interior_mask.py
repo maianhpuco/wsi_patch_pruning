@@ -95,14 +95,15 @@ def main(args):
     
     annotation_list = [] 
     for anno_filename in _annotation_list:
-        if f"{anno_filename}.csv" not in _excluded_list and  f"{anno_filename}.h5" in _h5_files: 
+        name = anno_filename.split(".")[0]
+        if f"{name}.csv" not in _excluded_list and  f"{name}.h5" in _h5_files: 
             annotation_list.append(anno_filename)
     
     # reset_directory(args.ground_truth_corr_path)
     # reset_directory(args.ground_truth_path)  
     
     total_file = len(annotation_list)
-    
+    print("total file to process:", len(total_file))
     for idx, basename in enumerate(annotation_list):
         print(f">>> Processing the annotation file number {idx+1}/{total_file}")
         
