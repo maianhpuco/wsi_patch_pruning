@@ -3,7 +3,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import numpy as np
 import h5py
-
+from tqdm import tqdm 
 # xml_folder = (
 #     "/Users/nam.le/Desktop/research/wsi_patch_pruning/metrics_segmentation/data"
 # )
@@ -108,8 +108,8 @@ def check_list_coor(x, y, list_coor, list_result):
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     length = coordinates_h5.shape[0]
     label = np.zeros(length)  # Initialize label as a 1D array of zeros
-
-    for index, row in coordinates_xml.iterrows():
+    
+    for index, row in tqdm(coordinates_xml.iterrows(), desc="Checking index:"):
         label = check_list_coor(row["X"], row["Y"], coordinates_h5, label)
-        print("Already check index: ", index)
+        # print("Already check index: ", index)
     return label
