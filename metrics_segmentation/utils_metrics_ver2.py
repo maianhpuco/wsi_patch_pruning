@@ -7,7 +7,7 @@ from rtree import index  # R-tree for fast spatial lookup
 from joblib import Parallel, delayed
 from tqdm_joblib import tqdm_joblib  # Ensures tqdm updates correctly with joblib 
 import os 
-from time import time 
+import time 
 
 PATCH_SIZE = 224  # Define patch size (downscaling factor)
 
