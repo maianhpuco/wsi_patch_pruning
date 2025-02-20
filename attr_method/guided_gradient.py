@@ -81,9 +81,10 @@ class GuidedGradients(CoreSaliency):
             )
             self.format_and_check_call_model_output(call_model_output, x_baseline_tensor.shape, self.expected_keys) 
             baseline_num = 1
-            print("grad shape", call_model_output[INPUT_OUTPUT_GRADIENTS].shape) 
-            grad_actual = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(baseline_num, x_value.shape[0], x_value.shape[1])  
+            
+            grad_actual = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(-1, x_value.shape[1])  
             # grad 
+            print("grad shape", grad_actual.shape)  
             grad = grad_actual.copy() 
             
             l1_total = l1_distance(x_value, x_baseline_batch) 
