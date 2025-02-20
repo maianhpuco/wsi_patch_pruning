@@ -57,6 +57,7 @@ from metrics_segmentation.utils_metrics_ver2 import (
     # read_all_xml_file_base_tumor,
     check_xy_in_coordinates,
     # read_h5_data,
+    extract_coordinates_parallel, 
     extract_coordinates, 
     check_xy_in_coordinates_fast 
 ) 
