@@ -167,7 +167,7 @@ if __name__=="__main__":
     print(f"Available CPUs: {num_cpus}") 
     from joblib import parallel_backend
 
-    with parallel_backend("loky", n_jobs=-1):
+    with parallel_backend("loky", n_jobs=8):
         print(f"Using {multiprocessing.cpu_count()} CPUs for parallel processing.") 
 
     main(args) 
