@@ -49,7 +49,7 @@ from metrics_segmentation.method import (
     calculate_tp,
 )
 from metrics_segmentation.utils_metrics import (
-    read_all_xml_file_base_tumor,
+    # read_all_xml_file_base_tumor,
     check_xy_in_coordinates,
     read_h5_data,
     extract_coordinates, 
