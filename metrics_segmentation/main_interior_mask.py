@@ -161,6 +161,11 @@ if __name__=="__main__":
         os.makedirs(args.sanity_check_path, exist_ok=True)  
         args.do_normalizing = True
 
+    import multiprocessing
+
+    num_cpus = multiprocessing.cpu_count()
+    print(f"Available CPUs: {num_cpus}") 
+
     main(args) 
     
 #  scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/sanity_check/tumor_026.png 
