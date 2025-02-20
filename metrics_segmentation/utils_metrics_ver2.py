@@ -14,6 +14,12 @@ import pandas as pd
 import numpy as np
 from shapely.geometry import Polygon, Point
 
+from tqdm import tqdm
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+from shapely.geometry import Polygon, Point
+
 def parse_xml(file_path):
     """ Parse XML file and return root element. """
     try:
@@ -27,6 +33,7 @@ def parse_xml(file_path):
 def extract_coordinates(file_path):
     """
     Extracts all (X, Y) coordinates **inside** a contour from an XML file.
+    Tracks progress using tqdm.
     """
     root = parse_xml(file_path)
     if root is None:
@@ -56,13 +63,19 @@ def extract_coordinates(file_path):
     y_range = np.arange(min_y, max_y, 1)
 
     inside_points = []
-    for x in x_range:
-        for y in y_range:
-            if polygon.contains(Point(x, y)):  # Check if point is inside
-                inside_points.append({"File": file_path.split("/")[-1], "X": x, "Y": y})
+
+    # Use tqdm to track progress of filling the mask
+    total_iterations = len(x_range) * len(y_range)  # Total number of checks
+    with tqdm(total=total_iterations, desc="Filling Mask", ncols=100) as pbar:
+        for x in x_range:
+            for y in y_range:
+                if polygon.contains(Point(x, y)):  # Check if point is inside
+                    inside_points.append({"File": file_path.split("/")[-1], "X": x, "Y": y})
+                pbar.update(1)  # Update progress bar
 
     # Convert to DataFrame
     return pd.DataFrame(inside_points)
+ 
  
 
 def return_df_xml(xml_path):
