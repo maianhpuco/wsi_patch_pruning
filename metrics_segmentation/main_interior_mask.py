@@ -93,27 +93,27 @@ def read_h5_data(file_path, dataset_name=None):
 def main(args):
 
     # Assume that have path of h5 file
-    for basename in os.listdir(args.annotation_path): 
-        h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
-        xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
-        
-        # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
-        # h5_name = path.split("/")[-1].replace("h5", "xml")
-        
-        df_xml = extract_coordinates_parallel(
-            xml_path, args.ground_truth_corr_path)
-        
-        print(df_xml, type(df_xml))
-        
-        h5_data = read_h5_data(h5_path)
-        
-        print("---- run the fast version")
-        mask = check_xy_in_coordinates_fast(
-            df_xml, h5_data["coordinates"])
-        
-        print("shape of mask", mask.shape)
-        print("sum of mask", np.sum(mask))
-        print(">>> MASK: ", mask[:10])
+    # for basename in os.listdir(args.annotation_path): 
+    h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
+    xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
+    
+    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
+    # h5_name = path.split("/")[-1].replace("h5", "xml")
+    
+    df_xml = extract_coordinates_parallel(
+        xml_path, args.ground_truth_corr_path)
+    
+    print(df_xml, type(df_xml))
+    
+    h5_data = read_h5_data(h5_path)
+    
+    print("---- run the fast version")
+    mask = check_xy_in_coordinates_fast(
+        df_xml, h5_data["coordinates"])
+    
+    print("shape of mask", mask.shape)
+    print("sum of mask", np.sum(mask))
+    print(">>> MASK: ", mask[:10])
 
 
 if __name__=="__main__":
