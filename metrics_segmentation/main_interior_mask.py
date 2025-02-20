@@ -54,13 +54,8 @@ from metrics_segmentation.method import (
     calculate_tp,
 )
 from metrics_segmentation.utils_metrics import (
-    # read_all_xml_file_base_tumor,
-    check_xy_in_coordinates,
-    # read_h5_data,
-    extract_coordinates_parallel, 
     extract_coordinates, 
     check_xy_in_coordinates_fast, 
-    extract_coordinates_batch 
 ) 
 
 import openslide 
@@ -108,7 +103,7 @@ def main(args):
         
         df_xml_save_path = os.path.join(args.ground_truth_corr_path, f'{name}.csv')
 
-        df_xml = extract_coordinates_batch(
+        df_xml = extract_coordinates(
             xml_path,
             df_xml_save_path)
         print("Save the df fill contour into:", df_xml_save_path)  
@@ -127,7 +122,14 @@ def main(args):
         print("sum of mask", np.sum(mask))
         print(">>> MASK: ", mask[:10]) 
 
-
+    print("- Check total number of file")
+    import glob 
+    df_file = glob.glob(os.path.join(args.ground_truth_corr_path, "*.csv"))
+    mask_file = glob.glob(os.path.join(args.ground_truth_path, "*.npy")) 
+    print("+ Number of annotation: ", len(annotation_list))
+    print("+ Number of df file: ", len(df_file))
+    print("+ Numner mask file: ", len(mask_file))
+    
 def reset_directory(path):
     if os.path.exists(path):
         print("Current path exist, will delete and recreate: ", path)
