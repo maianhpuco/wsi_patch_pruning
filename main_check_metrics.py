@@ -51,12 +51,37 @@ from metrics_segmentation.method import (
 from metrics_segmentation.utils_metrics_ver2 import (
     # read_all_xml_file_base_tumor,
     check_xy_in_coordinates,
-    read_h5_data,
+    # read_h5_data,
     extract_coordinates, 
 ) 
 
 import openslide 
 
+
+def read_h5_data(file_path, dataset_name=None):
+    data = None
+    with h5py.File(file_path, "r") as file:
+        if dataset_name is not None:
+            if dataset_name in file:
+                dataset = file[dataset_name]
+                data = dataset[()]
+            else:
+                raise KeyError(f"Dataset '{dataset_name}' not found in the file.")
+        else:
+            datasets = {}
+
+            def visitor(name, node):
+                if isinstance(node, h5py.Dataset):
+                    datasets[name] = node[()]
+
+            file.visititems(visitor)
+
+            if len(datasets) == 1:
+                data = list(datasets.values())[0]
+            else:
+                data = datasets
+    return data 
+ 
 def main(args):
 
     # Assume that have path of h5 file
