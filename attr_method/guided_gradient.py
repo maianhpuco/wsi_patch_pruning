@@ -48,7 +48,7 @@ def translate_alpha_to_x(alpha, x_input, x_baseline):
   """
   assert 0 <= alpha <= 1.0
   return x_baseline + (x_input - x_baseline) * alpha
- 
+
  
 class GuidedGradients(CoreSaliency):
     """Efficient Integrated Gradients with Counterfactual Attribution"""
