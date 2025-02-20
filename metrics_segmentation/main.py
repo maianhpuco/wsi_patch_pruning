@@ -9,7 +9,7 @@ from method import (
     calculate_tn,
     calculate_tp,
 )
-from utils_metrics import (
+from metrics_segmentation.utils_metrics_nam import (
     read_all_xml_file_base_tumor,
     check_xy_in_coordinates,
     read_h5_data,

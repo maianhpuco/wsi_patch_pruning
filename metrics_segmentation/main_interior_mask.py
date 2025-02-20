@@ -53,7 +53,7 @@ from metrics_segmentation.method import (
     calculate_tn,
     calculate_tp,
 )
-from metrics_segmentation.utils_metrics_ver2 import (
+from metrics_segmentation.utils_metrics import (
     # read_all_xml_file_base_tumor,
     check_xy_in_coordinates,
     # read_h5_data,
@@ -94,29 +94,46 @@ def read_h5_data(file_path, dataset_name=None):
 def main(args):
 
     # Assume that have path of h5 file
-    # for basename in os.listdir(args.annotation_path): 
-    h5_path = os.path.join(args.features_h5_path, "tumor_026.h5")
-    xml_path = os.path.join(args.annotation_path, "tumor_026.xml")  
+    annotation_list = os.listdir(args.annotation_path)
+    reset_directory(args.ground_truth_corr_path)
+    reset_directory(args.ground_truth_path)  
+    total_file = len(annotation_list)
     
-    # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
-    # h5_name = path.split("/")[-1].replace("h5", "xml")
+    for idx, basename in enumerate(annotation_list):
+        print(f">>> Processing the annotation file number {idx+1}/{total_file}")
+        
+        name = basename.split(".")[0]
+        h5_path = os.path.join(args.features_h5_path, f"{name}.h5")
+        xml_path = os.path.join(args.annotation_path, f"{name}.xml")
+        
+        df_xml_save_path = os.path.join(args.ground_truth_corr_path, f'{name}.csv')
+
+        df_xml = extract_coordinates_batch(
+            xml_path,
+            df_xml_save_path)
+        print("Save the df fill contour into:", df_xml_save_path)  
+        
+        print("df_xml.shape: ", df_xml.shape, df_xml, type(df_xml))
+        
+        h5_data = read_h5_data(h5_path)
     
-    df_xml = extract_coordinates_batch(
-        xml_path, args.ground_truth_corr_path)
-    
-    print(df_xml, type(df_xml))
-    
-    h5_data = read_h5_data(h5_path)
-    
-    print("---- run the fast version")
-    mask = check_xy_in_coordinates_fast(
-        df_xml, h5_data["coordinates"])
-    
-    print("shape of mask", mask.shape)
-    print("sum of mask", np.sum(mask))
-    print(">>> MASK: ", mask[:10])
+        mask = check_xy_in_coordinates_fast(
+            df_xml, h5_data["coordinates"])
+        mask_save_path = os.path.join(args.ground_truth_path, f"{name}.npy")
+        print("Save the mask into:", mask_save_path)
+        np.save(mask_save_path, mask) 
+         
+        print("shape of mask", mask.shape)
+        print("sum of mask", np.sum(mask))
+        print(">>> MASK: ", mask[:10]) 
 
 
+def reset_directory(path):
+    if os.path.exists(path):
+        print("Current path exist, will delete and recreate: ", path)
+        shutil.rmtree(path)  
+    os.makedirs(path)  
+ 
 if __name__=="__main__":
     # get config 
     parser = argparse.ArgumentParser()
@@ -158,19 +175,11 @@ if __name__=="__main__":
         args.ground_truth_corr_path = config.get("GROUND_TRUTH_CORR_PATH") 
         args.ground_truth_path = config.get("GROUND_TRUTH_PATH") 
         os.makedirs(args.ground_truth_corr_path, exist_ok=True)   
-        os.makedirs(args.ground_truth_path, exist_ok=True)    
-        os.makedirs(args.sanity_check_path, exist_ok=True)  
+        # os.makedirs(args.ground_truth_path, exist_ok=True)    
+        # os.makedirs(args.sanity_check_path, exist_ok=True) 
+
         args.do_normalizing = True
 
-    # import multiprocessing
-
-    # num_cpus = multiprocessing.cpu_count()
-    # print(f"Available CPUs: {num_cpus}") 
-    # from joblib import parallel_backend
-
-    # with parallel_backend("loky", n_jobs=8):
-    #     print(f"Using {multiprocessing.cpu_count()} CPUs for parallel processing.") 
-
-    main(args) 
+    main(args)
     
 #  scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/sanity_check/tumor_026.png 
