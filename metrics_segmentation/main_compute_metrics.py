@@ -97,7 +97,7 @@ def main(args):
         # path = "/Users/nam.le/Desktop/research/camil_pytorch/data/camelyon16_feature/h5_files/tumor_048.h5"
         # h5_name = path.split("/")[-1].replace("h5", "xml")
         
-        mask = pd.read_csv(args.ground_truth_path, "tumor_026")
+        mask = pd.read_csv(os.path.join(args.ground_truth_path, "tumor_026.csv"))
         
         # df_xml = pd.read_csv()
         
