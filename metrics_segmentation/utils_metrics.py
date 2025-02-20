@@ -4,10 +4,10 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import h5py
 
-xml_folder = (
-    "/Users/nam.le/Desktop/research/wsi_patch_pruning/metrics_segmentation/data"
-)
-list_xml_file = [os.path.join(xml_folder, name) for name in os.listdir(xml_folder)]
+# xml_folder = (
+#     "/Users/nam.le/Desktop/research/wsi_patch_pruning/metrics_segmentation/data"
+# )
+# list_xml_file = [os.path.join(xml_folder, name) for name in os.listdir(xml_folder)]
 
 
 def parse_xml(file_path):
@@ -52,15 +52,15 @@ def return_df_xml(xml_path):
     return extract_coordinates(xml_path)
 
 
-def read_all_xml_file_base_tumor(file_h5_name):
-    xml_path = None
-    for path in list_xml_file:
-        if path.split("/")[-1] == file_h5_name:
-            xml_path = path
-    if not xml_path:
-        return pd.DataFrame()  # incase normal dont have file
-    coordinates_xml = return_df_xml(xml_path)
-    return coordinates_xml
+# def read_all_xml_file_base_tumor(file_h5_name):
+#     xml_path = None
+#     for path in list_xml_file:
+#         if path.split("/")[-1] == file_h5_name:
+#             xml_path = path
+#     if not xml_path:
+#         return pd.DataFrame()  # incase normal dont have file
+#     coordinates_xml = return_df_xml(xml_path)
+#     return coordinates_xml
 
 
 def read_h5_data(file_path, dataset_name=None):
