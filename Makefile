@@ -17,3 +17,6 @@ gg:
 cg:
 	@echo "Running with ig_name=contrastive_gradient"
 	python main_ig.py --ig_name contrastive_gradient
+
+get_ground_truth: 
+	python metrics_segmentation/main_interior_mask.py
