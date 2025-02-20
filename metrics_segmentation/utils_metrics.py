@@ -175,12 +175,10 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
 
     # Build R-tree index for fast spatial searching
-    rtree_index = index.Index()  # <-- Avoid variable conflict
+    rtree_index = index.Index()
 
-    for i, box in enumerate(coordinates_h5):  # Ensure h5 data is a NumPy array
-        ymax, xmax, ymin, xmin = box 
-        # ymin, xmin, ymax, xmax = box  # Ensure correct order
-        # print(box)
+    for i, box in enumerate(coordinates_h5):  # Ensure h5_data is a NumPy array
+        ymax, xmax, ymin, xmin = box  
         rtree_index.insert(i, (xmin, ymin, xmax, ymax))  # Insert bounding box
 
     # Iterate efficiently over DataFrame rows
@@ -188,12 +186,11 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
         x, y = row.X, row.Y
         possible_matches = list(rtree_index.intersection((x, y, x, y)))  # Find overlapping boxes
 
-        for box_index in possible_matches:  # Renamed index to box_index
-            if check_coor(x, y, coordinates_h5.iloc[box_index]):  # Validate within bounding box
+        for box_index in possible_matches:
+            if check_coor(x, y, coordinates_h5[box_index]):  # ✅ Use NumPy indexing instead of .iloc
                 label[box_index] = 1  # Mark as tumor
 
-    return label
-
+    return label 
 
 def check_coor(x, y, box):
     """
