@@ -20,6 +20,14 @@ import pandas as pd
 import numpy as np
 from shapely.geometry import Polygon, Point
 
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+from shapely.geometry import Polygon, Point
+from tqdm import tqdm
+
+PATCH_SIZE = 224  # Define patch size
+
 def parse_xml(file_path):
     """ Parse XML file and return root element. """
     try:
@@ -32,8 +40,7 @@ def parse_xml(file_path):
 
 def extract_coordinates(file_path):
     """
-    Extracts all (X, Y) coordinates **inside** a contour from an XML file.
-    Tracks progress using tqdm.
+    Extracts all (X, Y) coordinates **inside** a contour from an XML file using patch-based processing.
     """
     root = parse_xml(file_path)
     if root is None:
@@ -57,26 +64,39 @@ def extract_coordinates(file_path):
     # Convert to a Shapely polygon
     polygon = Polygon(contour)
 
-    # Generate a grid of points inside the bounding box
+    # Generate patches inside bounding box
     min_x, min_y, max_x, max_y = polygon.bounds
-    x_range = np.arange(min_x, max_x, 1)  # Adjust step size for resolution
-    y_range = np.arange(min_y, max_y, 1)
+    x_patches = np.arange(min_x, max_x, PATCH_SIZE)
+    y_patches = np.arange(min_y, max_y, PATCH_SIZE)
 
     inside_points = []
 
-    # Use tqdm to track progress of filling the mask
-    total_iterations = len(x_range) * len(y_range)  # Total number of checks
-    with tqdm(total=total_iterations, desc="Filling Mask", ncols=100) as pbar:
-        for x in x_range:
-            for y in y_range:
-                if polygon.contains(Point(x, y)):  # Check if point is inside
-                    inside_points.append({"File": file_path.split("/")[-1], "X": x, "Y": y})
+    # Use tqdm to track progress
+    total_patches = len(x_patches) * len(y_patches)
+    with tqdm(total=total_patches, desc="Processing Patches", ncols=100) as pbar:
+        for x_start in x_patches:
+            for y_start in y_patches:
+                x_end = x_start + PATCH_SIZE
+                y_end = y_start + PATCH_SIZE
+                patch_box = Polygon([(x_start, y_start), (x_end, y_start), (x_end, y_end), (x_start, y_end)])
+
+                # Check if the entire patch is inside
+                if polygon.contains(patch_box):
+                    for px in range(int(x_start), int(x_end)):
+                        for py in range(int(y_start), int(y_end)):
+                            inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
+                
+                # If partially inside, refine search (slower, but necessary)
+                elif polygon.intersects(patch_box):
+                    for px in range(int(x_start), int(x_end), 5):  # Step by 5 to reduce computations
+                        for py in range(int(y_start), int(y_end), 5):
+                            if polygon.contains(Point(px, py)):
+                                inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
+                
                 pbar.update(1)  # Update progress bar
 
-    # Convert to DataFrame
     return pd.DataFrame(inside_points)
- 
- 
+
 
 def return_df_xml(xml_path):
     return extract_coordinates(xml_path)
