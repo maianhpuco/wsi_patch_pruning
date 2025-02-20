@@ -201,12 +201,17 @@ if __name__=="__main__":
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
+        
         args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
         args.annotation_path = config.get("ANNOTATION_PATH")
         
         # args.ig_name = "integrated_gradients"
         args.sanity_check_path = config.get("SANITY_CHECK_PATH")   
-        os.makedirs(args.sanity_check_path, exist_ok=True)  
+        args.ground_truth_corr_path = config.get("GROUND_TRUTH_CORR_PATH") 
+        args.ground_truth_path = config.get("GROUND_TRUTH_PATH") 
+        os.makedirs(args.ground_truth_corr_path, exist_ok=True)   
+        os.makedirs(args.ground_truth_path, exist_ok=True)    
+        os.makedirs(args.sanity_check_path, exist_ok=True)   
         args.do_normalizing = True
 
     main(args) 
