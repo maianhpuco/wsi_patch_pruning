@@ -193,6 +193,7 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
 
     return label
 
+
 def check_coor(x, y, box):
     """
     Checks if (x, y) is inside the given bounding box.
