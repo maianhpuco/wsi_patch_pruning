@@ -88,12 +88,12 @@ def read_h5_data(file_path, dataset_name=None):
     return data
 
 
-def check_coor(x, y, box):
-    ymax, xmax, ymin, xmin = box
-    if xmin <= x <= xmax and ymin <= y <= ymax:
-        return True  # The point is inside the bounding box
-    else:
-        return False  # The point is outside the bounding box
+# def check_coor(x, y, box):
+#     ymax, xmax, ymin, xmin = box
+#     if xmin <= x <= xmax and ymin <= y <= ymax:
+#         return True  # The point is inside the bounding box
+#     else:
+#         return False  # The point is outside the bounding box
 
 
 # def check_list_coor(x, y, list_coor, list_result):
@@ -124,41 +124,78 @@ def check_coor(x, y, box):
 #         label = check_list_coor(row.X, row.Y, coordinates_h5, label)
 #     return label
 
+# import numpy as np
+# from scipy.spatial import cKDTree
+# from tqdm import tqdm
+
+
+# def check_list_coor(x, y, tree, list_result, threshold=0):
+#     """
+#     Efficiently checks if (x, y) is within any bounding box using KDTree.
+#     """
+#     # Query the nearest bounding box
+#     distances, indices = tree.query(np.array([[x, y]]), k=1)  # Nearest neighbor search
+
+#     for dist, idx in zip(distances, indices):
+#         if dist <= threshold:  # Use threshold if needed for slight tolerance
+#             list_result[idx] = 1  # Mark as tumor
+
+#     return list_result
+
+# def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+#     """
+#     Optimized function using KDTree for fast bounding box lookup.
+#     """
+#     length = coordinates_h5.shape[0]
+#     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
+
+#     # Extract center points of bounding boxes (approximation)
+#     box_centers = np.column_stack(((coordinates_h5[:, 1] + coordinates_h5[:, 3]) / 2,  # X center
+#                                    (coordinates_h5[:, 0] + coordinates_h5[:, 2]) / 2)) # Y center
+
+#     # Build KDTree for fast spatial queries
+#     tree = cKDTree(box_centers)
+
+#     # Iterate efficiently over DataFrame rows
+#     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
+#         label = check_list_coor(row.X, row.Y, tree, label)
+
+#     return label
+
+
 import numpy as np
-from scipy.spatial import cKDTree
 from tqdm import tqdm
-
-
-def check_list_coor(x, y, tree, list_result, threshold=0):
-    """
-    Efficiently checks if (x, y) is within any bounding box using KDTree.
-    """
-    # Query the nearest bounding box
-    distances, indices = tree.query(np.array([[x, y]]), k=1)  # Nearest neighbor search
-
-    for dist, idx in zip(distances, indices):
-        if dist <= threshold:  # Use threshold if needed for slight tolerance
-            list_result[idx] = 1  # Mark as tumor
-
-    return list_result
+from rtree import index  # R-tree for efficient spatial queries
 
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     """
-    Optimized function using KDTree for fast bounding box lookup.
+    Optimized function using R-tree for fast bounding box lookup.
     """
     length = coordinates_h5.shape[0]
     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
 
-    # Extract center points of bounding boxes (approximation)
-    box_centers = np.column_stack(((coordinates_h5[:, 1] + coordinates_h5[:, 3]) / 2,  # X center
-                                   (coordinates_h5[:, 0] + coordinates_h5[:, 2]) / 2)) # Y center
-
-    # Build KDTree for fast spatial queries
-    tree = cKDTree(box_centers)
+    # Build R-tree index for fast spatial searching
+    rtree_index = index.Index()
+    for i, box in enumerate(coordinates_h5):
+        ymin, xmin, ymax, xmax = box  # Ensure correct order
+        rtree_index.insert(i, (xmin, ymin, xmax, ymax))  # Insert bounding box
 
     # Iterate efficiently over DataFrame rows
     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
-        label = check_list_coor(row.X, row.Y, tree, label)
+        x, y = row.X, row.Y
+        possible_matches = list(rtree_index.intersection((x, y, x, y)))  # Find overlapping boxes
+
+        for index in possible_matches:
+            if check_coor(x, y, coordinates_h5[index]):  # Validate within bounding box
+                label[index] = 1  # Mark as tumor
 
     return label
+
+def check_coor(x, y, box):
+    """
+    Checks if (x, y) is inside the given bounding box.
+    """
+    ymin, xmin, ymax, xmax = box  # Ensure correct coordinate ordering
+    return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
+ 
  
