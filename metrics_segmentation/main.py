@@ -28,7 +28,6 @@ def main():
     h5_data = read_h5_data(path)
     mask = check_xy_in_coordinates(df_xml, h5_data["coordinates"])
     
-
     # 0 is back ground, 1 is tumor
     predict = np.random.randint(0, 2, size=(h5_data["coordinates"].shape[0], 1))
 
