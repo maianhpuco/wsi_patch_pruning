@@ -28,19 +28,36 @@ from tqdm import tqdm
 
 PATCH_SIZE = 224  # Define patch size
 
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+from shapely.geometry import Polygon, Point
+from tqdm import tqdm
+from rtree import index  # R-tree for fast spatial lookup
+
+PATCH_SIZE = 224  # Define patch size (downscaling factor)
+
 def parse_xml(file_path):
     """ Parse XML file and return root element. """
     try:
-        tree = ET.parse(file_path)  # Load XML file
-        root = tree.getroot()  # Get root element
+        tree = ET.parse(file_path)
+        root = tree.getroot()
         return root
     except ET.ParseError as e:
         print(f"Error parsing {file_path}: {e}")
         return None
 
+def downscale_coordinates(contour, scale_factor):
+    """ Downscale contour coordinates for faster processing. """
+    return [(x / scale_factor, y / scale_factor) for x, y in contour]
+
+def upscale_coordinates(points, scale_factor):
+    """ Upscale points back to original size. """
+    return [(int(x * scale_factor), int(y * scale_factor)) for x, y in points]
+
 def extract_coordinates(file_path):
     """
-    Extracts all (X, Y) coordinates **inside** a contour from an XML file using patch-based processing.
+    Fast extraction of (X, Y) coordinates **inside** a contour using downscaling and R-tree.
     """
     root = parse_xml(file_path)
     if root is None:
@@ -51,82 +68,46 @@ def extract_coordinates(file_path):
     # Extract contour points
     contour = []
     for coordinate in root.findall(".//Coordinate"):
-        order = coordinate.attrib.get("Order")
         x = coordinate.attrib.get("X")
         y = coordinate.attrib.get("Y")
-
-        if order and x and y:
+        if x and y:
             contour.append((float(x), float(y)))
 
     if not contour:
         return None  # No contour found
 
-    # Convert to a Shapely polygon
-    polygon = Polygon(contour)
+    # Downscale the contour for faster processing
+    downscaled_contour = downscale_coordinates(contour, PATCH_SIZE)
 
-    # Generate patches inside bounding box
+    # Convert to a Shapely polygon (downscaled)
+    polygon = Polygon(downscaled_contour)
+
+    # Generate downscaled grid (treat each patch as a "pixel")
     min_x, min_y, max_x, max_y = polygon.bounds
-    x_patches = np.arange(min_x, max_x, PATCH_SIZE)
-    y_patches = np.arange(min_y, max_y, PATCH_SIZE)
+    x_patches = np.arange(np.floor(min_x), np.ceil(max_x))
+    y_patches = np.arange(np.floor(min_y), np.ceil(max_y))
 
     inside_points = []
 
     # Use tqdm to track progress
-    total_patches = len(x_patches) * len(y_patches)
-    with tqdm(total=total_patches, desc="Processing Patches", ncols=100) as pbar:
+    with tqdm(total=len(x_patches) * len(y_patches), desc="Processing Patches", ncols=100) as pbar:
         for x_start in x_patches:
             for y_start in y_patches:
-                x_end = x_start + PATCH_SIZE
-                y_end = y_start + PATCH_SIZE
-                patch_box = Polygon([(x_start, y_start), (x_end, y_start), (x_end, y_end), (x_start, y_end)])
+                patch_point = Point(x_start, y_start)
 
-                # Check if the entire patch is inside
-                if polygon.contains(patch_box):
-                    for px in range(int(x_start), int(x_end)):
-                        for py in range(int(y_start), int(y_end)):
-                            inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
+                # Check if the patch (downscaled pixel) is inside
+                if polygon.contains(patch_point):
+                    inside_points.append((x_start, y_start))  # Save downscaled points
                 
-                # If partially inside, refine search (slower, but necessary)
-                elif polygon.intersects(patch_box):
-                    for px in range(int(x_start), int(x_end), 5):  # Step by 5 to reduce computations
-                        for py in range(int(y_start), int(y_end), 5):
-                            if polygon.contains(Point(px, py)):
-                                inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
-                
-                pbar.update(1)  # Update progress bar
+                pbar.update(1)
 
-    return pd.DataFrame(inside_points)
+    # Upscale the points back to original resolution
+    original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
 
-
-def return_df_xml(xml_path):
-    return extract_coordinates(xml_path)
-
-
-
-def read_h5_data(file_path, dataset_name=None):
-    data = None
-    with h5py.File(file_path, "r") as file:
-        if dataset_name is not None:
-            if dataset_name in file:
-                dataset = file[dataset_name]
-                data = dataset[()]
-            else:
-                raise KeyError(f"Dataset '{dataset_name}' not found in the file.")
-        else:
-            datasets = {}
-
-            def visitor(name, node):
-                if isinstance(node, h5py.Dataset):
-                    datasets[name] = node[()]
-
-            file.visititems(visitor)
-
-            if len(datasets) == 1:
-                data = list(datasets.values())[0]
-            else:
-                data = datasets
-    return data 
-
+    # Convert to DataFrame
+    df_inside_points = pd.DataFrame({"File": file_path.split("/")[-1], "X": [p[0] for p in original_size_points], "Y": [p[1] for p in original_size_points]})
+    
+    return df_inside_points
 
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     """
@@ -137,8 +118,7 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
 
     # Build R-tree index for fast spatial searching
     rtree_index = index.Index()
-
-    for i, box in enumerate(coordinates_h5):  # Ensure h5_data is a NumPy array
+    for i, box in enumerate(coordinates_h5):  
         ymax, xmax, ymin, xmin = box  
         rtree_index.insert(i, (xmin, ymin, xmax, ymax))  
 
@@ -146,7 +126,7 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
         x, y = row.X, row.Y
         possible_matches = list(rtree_index.intersection((x, y, x, y)))  
-        print(possible_matches)
+
         for box_index in possible_matches:
             if check_coor(x, y, coordinates_h5[box_index]): 
                 label[box_index] = 1  # Mark as tumor
@@ -159,92 +139,227 @@ def check_coor(x, y, box):
     """
     ymax, xmax, ymin, xmin = box  
     return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
-  
+ 
 
-# def read_all_xml_file_base_tumor(file_h5_name):
-#     xml_path = None
-#     for path in list_xml_file:
-#         if path.split("/")[-1] == file_h5_name:
-#             xml_path = path
-#     if not xml_path:
-#         return pd.DataFrame()  # incase normal dont have file
-#     coordinates_xml = return_df_xml(xml_path)
-#     return coordinates_xml
+# def parse_xml(file_path):
+#     """ Parse XML file and return root element. """
+#     try:
+#         tree = ET.parse(file_path)  # Load XML file
+#         root = tree.getroot()  # Get root element
+#         return root
+#     except ET.ParseError as e:
+#         print(f"Error parsing {file_path}: {e}")
+#         return None
+
+# def extract_coordinates(file_path):
+#     """
+#     Extracts all (X, Y) coordinates **inside** a contour from an XML file using patch-based processing.
+#     """
+#     root = parse_xml(file_path)
+#     if root is None:
+#         return None  # Skip if parsing failed
+
+#     print(f"Processing XML: {file_path}")
+
+#     # Extract contour points
+#     contour = []
+#     for coordinate in root.findall(".//Coordinate"):
+#         order = coordinate.attrib.get("Order")
+#         x = coordinate.attrib.get("X")
+#         y = coordinate.attrib.get("Y")
+
+#         if order and x and y:
+#             contour.append((float(x), float(y)))
+
+#     if not contour:
+#         return None  # No contour found
+
+#     # Convert to a Shapely polygon
+#     polygon = Polygon(contour)
+
+#     # Generate patches inside bounding box
+#     min_x, min_y, max_x, max_y = polygon.bounds
+#     x_patches = np.arange(min_x, max_x, PATCH_SIZE)
+#     y_patches = np.arange(min_y, max_y, PATCH_SIZE)
+
+#     inside_points = []
+
+#     # Use tqdm to track progress
+#     total_patches = len(x_patches) * len(y_patches)
+#     with tqdm(total=total_patches, desc="Processing Patches", ncols=100) as pbar:
+#         for x_start in x_patches:
+#             for y_start in y_patches:
+#                 x_end = x_start + PATCH_SIZE
+#                 y_end = y_start + PATCH_SIZE
+#                 patch_box = Polygon([(x_start, y_start), (x_end, y_start), (x_end, y_end), (x_start, y_end)])
+
+#                 # Check if the entire patch is inside
+#                 if polygon.contains(patch_box):
+#                     for px in range(int(x_start), int(x_end)):
+#                         for py in range(int(y_start), int(y_end)):
+#                             inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
+                
+#                 # If partially inside, refine search (slower, but necessary)
+#                 elif polygon.intersects(patch_box):
+#                     for px in range(int(x_start), int(x_end), 5):  # Step by 5 to reduce computations
+#                         for py in range(int(y_start), int(y_end), 5):
+#                             if polygon.contains(Point(px, py)):
+#                                 inside_points.append({"File": file_path.split("/")[-1], "X": px, "Y": py})
+                
+#                 pbar.update(1)  # Update progress bar
+
+#     return pd.DataFrame(inside_points)
+
+
+# def return_df_xml(xml_path):
+#     return extract_coordinates(xml_path)
 
 
 
+# def read_h5_data(file_path, dataset_name=None):
+#     data = None
+#     with h5py.File(file_path, "r") as file:
+#         if dataset_name is not None:
+#             if dataset_name in file:
+#                 dataset = file[dataset_name]
+#                 data = dataset[()]
+#             else:
+#                 raise KeyError(f"Dataset '{dataset_name}' not found in the file.")
+#         else:
+#             datasets = {}
 
-# def check_coor(x, y, box):
-#     ymax, xmax, ymin, xmin = box
-#     if xmin <= x <= xmax and ymin <= y <= ymax:
-#         return True  # The point is inside the bounding box
-#     else:
-#         return False  # The point is outside the bounding box
+#             def visitor(name, node):
+#                 if isinstance(node, h5py.Dataset):
+#                     datasets[name] = node[()]
 
+#             file.visititems(visitor)
 
-# def check_list_coor(x, y, list_coor, list_result):
-#     for index, coor in enumerate(list_coor):  # Use enumerate to get the index directly
-#         bool_check = check_coor(x, y, coor)
-#         if bool_check is True:
-#             list_result[index] = 1  # Set the corresponding label to 1
-#             # print("tumor")
-#     return list_result
+#             if len(datasets) == 1:
+#                 data = list(datasets.values())[0]
+#             else:
+#                 data = datasets
+#     return data 
 
 
 # def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
-#     length = coordinates_h5.shape[0]
-#     label = np.zeros(length)  # Initialize label as a 1D array of zeros
-
-#     for index, row in tqdm(coordinates_xml.iterrows(), desc="Checking index:", ncols=100):
-#         label = check_list_coor(row["X"], row["Y"], coordinates_h5, label)
-#         # print("Already check index: ", index)
-#     return label
-
-
-# original code 
-# def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
-#     length = coordinates_h5.shape[0]
-#     label = np.zeros(length)  # Initialize label as a 1D array of zeros
-
-#     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
-#         label = check_list_coor(row.X, row.Y, coordinates_h5, label)
-#     return label
-
-# import numpy as np
-# from scipy.spatial import cKDTree
-# from tqdm import tqdm
-
-
-# def check_list_coor(x, y, tree, list_result, threshold=0):
 #     """
-#     Efficiently checks if (x, y) is within any bounding box using KDTree.
-#     """
-#     # Query the nearest bounding box
-#     distances, indices = tree.query(np.array([[x, y]]), k=1)  # Nearest neighbor search
-
-#     for dist, idx in zip(distances, indices):
-#         if dist <= threshold:  # Use threshold if needed for slight tolerance
-#             list_result[idx] = 1  # Mark as tumor
-
-#     return list_result
-
-# def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
-#     """
-#     Optimized function using KDTree for fast bounding box lookup.
+#     Optimized function using R-tree for fast bounding box lookup.
 #     """
 #     length = coordinates_h5.shape[0]
 #     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
 
-#     # Extract center points of bounding boxes (approximation)
-#     box_centers = np.column_stack(((coordinates_h5[:, 1] + coordinates_h5[:, 3]) / 2,  # X center
-#                                    (coordinates_h5[:, 0] + coordinates_h5[:, 2]) / 2)) # Y center
+#     # Build R-tree index for fast spatial searching
+#     rtree_index = index.Index()
 
-#     # Build KDTree for fast spatial queries
-#     tree = cKDTree(box_centers)
+#     for i, box in enumerate(coordinates_h5):  # Ensure h5_data is a NumPy array
+#         ymax, xmax, ymin, xmin = box  
+#         rtree_index.insert(i, (xmin, ymin, xmax, ymax))  
 
 #     # Iterate efficiently over DataFrame rows
 #     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
-#         label = check_list_coor(row.X, row.Y, tree, label)
+#         x, y = row.X, row.Y
+#         possible_matches = list(rtree_index.intersection((x, y, x, y)))  
+#         print(possible_matches)
+#         for box_index in possible_matches:
+#             if check_coor(x, y, coordinates_h5[box_index]): 
+#                 label[box_index] = 1  # Mark as tumor
 
-#     return label
+#     return label 
+
+# def check_coor(x, y, box):
+#     """
+#     Checks if (x, y) is inside the given bounding box.
+#     """
+#     ymax, xmax, ymin, xmin = box  
+#     return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
+ 
+ 
+  
+
+# # def read_all_xml_file_base_tumor(file_h5_name):
+# #     xml_path = None
+# #     for path in list_xml_file:
+# #         if path.split("/")[-1] == file_h5_name:
+# #             xml_path = path
+# #     if not xml_path:
+# #         return pd.DataFrame()  # incase normal dont have file
+# #     coordinates_xml = return_df_xml(xml_path)
+# #     return coordinates_xml
+
+
+
+
+# # def check_coor(x, y, box):
+# #     ymax, xmax, ymin, xmin = box
+# #     if xmin <= x <= xmax and ymin <= y <= ymax:
+# #         return True  # The point is inside the bounding box
+# #     else:
+# #         return False  # The point is outside the bounding box
+
+
+# # def check_list_coor(x, y, list_coor, list_result):
+# #     for index, coor in enumerate(list_coor):  # Use enumerate to get the index directly
+# #         bool_check = check_coor(x, y, coor)
+# #         if bool_check is True:
+# #             list_result[index] = 1  # Set the corresponding label to 1
+# #             # print("tumor")
+# #     return list_result
+
+
+# # def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+# #     length = coordinates_h5.shape[0]
+# #     label = np.zeros(length)  # Initialize label as a 1D array of zeros
+
+# #     for index, row in tqdm(coordinates_xml.iterrows(), desc="Checking index:", ncols=100):
+# #         label = check_list_coor(row["X"], row["Y"], coordinates_h5, label)
+# #         # print("Already check index: ", index)
+# #     return label
+
+
+# # original code 
+# # def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+# #     length = coordinates_h5.shape[0]
+# #     label = np.zeros(length)  # Initialize label as a 1D array of zeros
+
+# #     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
+# #         label = check_list_coor(row.X, row.Y, coordinates_h5, label)
+# #     return label
+
+# # import numpy as np
+# # from scipy.spatial import cKDTree
+# # from tqdm import tqdm
+
+
+# # def check_list_coor(x, y, tree, list_result, threshold=0):
+# #     """
+# #     Efficiently checks if (x, y) is within any bounding box using KDTree.
+# #     """
+# #     # Query the nearest bounding box
+# #     distances, indices = tree.query(np.array([[x, y]]), k=1)  # Nearest neighbor search
+
+# #     for dist, idx in zip(distances, indices):
+# #         if dist <= threshold:  # Use threshold if needed for slight tolerance
+# #             list_result[idx] = 1  # Mark as tumor
+
+# #     return list_result
+
+# # def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
+# #     """
+# #     Optimized function using KDTree for fast bounding box lookup.
+# #     """
+# #     length = coordinates_h5.shape[0]
+# #     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
+
+# #     # Extract center points of bounding boxes (approximation)
+# #     box_centers = np.column_stack(((coordinates_h5[:, 1] + coordinates_h5[:, 3]) / 2,  # X center
+# #                                    (coordinates_h5[:, 0] + coordinates_h5[:, 2]) / 2)) # Y center
+
+# #     # Build KDTree for fast spatial queries
+# #     tree = cKDTree(box_centers)
+
+# #     # Iterate efficiently over DataFrame rows
+# #     for row in tqdm(coordinates_xml.itertuples(index=False), desc="Checking index:", total=len(coordinates_xml), ncols=100):
+# #         label = check_list_coor(row.X, row.Y, tree, label)
+
+# #     return label
 
