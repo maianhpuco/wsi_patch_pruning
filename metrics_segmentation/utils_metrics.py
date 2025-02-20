@@ -101,7 +101,7 @@ def check_list_coor(x, y, list_coor, list_result):
         bool_check = check_coor(x, y, coor)
         if bool_check is True:
             list_result[index] = 1  # Set the corresponding label to 1
-            print("tumor")
+            # print("tumor")
     return list_result
 
 
