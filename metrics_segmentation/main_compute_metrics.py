@@ -105,7 +105,8 @@ def main(args):
         # print(df_xml, type(df_xml))
         
         h5_data = read_h5_data(h5_path)
-        
+        mask = check_xy_in_coordinates_fast(
+            df, h5_data["coordinates"]) 
         print("---- run the fast version")
         # mask = check_xy_in_coordinates_fast(df_xml, h5_data["coordinates"])
         
