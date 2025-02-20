@@ -108,7 +108,7 @@ def main(args):
             df_xml_save_path)
         print("Save the df fill contour into:", df_xml_save_path)  
         
-        print("df_xml.shape: ", df_xml.shape, df_xml, type(df_xml))
+        print("df_xml.shape: ", df_xml.shape)
         
         h5_data = read_h5_data(h5_path)
     
