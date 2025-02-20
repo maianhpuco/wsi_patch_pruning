@@ -166,9 +166,6 @@ def read_h5_data(file_path, dataset_name=None):
 import numpy as np
 from tqdm import tqdm
 from rtree import index  # R-tree for efficient spatial queries
-import numpy as np
-from tqdm import tqdm
-from rtree import index  # Import rtree spatial index
 
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     """
@@ -190,7 +187,7 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
         possible_matches = list(rtree_index.intersection((x, y, x, y)))  # Find overlapping boxes
 
         for box_index in possible_matches:  # Renamed index to box_index
-            if check_coor(x, y, coordinates_h5.iloc[box_index].to_numpy()):  # Validate within bounding box
+            if check_coor(x, y, coordinates_h5.iloc[box_index]):  # Validate within bounding box
                 label[box_index] = 1  # Mark as tumor
 
     return label
