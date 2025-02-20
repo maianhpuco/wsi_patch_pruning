@@ -33,7 +33,8 @@ def extract_coordinates_parallel(file_path, save_dir):
     Parallelized extraction of (X, Y) coordinates inside a contour.
     """
     basename = os.path.basename(file_path).split(".")[0]
-    # save_path = 
+    save_path = os.path.join(save_dir, f'{basename}.csv')
+    
     root = parse_xml(file_path)
     if root is None:
         return None  
@@ -63,9 +64,11 @@ def extract_coordinates_parallel(file_path, save_dir):
     inside_points = [p for p in inside_points if p]  # Remove None values
     original_size_points = upscale_coordinates(inside_points, PATCH_SIZE)
 
-    return pd.DataFrame({"File": file_path.split("/")[-1], 
+    result_df = pd.DataFrame({"File": file_path.split("/")[-1], 
                          "X": [p[0] for p in original_size_points], 
                          "Y": [p[1] for p in original_size_points]})
+    result_df.to_csv(save_path, index_col=0)
+    return result_df 
  
  
 def extract_coordinates(file_path):
