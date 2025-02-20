@@ -143,12 +143,13 @@ def main(args):
             with torch.no_grad():  # Disable gradient calculation for inference
                 _batch_features = model.forward_features(batch_image)
                 class_token_features = _batch_features[:, 0, :]  
+                class_token_features_cpu = class_token_features.cpu()
                 
             # 0. apply feature extraction here on batch_image
                 # input: batch_image
                 # output: slide_features (remember to cat them into a slide's features)
          
-            _slide_features.append(class_token_features)
+            _slide_features.append(class_token_features_cpu)
             _patch_idxes.append(batch_idxes)
             
         count += 1 
