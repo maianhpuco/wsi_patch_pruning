@@ -166,6 +166,9 @@ def read_h5_data(file_path, dataset_name=None):
 import numpy as np
 from tqdm import tqdm
 from rtree import index  # R-tree for efficient spatial queries
+import numpy as np
+from tqdm import tqdm
+from rtree import index  # Import rtree spatial index
 
 def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     """
@@ -175,8 +178,9 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
     label = np.zeros(length, dtype=int)  # Efficient integer array for labels
 
     # Build R-tree index for fast spatial searching
-    rtree_index = index.Index()
-    for i, box in enumerate(coordinates_h5):
+    rtree_index = index.Index()  # <-- Avoid variable conflict
+
+    for i, box in enumerate(coordinates_h5.to_numpy()):  # Ensure h5 data is a NumPy array
         ymin, xmin, ymax, xmax = box  # Ensure correct order
         rtree_index.insert(i, (xmin, ymin, xmax, ymax))  # Insert bounding box
 
@@ -185,9 +189,9 @@ def check_xy_in_coordinates(coordinates_xml, coordinates_h5):
         x, y = row.X, row.Y
         possible_matches = list(rtree_index.intersection((x, y, x, y)))  # Find overlapping boxes
 
-        for index in possible_matches:
-            if check_coor(x, y, coordinates_h5[index]):  # Validate within bounding box
-                label[index] = 1  # Mark as tumor
+        for box_index in possible_matches:  # Renamed index to box_index
+            if check_coor(x, y, coordinates_h5.iloc[box_index].to_numpy()):  # Validate within bounding box
+                label[box_index] = 1  # Mark as tumor
 
     return label
 
@@ -197,5 +201,4 @@ def check_coor(x, y, box):
     """
     ymin, xmin, ymax, xmax = box  # Ensure correct coordinate ordering
     return xmin <= x <= xmax and ymin <= y <= ymax  # True if inside the bounding box
- 
  
