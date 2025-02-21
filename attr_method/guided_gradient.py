@@ -70,7 +70,8 @@ class GuidedGradients(CoreSaliency):
         sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
         x_baseline_batch = baseline_features[sampled_indices]
         x = x_baseline_batch.copy()
-        x_baseline_tensor = torch.tensor(x_baseline_batch, dtype=torch.float32, requires_grad=True) 
+        x_baseline_tensor = torch.tensor(x_baseline_batch, dtype=torch.float32, requires_grad=True)
+         
         for step in range(x_steps):
             print(f"----Step {step}/{x_steps}")
             call_model_output = call_model_function(
@@ -86,6 +87,16 @@ class GuidedGradients(CoreSaliency):
             # grad 
             print("grad shape", grad_actual.shape)  
             grad = grad_actual.copy() 
+            
+            #---- 
+                        
+            x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
+            x = x.reshape(-1, x_value.shape[-1])
+            x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
+            x_max = x_max.reshape(-1, x_max.shape[-1]) 
+            x_min = x_min.reshape(-1, x_max.shape[-1])    
+            #----
+            
             
             l1_total = l1_distance(x_value, x_baseline_batch) 
             x_diff = x_value - x_baseline_batch   
@@ -103,12 +114,7 @@ class GuidedGradients(CoreSaliency):
             #  represents how much the feature values should have changed at a given step.
  
  
-            
-            x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
-            x = x.reshape(-1, x_value.shape[-1])
-            x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
-            x_max = x_max.reshape(-1, x_max.shape[-1]) 
-            x_min = x_min.reshape(-1, x_max.shape[-1])   
+
             
             gamma = np.inf 
             count = 0 
