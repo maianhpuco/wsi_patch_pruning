@@ -1,6 +1,30 @@
 import pandas as pd
 import argparse
 import os
+import h5py
+
+def read_h5_file(file_path):
+    """
+    Read a H5 file and return its contents
+    Args:
+        file_path (str): Path to the H5 file
+    Returns:
+        dict: Contents of the H5 file or None if file cannot be read
+    """
+    try:
+        with h5py.File(file_path, 'r') as f:
+            # Create a dictionary to store all datasets
+            contents = {}
+            def visit_func(name, obj):
+                if isinstance(obj, h5py.Dataset):
+                    contents[name] = obj[()]
+            
+            # Visit all groups and datasets in the file
+            f.visititems(visit_func)
+            return contents
+    except Exception as e:
+        print(f"Error reading {file_path}: {str(e)}")
+        return None
 
 def read_csv_file(file_path):
     try:
