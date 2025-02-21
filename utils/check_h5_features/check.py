@@ -22,7 +22,7 @@ def count_files_in_folder(folder_path):
 # Example usage
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Count files in a folder')
-    parser.add_argument('folder_path', type=str, help='Path to the folder to count files in')
+    parser.add_argument('folder_path', required=True, type=str, help='Path to the folder to count files in')
     
     args = parser.parse_args()
     file_count = count_files_in_folder(args.folder_path)
