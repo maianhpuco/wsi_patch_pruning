@@ -22,3 +22,15 @@ AUC = 0.8403
 Best Threshold: 0.6127
 Class 0: 17/17 correct (1.0000 accuracy)
 Class 1: 3/7 correct (0.4286 accuracy) 
+
+
+- list of the ig already run 
+
+vanilla_gradient 
+
+- runing 
+contrastive_gradient  (feature)
+ig (feature2)
+squareintegrated_gradient(feature3)
+
+

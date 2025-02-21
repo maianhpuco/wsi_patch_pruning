@@ -8,7 +8,7 @@ import torch
 import matplotlib.pyplot as plt
 from attr_method.common import PreprocessInputs, call_model_function 
 
-class IntegratedGradients(CoreSaliency):
+class ExpectedGradients(CoreSaliency):
     """Efficient Integrated Gradients with Counterfactual Attribution"""
 
     expected_keys = [INPUT_OUTPUT_GRADIENTS]
