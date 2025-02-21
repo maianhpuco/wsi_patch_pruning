@@ -62,7 +62,7 @@ class GuidedGradients(CoreSaliency):
         call_model_args = kwargs.get("call_model_args", None)
         baseline_features = kwargs.get("baseline_features", None)
         x_steps = kwargs.get("x_steps", 25) 
-        fraction = kwargs.get("fraction", 0.10)
+        fraction = kwargs.get("fraction", 0.05)
         max_dist = kwargs.get("max_dist", 0.02)
         
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
