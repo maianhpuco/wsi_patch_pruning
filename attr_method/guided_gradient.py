@@ -93,6 +93,7 @@ class GuidedGradients(CoreSaliency):
        
             alpha_min = max(alpha - max_dist, 0.0)
             alpha_max = min(alpha + max_dist, 1.0)
+            
             x_min =  x_baseline_batch + alpha_min * x_diff 
             x_max =  x_baseline_batch + alpha_max * x_diff 
             
@@ -138,11 +139,11 @@ class GuidedGradients(CoreSaliency):
                     gamma = (l1_current - l1_target) / l1_s
                 else:
                     gamma = np.inf 
-                    
-
+                
                 # Gamma higher than 1.0 means that changing selected features is not
                 # enough to close the gap. Therefore change them as much as possible to
-                # stay in the valid range.                
+                # stay in the valid range.  
+                              
                 if gamma >= 1.0:
                     x[s] = x_max[s]
                 else:
