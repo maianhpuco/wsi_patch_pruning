@@ -15,7 +15,7 @@ def call_model_function(images, model, call_model_args=None, expected_keys=None)
     images = PreprocessInputs(images)
     model.eval()
     logits = model(images, [images.shape[0]])
-    output = logits
+    output = -logits
     grads = torch.autograd.grad(output, images, grad_outputs=torch.ones_like(output), create_graph=False)
     gradients = grads[0].detach().cpu().numpy()
     return {saliency.base.INPUT_OUTPUT_GRADIENTS: gradients}
