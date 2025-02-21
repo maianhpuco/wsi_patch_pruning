@@ -67,12 +67,11 @@ class GuidedGradients(CoreSaliency):
         
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
         # total_grad =  np.zeros_like(x_value, dtype=np.float32) 
+        sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
+        x_baseline_batch = baseline_features[sampled_indices]
+        x = x_baseline_batch.copy()
+        x_baseline_tensor = torch.tensor(x_baseline_batch, dtype=torch.float32, requires_grad=True) 
         for step in range(x_steps):
-            sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
-            x_baseline_batch = baseline_features[sampled_indices]
-            x = x_baseline_batch.copy()
-            x_baseline_tensor = torch.tensor(x_baseline_batch, dtype=torch.float32, requires_grad=True)
-
             call_model_output = call_model_function(
                 x_baseline_tensor,
                 model,
@@ -94,11 +93,15 @@ class GuidedGradients(CoreSaliency):
             alpha_min = max(alpha - max_dist, 0.0)
             alpha_max = min(alpha + max_dist, 1.0)
             
+            # for the purpose of cliping input x_min, x_max and adjust is just for clipping the gradient etc ... 
             x_min =  x_baseline_batch + alpha_min * x_diff 
             x_max =  x_baseline_batch + alpha_max * x_diff 
             
             l1_target = l1_total * (1 - (step + 1) / x_steps) 
-            
+            #  l1 target is the total L1 distance between the baseline and input: | X_value - X_baseline | 
+            #  represents how much the feature values should have changed at a given step.
+ 
+ 
             
             x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
             x = x.reshape(-1, x_value.shape[-1])
@@ -114,22 +117,24 @@ class GuidedGradients(CoreSaliency):
                 x_alpha[np.isnan(x_alpha)] = alpha_max 
               
                 x_value[x_alpha < alpha_min] = x_min[x_alpha < alpha_min] 
+                print("smaller than alpha_min", x_value[x_alpha < alpha_min].shape)
                 
+                l1_current = l1_distance(x_value, x) # measures how far the current feature values are from the previous state.
                 
-                l1_current = l1_distance(x_value, x) 
                 if math.isclose(l1_target, l1_current, rel_tol=EPSILON, abs_tol=EPSILON):
                     attr += (x - x_old) * grad_actual
                     break 
                 grad[x==x_max] = np.inf 
                 
-                # Select features with the lowest absolute gradient. 
+                # <---Select features with the lowest absolute gradient. 
                 threshold = np.quantile(np.abs(grad), fraction, interpolation='lower')
                 s = np.logical_and(np.abs(grad) <= threshold, grad != np.inf) 
-                
+                # --->
+                 
                 # Find by how much the L1 distance can be reduced by changing only the
-                # selected features.
+                # selected features. # Compute L1 distance reduction possible by modifying `s` 
                 l1_s = (np.abs(x - x_max) * s).sum() 
-                print(f"l1_current: {l1_current}, l1_target: {l1_target}, l1_s: {l1_s}, gamma: {gamma}")
+                print(f"-> l1_current: {l1_current}, l1_target: {l1_target}, l1_s: {l1_s}, gamma: {gamma}")
  
                 # Calculate ratio `gamma` that show how much the selected features should
                 # be changed toward `x_max` to close the gap between current L1 and target
@@ -144,7 +149,7 @@ class GuidedGradients(CoreSaliency):
                 # enough to close the gap. Therefore change them as much as possible to
                 # stay in the valid range.  
                               
-                if gamma >= 1.0:
+                if gamma > 1.0:
                     x[s] = x_max[s]
                 else:
                     assert gamma > 0, gamma

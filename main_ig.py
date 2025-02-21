@@ -75,7 +75,12 @@ def main(args):
     elif args.ig_name=='expected_gradient':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
        
+    # LIME
+    # KernelSHAP
+    # DeepSHAP 
+    
     print(f"Running for {args.ig_name} Attribution method") 
+    
     
     #----------------------------------------------------    
     attribution_method = AttrMethod()   
