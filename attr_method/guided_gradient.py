@@ -16,6 +16,10 @@ def l1_distance(x1, x2):
   """Returns L1 distance between two points."""
   return np.abs(x1 - x2).sum()
 
+def l2_distance(x1, x2):
+    """Returns L2 (Euclidean) distance between two points."""
+    return np.sqrt(np.sum((x1 - x2) ** 2))
+ 
 
 def translate_x_to_alpha(x, x_input, x_baseline):
   """Translates a point on straight-line path to its corresponding alpha value.
@@ -94,7 +98,7 @@ class GuidedGradients(CoreSaliency):
             #----
             
             
-            l1_total = l1_distance(x_value, x_baseline_batch) 
+            l1_total = l2_distance(x_value, x_baseline_batch) 
             x_diff = x_value - x_baseline_batch   
             #----
             x_diff = x_diff.reshape(-1, x_value.shape[-1])  
@@ -127,7 +131,7 @@ class GuidedGradients(CoreSaliency):
                 x_value[x_alpha < alpha_min] = x_min[x_alpha < alpha_min] 
                 print("smaller than alpha_min", x_value[x_alpha < alpha_min].shape)
                 
-                l1_current = l1_distance(x_value, x) # measures how far the current feature values are from the previous state.
+                l1_current = l2_distance(x_value, x) # measures how far the current feature values are from the previous state.
                 
                 if math.isclose(l1_target, l1_current, rel_tol=EPSILON, abs_tol=EPSILON):
                     attr += (x - x_old) * grad_actual
