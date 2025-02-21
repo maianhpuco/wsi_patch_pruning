@@ -89,12 +89,8 @@ class GuidedGradients(CoreSaliency):
             grad = grad_actual.copy() 
             
             #---- 
-                        
             x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
-            x = x.reshape(-1, x_value.shape[-1])
-            
-            x_max = x_max.reshape(-1, x_max.shape[-1]) 
-            x_min = x_min.reshape(-1, x_max.shape[-1])    
+            x = x.reshape(-1, x_value.shape[-1]) 
             #----
             
             
