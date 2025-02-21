@@ -92,7 +92,7 @@ class GuidedGradients(CoreSaliency):
                         
             x_baseline_batch = x.reshape(-1, x_value.shape[-1])  
             x = x.reshape(-1, x_value.shape[-1])
-            x_diff = x_diff.reshape(-1, x_value.shape[-1]) 
+            
             x_max = x_max.reshape(-1, x_max.shape[-1]) 
             x_min = x_min.reshape(-1, x_max.shape[-1])    
             #----
@@ -100,6 +100,10 @@ class GuidedGradients(CoreSaliency):
             
             l1_total = l1_distance(x_value, x_baseline_batch) 
             x_diff = x_value - x_baseline_batch   
+            #----
+            x_diff = x_diff.reshape(-1, x_value.shape[-1])  
+            #---- 
+            
             alpha = (step + 1.0) / x_steps 
        
             alpha_min = max(alpha - max_dist, 0.0)
