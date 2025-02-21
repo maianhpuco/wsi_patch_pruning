@@ -72,6 +72,7 @@ class GuidedGradients(CoreSaliency):
         x = x_baseline_batch.copy()
         x_baseline_tensor = torch.tensor(x_baseline_batch, dtype=torch.float32, requires_grad=True) 
         for step in range(x_steps):
+            print(f"----Step {step}/{x_steps}")
             call_model_output = call_model_function(
                 x_baseline_tensor,
                 model,
@@ -110,6 +111,7 @@ class GuidedGradients(CoreSaliency):
             x_min = x_min.reshape(-1, x_max.shape[-1])   
             
             gamma = np.inf 
+            count = 0 
             while gamma > 1.0: 
                 x_old = x_value.copy()
                 x_old = x_old.reshape(-1, x_value.shape[-1]) 
@@ -134,7 +136,7 @@ class GuidedGradients(CoreSaliency):
                 # Find by how much the L1 distance can be reduced by changing only the
                 # selected features. # Compute L1 distance reduction possible by modifying `s` 
                 l1_s = (np.abs(x - x_max) * s).sum() 
-                print(f"-> l1_current: {l1_current}, l1_target: {l1_target}, l1_s: {l1_s}, gamma: {gamma}")
+               
  
                 # Calculate ratio `gamma` that show how much the selected features should
                 # be changed toward `x_max` to close the gap between current L1 and target
@@ -144,6 +146,8 @@ class GuidedGradients(CoreSaliency):
                     gamma = (l1_current - l1_target) / l1_s
                 else:
                     gamma = np.inf 
+                print("- count")
+                print(f"-> l1_current: {l1_current}, l1_target: {l1_target}, l1_s: {l1_s}, gamma: {gamma}") 
                 
                 # Gamma higher than 1.0 means that changing selected features is not
                 # enough to close the gap. Therefore change them as much as possible to
@@ -154,8 +158,11 @@ class GuidedGradients(CoreSaliency):
                 else:
                     assert gamma > 0, gamma
                     x[s] = translate_alpha_to_x(gamma, x_max, x)[s]
+                
                 # Update attribution to reflect changes in `x`.
                 attribution_values += (x - x_old) * grad_actual
+                count+=1 
+                
             return attribution_values
 
         
