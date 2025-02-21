@@ -282,7 +282,7 @@ if __name__ == '__main__':
         next_50 = ['test_053', 'test_039', 'test_095', 'test_068', 'test_011', 'test_031', 'test_099', 'test_055', 'test_012', 'normal_156', 'test_062', 'test_014', 'test_097', 'test_085', 'normal_151', 'tumor_038', 'test_081', 'test_003', 'test_076', 'test_075', 'test_027', 'test_090', 'test_080', 'test_102', 'test_064', 'test_067', 'test_059', 'normal_157', 'test_018', 'test_107', 'test_021', 'tumor_043', 'test_010', 'test_086', 'test_037', 'tumor_023', 'test_101', 'normal_160', 'test_052', 'test_022', 'test_065', 'tumor_039', 'test_034', 'test_070', 'test_017', 'test_077', 'test_057', 'test_083', 'test_058', 'normal_152']
         the_rest = [i for i in items_not_in_json if i not in last_50 and i not in next_50]
     
-        final_example_list = the_rest
+        final_example_list = files = ["normal_144", "tumor_009", "tumor_015", "tumor_024", "tumor_030", "tumor_050", "tumor_057", "tumor_075", "tumor_076", "tumor_077", "tumor_079", "tumor_080", "tumor_081", "tumor_082", "tumor_083", "tumor_085", "tumor_087", "tumor_088", "tumor_089", "tumor_090", "tumor_092", "tumor_093", "tumor_094", "tumor_095", "tumor_096", "tumor_097", "tumor_098", "tumor_099", "tumor_100", "tumor_102", "tumor_104", "tumor_105", "tumor_106", "tumor_107", "tumor_108", "tumor_109", "tumor_110", "tumor_111", "test_033", "test_108"]
         
         print(the_rest[-50:])
 
