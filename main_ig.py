@@ -65,9 +65,7 @@ def main(args):
     
     elif args.ig_name=='contrastive_gradient':
         from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
-    
-    elif args.ig_name=='square_integrated_gradient':
-       from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod    
+
         
     elif args.ig_name=='expected_gradient':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
@@ -78,6 +76,11 @@ def main(args):
     elif args.ig_name=='optim_square_integrated_gradient':
        from attr_method.optim_square_integrated_gradient import OptimSquareIntegratedGradients as AttrMethod
        
+       
+       
+    
+    elif args.ig_name=='square_integrated_gradient':
+       from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod     
     # LIME
     # KernelSHAP
     # DeepSHAP 

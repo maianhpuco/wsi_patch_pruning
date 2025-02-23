@@ -39,7 +39,7 @@ sig2:
 	python main_ig.py --ig_name optim_square_integrated_gradient
 	# python main_plot_ig.py --ig_name optim_square_integrated_gradient 
 
-alldr: drig dreg drigd drcg drsig drsig2 
+dr_all : drig dreg drigd drcg drsig drsig2 
 
 # drig:
 # 	@echo "Running with ig_name=integrated_gradient"
@@ -67,36 +67,36 @@ alldr: drig dreg drigd drcg drsig drsig2
 
 drig:
 	@echo "Running with ig_name=integrated_gradient"
-	python main_ig.py --ig_name integrated_gradient --dry_run 1 
+	# python main_ig.py --ig_name integrated_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name integrated_gradient --dry_run 1 
 
 dreg:
 	@echo "Running with ig_name=expected_gradient"
-	python main_ig.py --ig_name expected_gradient --dry_run 1 
+	# python main_ig.py --ig_name expected_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name expected_gradient --dry_run 1  
 drigd:
 	@echo "Running with ig_name=integrated_decision_gradient"
-	python main_ig.py --ig_name integrated_decision_gradient --dry_run 1 
+	# python main_ig.py --ig_name integrated_decision_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name integrated_decision_gradient --dry_run 1 
 
 drcg:
 	@echo "Running with ig_name=contrastive_gradient"
-	python main_ig.py --ig_name contrastive_gradient --dry_run 1 
+	# python main_ig.py --ig_name contrastive_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name contrastive_gradient --dry_run 1 
 
 drsig:
 	@echo "Running with ig_name=square_integrated_gradient"
-	python main_ig.py --ig_name square_integrated_gradient --dry_run 1 
+	# python main_ig.py --ig_name square_integrated_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name square_integrated_gradient --dry_run 1 
 
 drvg:
 	@echo "Running with ig_name=vanilla_gradient"
-	python main_ig.py --ig_name vanilla_gradient --dry_run 1 
+	# python main_ig.py --ig_name vanilla_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name vanilla_gradient --dry_run 1 
 
 drsig2:
 	@echo "Running with ig_name=optim_square_integrated_gradient"
-	python main_ig.py --ig_name optim_square_integrated_gradient --dry_run 1 
+	# python main_ig.py --ig_name optim_square_integrated_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name optim_square_integrated_gradient --dry_run 1  
 
 get_ground_truth: 
