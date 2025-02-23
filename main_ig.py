@@ -104,12 +104,14 @@ def main(args):
             args.slide_path,
             basenames=['tumor_026', 'tumor_031', 'tumor_032','tumor_036']
         )   
+        
     else:
         basenames = [] 
         for basename in os.listdir(args.slide_path):
             if basename.split(".")[0] in ['tumor', 'test']:
                 basenames.append(basename)
-                
+        print(">>>>", basenames)
+        
         dataset = IG_dataset(
             args.features_h5_path,
             args.slide_path,
