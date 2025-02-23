@@ -63,6 +63,7 @@ def main(args):
     
     all_scores_paths = glob.glob(os.path.join(
         args.attribution_scores_folder, f'{args.ig_name}', "*.npy"))
+    print("Number of file in the ", len(all_scores_paths))
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
     if os.path.exists(plot_dir):
@@ -93,9 +94,7 @@ def main(args):
         with h5py.File(h5_file_path, "r") as f:
             coordinates= f['coordinates'][:]
         scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
-
         
-
         plot_path = os.path.join(plot_dir, f'{basename}.png')
         plot_heatmap_with_bboxes(
             scale_x, scale_y, new_height, new_width,
