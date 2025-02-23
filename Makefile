@@ -63,7 +63,6 @@ drvg:
 	python main_ig.py --ig_name vanilla_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name vanilla_gradient --dry_run 1 
 
-
 get_ground_truth: 
 	python metrics_segmentation/main_interior_mask.py
 	python metrics_segmentation/main_interior_mask.py
