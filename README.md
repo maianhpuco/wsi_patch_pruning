@@ -14,24 +14,8 @@
 
 ```python main_testbed_superpixel.py``` -> loop through each slide, then loop through all superixel and return the patch (image) in the whole slide.
 
----
-Loaded model checkpoint from /project/hnguyen2/mvu9/camelyon16/checkpoints/mil_checkpoint.pth (Epoch 31, Best AUC: 0.8403)
----- Evaluation result:
-Test Loss = 0.2242, Test Accuracy = 0.8333
-AUC = 0.8403
-Best Threshold: 0.6127
-Class 0: 17/17 correct (1.0000 accuracy)
-Class 1: 3/7 correct (0.4286 accuracy) 
 
 
-- list of the ig already run 
-
-vanilla_gradient 
-
-- runing 
-contrastive_gradient  (feature)
-ig (feature2)
-squareintegrated_gradient(feature3)
 
 Loaded model checkpoint from /project/hnguyen2/mvu9/camelyon16/checkpoints/mil_checkpoint_official.pth (Epoch 23, Best AUC: 0.9361) 
 ------Run the evaluation on test set
