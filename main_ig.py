@@ -70,7 +70,7 @@ def main(args):
        from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
        
     elif args.ig_name=='guided_gradient':
-        from attr_method.guided_gradient import GuidedGradients as AttrMethod      
+        from attr_method.guided_gradient_deleted import GuidedGradients as AttrMethod      
         
     elif args.ig_name=='expected_gradient':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   

@@ -45,7 +45,7 @@ def main(args):
         from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
     
     elif args.ig_name=='squareintegrated_gradient':
-       from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
+       from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod    
        
     elif args.ig_name=='expected_gradients':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
