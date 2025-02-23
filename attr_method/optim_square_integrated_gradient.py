@@ -27,7 +27,7 @@ class OptimSquareIntegratedGradients(CoreSaliency):
         """Computes the integrated gradient attributions using GradPath (IG²)."""
         x_value = kwargs.get("x_value")
         call_model_function = kwargs.get("call_model_function")
-        model = kwargs.get("model") w
+        model = kwargs.get("model")
         call_model_args = kwargs.get("call_model_args", None)
         baseline_features = kwargs.get("baseline_features", None)
         x_steps = kwargs.get("x_steps", 5)
