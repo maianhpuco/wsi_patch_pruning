@@ -54,9 +54,9 @@ drcg:
 	python main_plot_ig.py --ig_name contrastive_gradient --dry_run 1 
 
 drsig:
-	@echo "Running with ig_name=squareintegrated_gradient"
-	python main_ig.py --ig_name squareintegrated_gradient --dry_run 1 
-	python main_plot_ig.py --ig_name squareintegrated_gradient --dry_run 1 
+	@echo "Running with ig_name=square_integrated_gradient"
+	python main_ig.py --ig_name square_integrated_gradient --dry_run 1 
+	python main_plot_ig.py --ig_name square_integrated_gradient --dry_run 1 
 
 drvg:
 	@echo "Running with ig_name=vanilla_gradient"

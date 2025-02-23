@@ -102,10 +102,15 @@ def main(args):
             basenames=['tumor_026']
         )   
     else:
+        basenames = [] 
+        for basename in os.listdir(args.slide_path):
+            if basename.spit(".")[0] in ['tumor', 'test']:
+                basenames.append(basename)
+                
         dataset = IG_dataset(
             args.features_h5_path,
             args.slide_path,
-            # basenames=['tumor_026']
+            basenames=basenames
             )
     if args.do_normalizing: 
         with h5py.File(args.feature_mean_std_path, "r") as f:
