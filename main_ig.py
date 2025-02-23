@@ -151,6 +151,7 @@ def main(args):
             "call_model_function": call_model_function,  
             "model": mil_model,  
             "baseline_features": stacked_features_baseline,  # Optional
+            "memmap_path": args.memmap_path, 
             "x_steps": 50,  
         }  
             
@@ -212,6 +213,7 @@ if __name__=="__main__":
         args.feature_mean_std_path=config.get("FEATURE_MEAN_STD_PATH")
         # args.ig_name = "integrated_gradients"
         args.do_normalizing = True
+        args.memmap_path = config.get("MEMMAP_PATH")
         
     CHECK_POINT_FILE = 'mil_checkpoint_draft.pth' 
     main(args) 

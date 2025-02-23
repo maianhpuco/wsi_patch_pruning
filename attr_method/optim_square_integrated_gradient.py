@@ -27,19 +27,20 @@ class OptimSquareIntegratedGradients(CoreSaliency):
         """Computes the integrated gradient attributions using GradPath (IG²)."""
         x_value = kwargs.get("x_value")
         call_model_function = kwargs.get("call_model_function")
-        model = kwargs.get("model") 
+        model = kwargs.get("model") w
         call_model_args = kwargs.get("call_model_args", None)
         baseline_features = kwargs.get("baseline_features", None)
         x_steps = kwargs.get("x_steps", 5)
         eta = kwargs.get("eta", 1 ) 
-        return_path = kwargs.get("return_path", False)
+        memmap_path = kwargs.get("memmap_path")
+        
 
         # Sample reference points (baseline)
         sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
         x_baseline_batch = baseline_features[sampled_indices] 
 
         # 🔥 **Compute GradPath (returns path and counterfactual gradients)**
-        path, counterfactual_gradients_memmap = self.Get_GradPath(x_value, x_baseline_batch, model, x_steps)
+        path, counterfactual_gradients_memmap = self.Get_GradPath(x_value, x_baseline_batch, model, x_steps, memmap_path)
 
         # Ensure first step in path is close to original input
         np.testing.assert_allclose(x_value, path[0], rtol=0.01)
@@ -77,12 +78,12 @@ class OptimSquareIntegratedGradients(CoreSaliency):
         return attr
      
     @staticmethod
-    def Get_GradPath(x_value, baselines, model, x_steps):
+    def Get_GradPath(x_value, baselines, model, x_steps, memmap_path):
         """Computes the iterative GradPath using gradient-based perturbations."""
 
         # Initialize memmap for storing GradPath and Counterfactual Gradients
-        path_filename = "grad_path_memmap.npy"
-        counterfactual_grad_filename = "counterfactual_gradients_memmap.npy"
+        path_filename = f"{memmap_path}/grad_path_memmap.npy"
+        counterfactual_grad_filename = f"{memmap_path}/counterfactual_gradients_memmap.npy"
         path_shape = (x_steps, *x_value.shape)  
         grad_shape = (x_steps-1, *x_value.shape)  # One less step for gradients
 
