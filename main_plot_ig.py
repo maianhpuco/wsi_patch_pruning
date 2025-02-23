@@ -59,7 +59,8 @@ def main(args):
     #----------------------------------------------------    
     attribution_method = AttrMethod()   
     
-    all_scores_paths = glob.glob(args.attribution_scores_folder, f'{args.ig_name}', "*.npy")  
+    all_scores_paths = glob.glob(os.path.join(
+        args.attribution_scores_folder, f'{args.ig_name}', "*.npy"))
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
     if os.path.exists(plot_dir):

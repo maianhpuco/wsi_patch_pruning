@@ -99,11 +99,10 @@ def main(args):
     mil_model = load_model(checkpoint_path)
     
     if args.dry_run==1:
-        dataset = IG_dataset(
-            args.features_h5_path,
-            args.slide_path,
-            basenames=['tumor_026', 'tumor_031', 'tumor_032','tumor_036']
-        )   
+    for basename in os.listdir(args.slide_path):
+        print(basename)
+        if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
+            basenames.append(basename) 
         
     else:
         basenames = [] 
