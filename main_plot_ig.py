@@ -95,6 +95,7 @@ def main(args):
 
         
         plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
+        
         if os.path.exists(plot_dir):
             shutil.rmtree(plot_dir)  # Delete the existing directory
         os.makedirs(plot_dir)  
@@ -145,6 +146,7 @@ if __name__ == '__main__':
         else: 
             args.attribution_scores_folder = config.get("SCORE_FOLDER")    
             args.plot_path = config.get("PLOT_PATH")
+            
         print("Attribution folder path", args.attribution_scores_folder) 
         # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  
@@ -155,7 +157,6 @@ if __name__ == '__main__':
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
         # args.ig_name = "integrated_gradients"
         
-        args.plot_path = config.get("PLOT_PATH")
      
     main(args) 
     
