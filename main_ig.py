@@ -86,7 +86,10 @@ def main(args):
     attribution_method = AttrMethod()   
     
     score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
-    print("score_save_path", score_save_path) 
+    print("score_save_path", score_save_path)
+    if os.path.exists(score_save_path):
+        shutil.rmtree(score_save_path)  # Delete the existing directory
+    os.makedirs(score_save_path)    
     
     if os.path.exists(score_save_path):
         shutil.rmtree(score_save_path)  # Delete the existing directory

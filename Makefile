@@ -1,6 +1,8 @@
 .PHONY: all ig eg gg cg
 
-all: ig eg gg cg
+group1: ig eg idg 
+
+group2: cg sig vg 
 
 ig:
 	@echo "Running with ig_name=integrated_gradient"
@@ -12,7 +14,7 @@ eg:
 	python main_ig.py --ig_name expected_gradient
 	python main_plot_ig.py --ig_name expected_gradient
 
-igd:
+idg:
 	@echo "Running with ig_name=integrated_decision_gradient"
 	python main_ig.py --ig_name integrated_decision_gradient
 	python main_plot_ig.py --ig_name integrated_decision_gradient

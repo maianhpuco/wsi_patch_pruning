@@ -33,4 +33,11 @@ contrastive_gradient  (feature)
 ig (feature2)
 squareintegrated_gradient(feature3)
 
-
+Loaded model checkpoint from /project/hnguyen2/mvu9/camelyon16/checkpoints/mil_checkpoint_official.pth (Epoch 23, Best AUC: 0.9361) 
+------Run the evaluation on test set
+---- Evaluation result:
+Test Loss = 0.3192, Test Accuracy = 0.6202
+AUC = 0.7107
+Best Threshold: 0.3083
+Class 0: 40/80 correct (0.5000 accuracy)
+Class 1: 40/49 correct (0.8163 accuracy) 
