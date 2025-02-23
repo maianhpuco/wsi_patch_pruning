@@ -99,7 +99,7 @@ def main(args):
         dataset = IG_dataset(
             args.features_h5_path,
             args.slide_path,
-            basenames=['tumor_026']
+            basenames=['tumor_026', 'tumor_031', 'tumor_032','tumor_036']
         )   
     else:
         basenames = [] 
