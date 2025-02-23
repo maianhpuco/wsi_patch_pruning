@@ -94,7 +94,7 @@ drvg:
 	python main_ig.py --ig_name vanilla_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name vanilla_gradient --dry_run 1 
 
-drsig:
+drsig2:
 	@echo "Running with ig_name=optim_square_integrated_gradient"
 	python main_ig.py --ig_name optim_square_integrated_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name optim_square_integrated_gradient --dry_run 1  
