@@ -100,7 +100,7 @@ def main(args):
 
     val_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path,
-        split_csv=args.
+        split_csv=args.split_path, 
         transform=None, 
         mean=mean,
         std=std, 
@@ -108,7 +108,7 @@ def main(args):
     )
     test_dataset = FeaturesDataset(
         feature_folder=args.features_h5_path,
-        split_csv=args.
+        split_csv=args.split_path, 
         transform=None, 
         mean=mean,
         std=std, 
