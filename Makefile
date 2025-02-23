@@ -91,7 +91,7 @@ drsig:
 
 drvg:
 	@echo "Running with ig_name=vanilla_gradient"
-	# python main_ig.py --ig_name vanilla_gradient --dry_run 1 
+	python main_ig.py --ig_name vanilla_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name vanilla_gradient --dry_run 1 
 
 drsig2:
