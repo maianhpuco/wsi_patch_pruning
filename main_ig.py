@@ -108,6 +108,7 @@ def main(args):
     else:
         basenames = [] 
         for basename in os.listdir(args.slide_path):
+            basename = basename.split(".")[0]
             if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
                 basenames.append(basename)
         
