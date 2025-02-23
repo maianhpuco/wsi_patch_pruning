@@ -62,15 +62,15 @@ class OptimSquareIntegratedGradients(CoreSaliency):
             baseline_num = 1 
             feature_gradient = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(baseline_num, x_value.shape[0], x_value.shape[1]) 
             feature_gradient = feature_gradient.mean(axis=0) 
-            print("feature_gradient", feature_gradient.shape)
+            # print("feature_gradient", feature_gradient.shape)
 
             #  Feature Gradient: dF/dX
             # feature_gradient = call_model_output[INPUT_OUTPUT_GRADIENTS]
 
             #  Retrieve Precomputed Counterfactual Gradient
             counterfactual_gradient = counterfactual_gradients_memmap[i]
-            print("counterfactual_gradient", counterfactual_gradient.shape) 
-            print("(x_old - x_step).shape", (x_old - x_step).shape)
+            # print("counterfactual_gradient", counterfactual_gradient.shape) 
+            # print("(x_old - x_step).shape", (x_old - x_step).shape)
             #  Apply IG² Equation
             W_j = np.linalg.norm(feature_gradient) + 1e-8  # Avoid division by zero
             attr += (x_old - x_step) * feature_gradient * counterfactual_gradient * (eta / W_j)
