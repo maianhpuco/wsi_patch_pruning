@@ -140,7 +140,14 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
-        args.attribution_scores_folder = config.get("SCORE_FOLDER")    
+        if args.dry_run==1:
+            args.attribution_scores_folder = config.get("SCORE_FOLDER_DRYRUN") 
+            args.plot_path = config.get("PLOT_PATH_DRYRUN")    
+        else: 
+            args.attribution_scores_folder = config.get("SCORE_FOLDER")    
+            args.plot_path = config.get("PLOT_PATH") 
+        print("Attribution folder path", args.attribution_scores_folder) 
+        # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  
         os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         args.batch_size = config.get('batch_size')
