@@ -2,7 +2,7 @@
 
 group1: ig eg idg 
 
-group2: cg sig vg 
+group2: sig2 vg 
 
 ig:
 	@echo "Running with ig_name=integrated_gradient"
@@ -24,10 +24,10 @@ cg:
 	python main_ig.py --ig_name contrastive_gradient
 	# python main_plot_ig.py --ig_name contrastive_gradient
 
-sig:
-	@echo "Running with ig_name=squareintegrated_gradient"
-	python main_ig.py --ig_name squareintegrated_gradient
-	# python main_plot_ig.py --ig_name squareintegrated_gradient
+# sig:
+# 	@echo "Running with ig_name=squareintegrated_gradient"
+# 	python main_ig.py --ig_name squareintegrated_gradient
+# 	# python main_plot_ig.py --ig_name squareintegrated_gradient
 
 vg:
 	@echo "Running with ig_name=vanilla_gradient"
