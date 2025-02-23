@@ -24,13 +24,12 @@ class ContrastiveGradients(CoreSaliency):
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
         # total_grad =  np.zeros_like(x_value, dtype=np.float32) 
         alphas = np.linspace(0, 1, x_steps)
-
+        sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
+        x_baseline_batch = baseline_features[sampled_indices]
+        x_diff = x_value - x_baseline_batch 
+        
         for step_idx, alpha in enumerate(tqdm(alphas, desc="Computing:", ncols=100), start=1):
             # ------------ Counter Factual Gradient ------------ 
-            sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
-            x_baseline_batch = baseline_features[sampled_indices]
-            x_diff = x_value - x_baseline_batch 
-                
             x_step_batch = x_baseline_batch + alpha * x_diff
             # ------------ Counter Factual Gradient ------------
             x_baseline_torch = torch.tensor(x_baseline_batch.copy(), dtype=torch.float32, requires_grad=False)

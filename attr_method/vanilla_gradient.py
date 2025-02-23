@@ -32,7 +32,7 @@ class VanillaGradients(CoreSaliency):
     
         gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(1, x_value.shape[0], x_value.shape[1]) 
         gradients = gradients_batch.reshape(-1, x_value.shape[-1])  
-        print("1", gradients_batch.shape)
-        print("2", gradients.shape)
+        # print("1", gradients_batch.shape)
+        # print("2", gradients.shape)
         return gradients
         

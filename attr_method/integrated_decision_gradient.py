@@ -10,7 +10,6 @@ from attr_method._common import PreprocessInputs, call_model_function
 
 class IntegratedDecisionGradients(CoreSaliency):
     """Efficient Integrated Gradients with Counterfactual Attribution"""
-
     expected_keys = [INPUT_OUTPUT_GRADIENTS]
     @staticmethod
     def getSlopes(
@@ -121,13 +120,14 @@ class IntegratedDecisionGradients(CoreSaliency):
         new_alphas, alpha_substep_size = self.getAlphaParameters(slopes, x_steps, 1/x_steps)
         alphas_np = new_alphas.numpy()
         alpha_substep_size_np = alpha_substep_size.numpy()
-        print("New alphas:", alphas_np)
-         
+        # print("New alphas:", alphas_np)
+        print("new alpha step", alpha_substep_size_np) 
         # ----- Compute integrated Gradient 
         _integrated_gradient =  np.zeros_like(x_value, dtype=np.float32)  
         prev_logit = None  # Initialize previous logits for slope computation
         slopes = np.zeros(x_steps) 
         x_diff = x_value - x_baseline_batch 
+        
         for step_idx, alpha in enumerate(tqdm(alphas_np, desc="Computing IG²", ncols=100), start=1):
             x_step_batch = x_baseline_batch + alpha * x_diff
             x_step_batch_tensor = torch.tensor(x_step_batch, dtype=torch.float32, requires_grad=True)
@@ -140,14 +140,14 @@ class IntegratedDecisionGradients(CoreSaliency):
             
             logit = model(x_step_batch_tensor.squeeze(0), [x_step_batch_tensor.squeeze(0).shape[0]])
             # self.format_and_check_call_model_output(call_model_output, x_step_batch_tensor.shape, self.expected_keys)
-            print("logit", logit)
+            # print("logit", logit)
 
             gradients_batch = call_model_output[INPUT_OUTPUT_GRADIENTS].reshape(1, x_value.shape[0], x_value.shape[1])
             gradients_avg = np.mean(gradients_batch, axis=0)
             idx = step_idx - 1 
             if prev_logit is not None:  # Skip first step since there's no previous logit
                 slopes[idx] = (logit - prev_logit) / (alpha - alphas_np[idx - 2])  # alpha difference 
-            print(slopes[idx])
+
             # compute slope 
             prev_logit = logit  
 

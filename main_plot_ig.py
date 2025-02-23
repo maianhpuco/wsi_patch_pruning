@@ -151,10 +151,12 @@ if __name__ == '__main__':
         args.plot_path = config.get("PLOT_PATH")
      
     main(args) 
+    # python main_plot_ig.py --ig_name=integrated_decision_gradient --dry_run=1   
     # python main_plot_ig.py --ig_name=contrastive_gradient --dry_run=1  
     # python main_plot_ig.py --ig_name=integrated_gradient --dry_run=1   
     
-    # get the plot 
+    # get the plot
+    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/integrated_decision_gradient/tumor_026.png . 
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/vanilla_gradients/tumor_026.png .
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/contrastive_gradient/tumor_026.png .   
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/integrated_gradient/tumor_026.png .
