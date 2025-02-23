@@ -144,7 +144,7 @@ if __name__ == '__main__':
             args.plot_path = config.get("PLOT_PATH_DRYRUN")    
         else: 
             args.attribution_scores_folder = config.get("SCORE_FOLDER")    
-            args.plot_path = config.get("PLOT_PATH") 
+            args.plot_path = config.get("PLOT_PATH")
         print("Attribution folder path", args.attribution_scores_folder) 
         # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         os.makedirs(args.features_h5_path, exist_ok=True)  

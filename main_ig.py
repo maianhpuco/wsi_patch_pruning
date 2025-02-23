@@ -182,9 +182,16 @@ if __name__=="__main__":
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
         if args.dry_run==1:
-           args.attribution_scores_folder = config.get("SCORE_FOLDER_DRYRUN")    
+            args.attribution_scores_folder = config.get("SCORE_FOLDER_DRYRUN") 
+            args.plot_path = config.get("PLOT_PATH_DRYRUN")    
+            print("----")
+            
+            print("args.attribution_scores_folder", args.attribution_scores_folder)
+            print("args.plot_path", args.plot_path)
+            
         else: 
             args.attribution_scores_folder = config.get("SCORE_FOLDER")    
+            args.plot_path = config.get("PLOT_PATH") 
         print("Attribution folder path", args.attribution_scores_folder)
         
         os.makedirs(args.features_h5_path, exist_ok=True)  
