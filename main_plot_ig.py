@@ -121,7 +121,8 @@ if __name__ == '__main__':
                         'integrated_decision_gradient', 
                         'contrastive_gradient', 
                         'vanilla_gradient', 
-                        'square_integrated_gradient'
+                        'square_integrated_gradient', 
+                        'optim_square_integrated_gradient'
                         ],
                     help='Choose the attribution method to use.') 
     
