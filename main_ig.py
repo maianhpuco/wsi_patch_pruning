@@ -93,7 +93,7 @@ def main(args):
 
     checkpoint_path = os.path.join(args.checkpoints_dir, f'{CHECK_POINT_FILE}')
     mil_model = load_model(checkpoint_path)
-   
+    
     if args.dry_run==1:
         dataset = IG_dataset(
             args.features_h5_path,
