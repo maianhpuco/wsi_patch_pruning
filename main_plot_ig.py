@@ -34,8 +34,10 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
+    print("Folder: ",os.path.join(args.attribution_scores_folder, f'{args.ig_name}'))
     all_scores_paths = glob.glob(os.path.join(
         args.attribution_scores_folder, f'{args.ig_name}', "*.npy"))
+        
     print("Number of file in the file", len(all_scores_paths))
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
