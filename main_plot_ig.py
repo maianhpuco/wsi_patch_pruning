@@ -34,38 +34,12 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    #---------------------------------------------------- 
-    if args.ig_name=='integrated_gradient':
-        from attr_method.integrated_gradient import IntegratedGradients as AttrMethod 
-       
-    elif args.ig_name=='vanilla_gradient':
-        from attr_method.vanilla_gradient import VanillaGradients as AttrMethod 
-    
-    elif args.ig_name=='contrastive_gradient':
-        from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
-    
-    elif args.ig_name=='square_integrated_gradient':
-       from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod    
-        
-    elif args.ig_name=='expected_gradient':
-       from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
-    
-    elif args.ig_name=='integrated_decision_gradient':
-       from attr_method.integrated_decision_gradient import IntegratedDecisionGradients as AttrMethod     
-   
-    elif args.ig_name=='optim_square_integrated_gradient':
-       from attr_method.optim_square_integrated_gradient import OptimSquareIntegratedGradients as AttrMethod
-        
-    print(f"Running for {args.ig_name} Attribution method") 
-    
-    #----------------------------------------------------    
-    attribution_method = AttrMethod()   
-    
     all_scores_paths = glob.glob(os.path.join(
         args.attribution_scores_folder, f'{args.ig_name}', "*.npy"))
-    print("Number of file in the ", len(all_scores_paths))
+    print("Number of file in the file", len(all_scores_paths))
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
+    
     if os.path.exists(plot_dir):
         shutil.rmtree(plot_dir)  # Delete the existing directory
     os.makedirs(plot_dir)  
