@@ -99,29 +99,29 @@ def main(args):
     mil_model = load_model(checkpoint_path)
     
     if args.dry_run==1:
-    for basename in os.listdir(args.slide_path):
-        print(basename)
-        if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
-            basenames.append(basename) 
+        dataset = IG_dataset(
+            args.features_h5_path,
+            args.slide_path,
+            basenames=['tumor_026', 'tumor_031', 'tumor_032','tumor_036']
+        )   
         
     else:
         basenames = [] 
         for basename in os.listdir(args.slide_path):
-            print(basename)
-            if basename.split(".")[0] in ['tumor', 'test']:
+            if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
                 basenames.append(basename)
-        print(">>>>", basenames)
         
         dataset = IG_dataset(
             args.features_h5_path,
             args.slide_path,
             basenames=basenames
             )
+        
     if args.do_normalizing: 
         with h5py.File(args.feature_mean_std_path, "r") as f:
             mean = f["mean"][:]
             std = f["std"][:]
-    print(">>>>>>> ----- Total number of sample in dataset:", len(dataset)) 
+    print(">>>>>>>>>----- Total number of sample in dataset:", len(dataset)) 
     
     for idx, data in enumerate(dataset):
         total_file = len(dataset)
