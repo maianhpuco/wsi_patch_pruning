@@ -146,7 +146,7 @@ class IntegratedDecisionGradients(CoreSaliency):
             gradients_avg = np.mean(gradients_batch, axis=0)
             idx = step_idx - 1 
             if prev_logit is not None:  # Skip first step since there's no previous logit
-                slopes[idx] = (logit - prev_logit) / (alpha - alphas_np[idx - 2])  # alpha difference 
+                slopes[idx] = (logit - prev_logit) / (alpha - alphas_np[idx - 1])  # alpha difference 
 
             # compute slope 
             prev_logit = logit  
