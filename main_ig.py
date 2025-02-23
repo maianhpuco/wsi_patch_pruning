@@ -107,7 +107,7 @@ def main(args):
     else:
         basenames = [] 
         for basename in os.listdir(args.slide_path):
-            if basename.spit(".")[0] in ['tumor', 'test']:
+            if basename.split(".")[0] in ['tumor', 'test']:
                 basenames.append(basename)
                 
         dataset = IG_dataset(
