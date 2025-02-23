@@ -6,7 +6,7 @@ group2: cg sig vg
 
 ig:
 	@echo "Running with ig_name=integrated_gradient"
-	python main_ig.py --ig_name integrated_gradient
+	# python main_ig.py --ig_name integrated_gradient
 	python main_plot_ig.py --ig_name integrated_gradient
 
 eg:

@@ -108,6 +108,7 @@ def main(args):
     else:
         basenames = [] 
         for basename in os.listdir(args.slide_path):
+            print(basename)
             if basename.split(".")[0] in ['tumor', 'test']:
                 basenames.append(basename)
         print(">>>>", basenames)
