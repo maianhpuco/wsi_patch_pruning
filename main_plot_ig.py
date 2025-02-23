@@ -163,3 +163,4 @@ if __name__ == '__main__':
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/vanilla_gradients/tumor_026.png .
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/contrastive_gradient/tumor_026.png .   
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting/integrated_gradient/tumor_026.png .
+    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/evaluation/reference.csv . 

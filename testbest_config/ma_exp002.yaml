@@ -1,4 +1,4 @@
-SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
+SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images' #replace you path 
 JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files_v2' # replace your path 
 # JSON_PATH: '/project/hnguyen2/mvu9/camelyon16/json_files' # replace your path 
 SPIXEL_PATH: '/project/hnguyen2/mvu9/camelyon16/spixel_paths'
@@ -9,7 +9,9 @@ IMPORTANT_SCORES_PATH: '/project/hnguyen2/mvu9/camelyon16/important_scores_path'
 IMPORTANT_SCORES_PATH2: '/project/hnguyen2/mvu9/camelyon16/important_scores_path2' 
 PLOT_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting'
 FEATURE_MEAN_STD_PATH: '/project/hnguyen2/mvu9/camelyon16/feature_mean_std_path/mean_std.h5'
-ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations' 
+ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations'
+LABEL_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/evaluation/reference.csv'
+SPLIT_PATH: '/project/hnguyen2/mvu9/camelyon16/camelyon_csv_splits/splits_3.csv'
 batch_size: 256
 patch_size: 224 
 feature_extraction_model: 'vit_base_patch16_224'

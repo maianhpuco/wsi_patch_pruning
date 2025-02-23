@@ -17,13 +17,14 @@ import torch.optim as optim
 import random 
 
 from src.bag_classifier.mil_classifier import MILClassifier # in the repo
-from data.feature_dataset import FeaturesDataset  # in the repo
+from data.full_feature_dataset import FeaturesDataset  # in the repo
 from utils.train_classifier.train_mlclassifier import (
     save_checkpoint, FocalLoss, 
     load_checkpoint,collate_mil_fn,  
     train_mil_classifier, evaluate_mil_classifier
 )
 from torch.utils.data import DataLoader
+
 
 def load_config(config_file):
     # Load configuration from the provided YAML file
@@ -73,30 +74,14 @@ def get_mean_std_for_normal_dist(feature_folder, basename_list, save_path):
     return mean, std
 
 
- 
 def main(args):
-    
-    example_list = [i for i in os.listdir(args.features_h5_path) if i.split(".h5")[0].split("_")[0] != "test"]
-   
-    print("num h5 files", len(os.listdir(args.features_h5_path)))
-    print(len(example_list))
-    print("- total files", len(example_list))
-    
-    train_num = int(len(example_list)*0.9)
-    
-    random.shuffle(example_list)  # Shuffle the list in-place
-    train_files = example_list[:train_num]  # First 80% as train
-    test_files = example_list[train_num:]  # Remaining 20% as test
-
-    train_list = [i.split(".h5")[0] for i in train_files]
-    test_list = [i.split(".h5")[0] for i in test_files]
-
-    print("Prepare the dataset for training")
+    train_val_files = [i for i in os.listdir(args.features_h5_path) if i.split(".h5")[0].split("_")[0] != "test"]
+    train_val_list = [i.split(".h5")[0] for i in train_val_files]
 
     if args.recompute_mean_std:
         mean, std = get_mean_std_for_normal_dist(
             args.features_h5_path,
-            train_list, 
+            train_val_list, 
             args.feature_mean_std_path
             )
     else:
@@ -105,27 +90,34 @@ def main(args):
             std = torch.tensor(f["std"][:], dtype=torch.float32) 
          
     train_dataset = FeaturesDataset(
-        feature_folder = args.features_h5_path,
-        basename_list = train_list,
+        feature_folder=args.features_h5_path,
+        split_csv=args.
         transform=None, 
         mean=mean,
         std=std, 
+        dataset_type='train' 
     )
 
-    test_dataset = FeaturesDataset(
-        feature_folder = args.features_h5_path,
-        basename_list = test_list,
+    val_dataset = FeaturesDataset(
+        feature_folder=args.features_h5_path,
+        split_csv=args.
         transform=None, 
-        mean=mean, 
+        mean=mean,
         std=std, 
+        dataset_type='val' 
     )
+    test_dataset = FeaturesDataset(
+        feature_folder=args.features_h5_path,
+        split_csv=args.
+        transform=None, 
+        mean=mean,
+        std=std, 
+        dataset_type='test' 
+    )   
     
-
-    print("train dataset", len(train_dataset))
-    print("test dataset", len(test_dataset)) 
-
-
-    print("Start testing")
+    print("- train dataset", len(train_dataset))
+    print("- val dataset"  , len(val_dataset))  
+    print("- test dataset" , len(test_dataset)) 
     
     # Define model & optimizer
     input_dim = 768  # Adjust according to dataset
@@ -133,40 +125,32 @@ def main(args):
     optimizer = optim.AdamW(model.parameters(), lr=0.001)
 
     # Define checkpoint path
-    checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint_draft.pth') 
-    # checkpoint_path = os.path.join(args.checkpoint_folder, 'mil_checkpoint.pth')
-    # model, optimizer, start_epoch, best_auc = load_checkpoint(mil_model, optimizer, checkpoint_path)
+    checkpoint_path = os.path.join(args.checkpoint_folder, CHECK_POINT_FILE) 
 
     print("--- check the model ----")
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    test_features = torch.randn(5000, 768)
-    test_features = test_features.to(device)
-
-    model.to(device)
-    model.eval()  # Set to evaluation mode
-
-    with torch.no_grad():
-        bag_output = model(test_features, [test_features.shape[0]])  # Forward pass
-    print(bag_output.shape)
-    
-    print("- Start training")
     
     train_mil_classifier(
         model, 
         train_dataset, 
-        test_dataset, 
+        val_dataset, 
         num_epochs=100, 
         batch_size=64, 
         checkpoint_path=checkpoint_path
         )
     
-    print("------Run evaluation----")
-    mil_model, optimizer, start_epoch, best_auc = load_checkpoint(model, optimizer, checkpoint_path) 
+    mil_model, optimizer, start_epoch, best_auc = load_checkpoint(
+        model, optimizer, checkpoint_path) 
+    
     criterion = FocalLoss(gamma=1, alpha=0.8)
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, collate_fn=collate_mil_fn) 
+    
+    test_loader = DataLoader(
+        test_dataset, batch_size=64, shuffle=False, collate_fn=collate_mil_fn) 
+    print("------Run the evaluation on test set") 
+       
     test_loss, test_acc, test_auc = evaluate_mil_classifier(
         mil_model, test_loader, criterion, device)
-    
+   
 
 if __name__ == '__main__': 
     arg_file_name = 'ma_exp002' 
@@ -186,12 +170,17 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.checkpoint_folder = config.get('CHECKPOINT_PATH')
-        args.feature_mean_std_path = config.get("FEATURE_MEAN_STD_PATH") 
+        args.feature_mean_std_path = config.get("FEATURE_MEAN_STD_PATH")
+        args.split_path = config.get("SPLIT_PATH")
+        
         args.recompute_mean_std = True
+        
     os.makedirs(args.checkpoint_folder, exist_ok=True)    
     os.makedirs(os.path.dirname(args.feature_mean_std_path), exist_ok=True)   
     args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
     
     # CHECK_POINT_FILE = 'mil_checkpoint.pth' 
-    CHECK_POINT_FILE = 'mil_checkpoint_draft.pth'
+    # CHECK_POINT_FILE = 'mil_checkpoint_draft.pth'
+    CHECK_POINT_FILE = 'mil_checkpoint_official.pth'  
+    
     main(args)
