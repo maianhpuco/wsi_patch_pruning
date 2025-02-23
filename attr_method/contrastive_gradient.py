@@ -48,9 +48,13 @@ class ContrastiveGradients(CoreSaliency):
             
             # ------------ Conbine Gradient and X_diff ------------ 
             counterfactual_gradients = grad_logits_diff.mean(axis=0) 
-            x_diff = x_diff.mean(axis=0)
+            
             # print("check shape")
             # print(x_diff.shape, counterfactual_gradients.shape)
-            attribution_values += (counterfactual_gradients * x_diff) 
+            attribution_values += counterfactual_gradients 
             
+        x_diff = x_diff.mean(axis=0) 
+        
+        attribution_values = attribution_values * x_diff 
+        
         return attribution_values / x_steps

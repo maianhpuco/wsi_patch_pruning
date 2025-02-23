@@ -158,6 +158,7 @@ if __name__ == '__main__':
         args.plot_path = config.get("PLOT_PATH")
      
     main(args) 
+    
     # python main_plot_ig.py --ig_name=integrated_decision_gradient --dry_run=1   
     # python main_plot_ig.py --ig_name=contrastive_gradient --dry_run=1  
     # python main_plot_ig.py --ig_name=integrated_gradient --dry_run=1   
