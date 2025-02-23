@@ -34,7 +34,12 @@ vg:
 	python main_ig.py --ig_name vanilla_gradient 
 	# python main_plot_ig.py --ig_name vanilla_gradient 
 
-alldr: drig dreg drigd drcg drsig 
+sig2:
+	@echo "Running with ig_name=optim_square_integrated_gradient"
+	python main_ig.py --ig_name optim_square_integrated_gradient
+	# python main_plot_ig.py --ig_name optim_square_integrated_gradient 
+
+alldr: drig dreg drigd drcg drsig drsig2 
 
 # drig:
 # 	@echo "Running with ig_name=integrated_gradient"
@@ -89,6 +94,10 @@ drvg:
 	python main_ig.py --ig_name vanilla_gradient --dry_run 1 
 	python main_plot_ig.py --ig_name vanilla_gradient --dry_run 1 
 
+drsig:
+	@echo "Running with ig_name=optim_square_integrated_gradient"
+	python main_ig.py --ig_name optim_square_integrated_gradient --dry_run 1 
+	python main_plot_ig.py --ig_name optim_square_integrated_gradient --dry_run 1  
+
 get_ground_truth: 
-	python metrics_segmentation/main_interior_mask.py
 	python metrics_segmentation/main_interior_mask.py
