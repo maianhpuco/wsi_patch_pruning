@@ -59,14 +59,12 @@ def main(args):
     #----------------------------------------------------    
     attribution_method = AttrMethod()   
     
-    scores_dir = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
+    all_scores_paths = glob.glob(args.attribution_scores_folder, f'{args.ig_name}', "*.npy")  
     
-    
-    
-    # print("Total number of sample in dataset:", len(dataset))
-
-    all_scores_paths = glob.glob(os.path.join(scores_dir, "*.npy"))  
-        
+    plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
+    if os.path.exists(plot_dir):
+        shutil.rmtree(plot_dir)  # Delete the existing directory
+    os.makedirs(plot_dir)  
         
     for idx, scores_path in enumerate(all_scores_paths):
         print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
@@ -94,11 +92,7 @@ def main(args):
         scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
 
         
-        plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')
-        
-        if os.path.exists(plot_dir):
-            shutil.rmtree(plot_dir)  # Delete the existing directory
-        os.makedirs(plot_dir)  
+
         plot_path = os.path.join(plot_dir, f'{basename}.png')
         plot_heatmap_with_bboxes(
             scale_x, scale_y, new_height, new_width,
