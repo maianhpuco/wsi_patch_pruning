@@ -77,7 +77,7 @@ class OptimSquareIntegratedGradients(CoreSaliency):
         return attr
      
     @staticmethod
-    def Get_GradPath(self, x_value, baselines, model, x_steps):
+    def Get_GradPath(x_value, baselines, model, x_steps):
         """Computes the iterative GradPath using gradient-based perturbations."""
 
         # Initialize memmap for storing GradPath and Counterfactual Gradients
