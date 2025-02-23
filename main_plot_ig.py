@@ -44,11 +44,15 @@ def main(args):
     elif args.ig_name=='contrastive_gradient':
         from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
     
-    elif args.ig_name=='squareintegrated_gradient':
+    elif args.ig_name=='square_integrated_gradient':
        from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod    
-       
-    elif args.ig_name=='expected_gradients':
+        
+    elif args.ig_name=='expected_gradient':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
+    
+    elif args.ig_name=='integrated_decision_gradient':
+       from attr_method.integrated_decision_gradient import IntegratedDecisionGradients as AttrMethod     
+   
        
     print(f"Running for {args.ig_name} Attribution method") 
     
@@ -117,10 +121,10 @@ if __name__ == '__main__':
                     choices=[
                         'integrated_gradient', 
                         'expected_gradient', 
-                        'guided_gradient', 
+                        'integrated_decision_gradient', 
                         'contrastive_gradient', 
                         'vanilla_gradient', 
-                        'squareintegrated_gradient'
+                        'square_integrated_gradient'
                         ],
                     help='Choose the attribution method to use.') 
     

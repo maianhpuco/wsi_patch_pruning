@@ -37,7 +37,7 @@ from utils.plotting import (
     rescaling_stat_for_segmentation
 ) 
 from data.ig_dataset import IG_dataset 
-from attr_method.common import (
+from attr_method._common import (
     sample_random_features, 
     get_mean_std_for_normal_dist, 
     PreprocessInputs, 
@@ -66,15 +66,15 @@ def main(args):
     elif args.ig_name=='contrastive_gradient':
         from attr_method.contrastive_gradient import ContrastiveGradients as AttrMethod 
     
-    elif args.ig_name=='squareintegrated_gradient':
-       from attr_method.squareintegrated_gradient import SquareIntegratedGradients as AttrMethod    
-       
-    elif args.ig_name=='guided_gradient':
-        from attr_method.guided_gradient_deleted import GuidedGradients as AttrMethod      
+    elif args.ig_name=='square_integrated_gradient':
+       from attr_method.square_integrated_gradient import SquareIntegratedGradients as AttrMethod    
         
     elif args.ig_name=='expected_gradient':
        from attr_method.expected_gradient import ExpectedGradients as AttrMethod   
-       
+    
+    elif args.ig_name=='integrated_decision_gradient':
+       from attr_method.integrated_decision_gradient import IntegratedDecisionGradients as AttrMethod     
+   
     # LIME
     # KernelSHAP
     # DeepSHAP 
@@ -91,7 +91,7 @@ def main(args):
         shutil.rmtree(score_save_path)  # Delete the existing directory
     os.makedirs(score_save_path) 
 
-    checkpoint_path = os.path.join(args.checkpoints_dir, 'mil_checkpoint.pth')
+    checkpoint_path = os.path.join(args.checkpoints_dir, f'{CHECK_POINT_FILE}')
     mil_model = load_model(checkpoint_path)
    
     if args.dry_run==1:
@@ -156,10 +156,11 @@ if __name__=="__main__":
                     choices=[
                         'integrated_gradient', 
                         'expected_gradient', 
-                        'guided_gradient', 
+                        'integrated_decision_gradient', 
                         'contrastive_gradient', 
                         'vanilla_gradient', 
-                        'squareintegrated_gradient'],
+                        'square_integrated_gradient'
+                        ],
                     help='Choose the attribution method to use.') 
     
     args = parser.parse_args()
@@ -184,11 +185,6 @@ if __name__=="__main__":
         # args.ig_name = "integrated_gradients"
         args.do_normalizing = True
         
+    CHECK_POINT_FILE = 'mil_checkpoint_draft.pth' 
     main(args) 
     
-    
-    # python main_ig.py --ig_name=integrated_gradient --dry_run=1  
-    # python main_ig.py --ig_name=contrastive_gradient --dry_run=1
-    # python main_ig.py --ig_name=squareintegrated_gradient --dry_run=1  
-    # python main_ig.py --ig_name=guided_gradient --dry_run=1   
-    # python main_ig.py --ig_name=expected_gradient --dry_run=1    
