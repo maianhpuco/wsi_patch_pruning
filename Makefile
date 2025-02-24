@@ -24,10 +24,10 @@ cg:
 	python main_ig.py --ig_name contrastive_gradient
 	# python main_plot_ig.py --ig_name contrastive_gradient
 
-# sig:
-# 	@echo "Running with ig_name=squareintegrated_gradient"
-# 	python main_ig.py --ig_name squareintegrated_gradient
-# 	# python main_plot_ig.py --ig_name squareintegrated_gradient
+sig:
+	@echo "Running with ig_name=square_integrated_gradient"
+	python main_ig.py --ig_name square_integrated_gradient
+	# python main_plot_ig.py --ig_name square_integrated_gradient
 
 vg:
 	@echo "Running with ig_name=vanilla_gradient"
