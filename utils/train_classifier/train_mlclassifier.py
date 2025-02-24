@@ -275,7 +275,7 @@ def predict_and_save(model, test_loader, criterion, device, output_file="predict
                 batch["features"].to(device),
                 batch["label"].to(device),
                 batch["bag_sizes"],
-                batch["file_basename"]  # Assuming file_basename is a list of filenames
+                batch["file_basenames"]  
             )
 
             bag_labels = bag_labels.view(-1, 1)  # Reshape labels
@@ -344,16 +344,18 @@ def collate_mil_fn(batch):
     features_list = []
     labels_list = []
     bag_sizes = []
-
+    file_basenames = []
+    
     for item in batch:
         features = item["features"]  # Shape: (num_instances, feature_dim)
         label = item["label"].item()  # Convert to scalar
-
+        
         bag_sizes.append(features.shape[0])  # Store instance count per bag
 
         features_list.append(features)
         labels_list.append(torch.tensor([label], dtype=torch.float32))  # Store bag label
-
+        file_basenames.append(item["file_basename"]) 
+        
     # Stack features and labels
     features = torch.cat(features_list, dim=0)  # Shape: (total_instances, feature_dim)
     labels = torch.cat(labels_list, dim=0)  # Shape: (batch_size, 1)
@@ -362,4 +364,5 @@ def collate_mil_fn(batch):
         "features": features,  # Shape: (total_instances, feature_dim)
         "label": labels,  # Shape: (batch_size, 1)
         "bag_sizes": bag_sizes,  # List of instance counts per bag
+        "file_basename": file_basenames
     }
