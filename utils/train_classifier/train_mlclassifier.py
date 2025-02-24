@@ -250,14 +250,18 @@ def evaluate_mil_classifier(model, test_loader, criterion, device):
 
     return total_loss / len(test_loader), overall_acc, auc_score
 
-# import torch
-# import numpy as np
-# import pandas as pd
-# from sklearn.metrics import roc_auc_score
 
-def predict_and_save(model, test_loader, criterion, device, output_file="predictions.csv"):
+
+def predict_and_save(model, test_dataset, criterion, device, output_file="predictions.csv"):
     """
-    Evaluates the MIL model on the test dataset and saves predictions.
+    Evaluates the MIL model on the dataset (without using DataLoader) and saves predictions.
+
+    Args:
+        model (torch.nn.Module): The trained MIL model.
+        test_dataset (Dataset): The dataset to evaluate.
+        criterion (torch.nn.Module): Loss function.
+        device (torch.device): Computation device.
+        output_file (str): Path to save CSV predictions.
 
     Returns:
         tuple: (test_loss, test_accuracy, auc_score)
@@ -270,33 +274,33 @@ def predict_and_save(model, test_loader, criterion, device, output_file="predict
     all_probs = []
 
     with torch.no_grad():
-        for batch in test_loader:
-            features, bag_labels, bag_sizes, file_basenames = (
-                batch["features"].to(device),
-                batch["label"].to(device),
-                batch["bag_sizes"],
-                batch["file_basenames"]  
-            )
+        for sample in test_dataset:
+            features = sample["features"].to(device)
+            bag_label = torch.tensor([sample["label"]], dtype=torch.float32).to(device)
+            bag_size = [features.shape[0]]  # Single bag
 
-            bag_labels = bag_labels.view(-1, 1)  # Reshape labels
-            bag_outputs = model(features, bag_sizes).view(-1, 1)  # Get logits
+            # File name
+            file_basename = sample["file_basename"]
 
-            loss = criterion(bag_outputs, bag_labels.float())  # Compute loss
+            # Forward pass
+            bag_output = model(features, bag_size).view(-1, 1)  # Get logits
+
+            loss = criterion(bag_output, bag_label)  # Compute loss
 
             # Convert logits to probabilities
-            probs = torch.sigmoid(bag_outputs)
+            prob = torch.sigmoid(bag_output)
 
             # Store results
-            all_file_basenames.extend(file_basenames)  # Store file names as strings
-            all_labels.append(bag_labels.cpu().numpy())
-            all_logits.append(bag_outputs.cpu().numpy())
-            all_probs.append(probs.cpu().numpy())
+            all_file_basenames.append(file_basename)
+            all_labels.append(bag_label.cpu().numpy())
+            all_logits.append(bag_output.cpu().numpy())
+            all_probs.append(prob.cpu().numpy())
 
             total_loss += loss.item()
 
     # Convert to NumPy efficiently
     if len(all_labels) == 0:
-        print("⚠ Warning: No test samples were processed.")
+        print("⚠ Warning: No samples were processed.")
         return float("nan"), float("nan"), float("nan")
 
     all_labels = np.vstack(all_labels).flatten()
@@ -316,7 +320,6 @@ def predict_and_save(model, test_loader, criterion, device, output_file="predict
     preds = (all_probs > best_threshold).astype(int)
 
     # Save predictions
-
     df = pd.DataFrame({
         "file_basename": all_file_basenames,
         "logit": all_logits,
@@ -328,8 +331,7 @@ def predict_and_save(model, test_loader, criterion, device, output_file="predict
     df.to_csv(output_file, index=False)
     print(f"Predictions saved to {output_file}")
 
-    return total_loss / len(test_loader), (preds == all_labels).mean(), auc_score
-
+    return total_loss / len(test_dataset), (preds == all_labels).mean(), auc_score
 
 def collate_mil_fn(batch):
     """
@@ -354,7 +356,7 @@ def collate_mil_fn(batch):
 
         features_list.append(features)
         labels_list.append(torch.tensor([label], dtype=torch.float32))  # Store bag label
-        file_basenames.append(item["file_basename"]) 
+        # file_basenames.append(item["file_basename"]) 
         
     # Stack features and labels
     features = torch.cat(features_list, dim=0)  # Shape: (total_instances, feature_dim)
@@ -364,5 +366,5 @@ def collate_mil_fn(batch):
         "features": features,  # Shape: (total_instances, feature_dim)
         "label": labels,  # Shape: (batch_size, 1)
         "bag_sizes": bag_sizes,  # List of instance counts per bag
-        "file_basename": file_basenames
+        # "file_basename": file_basenames
     }

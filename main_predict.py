@@ -119,18 +119,21 @@ def main(args):
     mil_model.to(device)
     mil_model.eval() 
      
-    test_loader = DataLoader(
-        test_dataset, batch_size=64, shuffle=False, collate_fn=collate_mil_fn) 
+
     
     print("------Run the evaluation on test set") 
     predict_and_save(
         mil_model, 
-        test_loader, 
+        test_dataset, 
         criterion, 
         device, 
         output_file=args.pred_path)
-    print("------Done the evaluation on test set") 
     
+    
+    print("------>>>>>> Done the evaluation on test set") 
+    
+    test_loader = DataLoader(
+    test_dataset, batch_size=64, shuffle=False, collate_fn=collate_mil_fn)  
     test_loss, test_acc, test_auc = evaluate_mil_classifier(
         mil_model, 
         test_loader, 
