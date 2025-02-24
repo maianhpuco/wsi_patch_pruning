@@ -130,6 +130,7 @@ def main(args):
         # print(">>> MASK: ", mask[:10]) 
 
     print("- Check total number of file")
+    
     import glob 
     df_file = glob.glob(os.path.join(args.ground_truth_corr_path, "*.csv"))
     mask_file = glob.glob(os.path.join(args.ground_truth_path, "*.npy")) 
