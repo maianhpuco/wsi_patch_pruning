@@ -1,8 +1,10 @@
 .PHONY: all ig eg gg cg
 
-group1: ig eg idg 
+group1: ig eg  
 
-group2: sig2 vg 
+group2: idg cg 
+
+group3: sig vg sig2  
 
 ig:
 	@echo "Running with ig_name=integrated_gradient"
