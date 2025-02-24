@@ -6,6 +6,9 @@
 #SBATCH --mem=24G
 #SBATCH --time=24:00:00
 #SBATCH --partition=<your_partition_name>  # Replace with the correct partition if needed
+conda activate camil  
+
+export PROJECT_DIR=$(pwd) 
 
 echo "Group 3 : vanilla_gradient, integrated_decision_gradient, optim_square_integrated_gradient"
 echo "Running with ig_name=vanilla_gradient"
