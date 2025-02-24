@@ -11,7 +11,7 @@ echo "Group 3 : vanilla_gradient, integrated_decision_gradient, optim_square_int
 echo "Running with ig_name=vanilla_gradient"
 python main_ig.py --ig_name vanilla_gradient
 
-@echo "Running with ig_name=integrated_decision_gradient" 
+echo "Running with ig_name=integrated_decision_gradient" 
 python main_ig.py --ig_name integrated_decision_gradient 
 
 @echo "Running with ig_name=optim_square_integrated_gradient" 

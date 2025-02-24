@@ -11,7 +11,7 @@ echo "Group 2 : contrastive_gradient, square_integrated_gradient"
 echo "Running with ig_name=contrastive_gradient"
 python main_ig.py --ig_name contrastive_gradient
 
-@echo "Running with ig_name=square_integrated_gradient" 
+echo "Running with ig_name=square_integrated_gradient" 
 python main_ig.py --ig_name square_integrated_gradient 
 
 echo "All tasks (group 2) contrastive_gradient, square_integrated_gradient."

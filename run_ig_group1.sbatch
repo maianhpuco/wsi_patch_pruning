@@ -11,7 +11,7 @@ echo "Group 1 : integrated_gradient, expected_gradient"
 echo "Running with ig_name=integrated_gradient"
 python main_ig.py --ig_name integrated_gradient
 
-@echo "Running with ig_name=expected_gradient" 
+echo "Running with ig_name=expected_gradient" 
 python main_ig.py --ig_name expected_gradient 
 
 echo "All tasks (group 1) integrated_gradient, expected_gradient."
