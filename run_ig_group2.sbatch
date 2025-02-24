@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=gradients
-#SBATCH --output=gradients_output.log
+#SBATCH --job-name=group2
+#SBATCH --output=group2.log
 #SBATCH --gres=gpu:1
 #SBATCH --mem=24G
 #SBATCH --time=24:00:00
