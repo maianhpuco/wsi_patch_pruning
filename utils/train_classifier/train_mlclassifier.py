@@ -251,7 +251,6 @@ def evaluate_mil_classifier(model, test_loader, criterion, device):
     return total_loss / len(test_loader), overall_acc, auc_score
 
 
-
 def predict_and_save(model, test_dataset, criterion, device, output_file="predictions.csv"):
     """
     Evaluates the MIL model on the dataset (without using DataLoader) and saves predictions.
@@ -276,7 +275,7 @@ def predict_and_save(model, test_dataset, criterion, device, output_file="predic
     with torch.no_grad():
         for sample in test_dataset:
             features = sample["features"].to(device)
-            bag_label = torch.tensor([sample["label"]], dtype=torch.float32).to(device)
+            bag_label = torch.tensor([sample["label"]], dtype=torch.float32).view(-1, 1).to(device)  # Fix shape mismatch
             bag_size = [features.shape[0]]  # Single bag
 
             # File name
@@ -307,11 +306,11 @@ def predict_and_save(model, test_dataset, criterion, device, output_file="predic
     all_logits = np.vstack(all_logits).flatten()
     all_probs = np.vstack(all_probs).flatten()
 
-    # Compute AUC safely
-    if len(np.unique(all_labels)) > 1:
-        auc_score = roc_auc_score(all_labels, all_probs)
-    else:
-        auc_score = 0.5  # Default AUC if only one class exists
+    # # Compute AUC safely
+    # if len(np.unique(all_labels)) > 1:
+    #     auc_score = roc_auc_score(all_labels, all_probs)
+    # else:
+    #     auc_score = 0.5  # Default AUC if only one class exists
 
     # Find optimal threshold
     best_threshold = find_best_threshold(all_labels, all_probs)
@@ -325,14 +324,15 @@ def predict_and_save(model, test_dataset, criterion, device, output_file="predic
         "logit": all_logits,
         "probability": all_probs,
         "predicted_label": preds,
-        "true_label": all_labels
+        "true_label": all_labels, 
+        "best_threshold": best_threshold 
     })
     
     df.to_csv(output_file, index=False)
     print(f"Predictions saved to {output_file}")
 
-    return total_loss / len(test_dataset), (preds == all_labels).mean(), auc_score
-
+    # return total_loss / len(test_dataset), (preds == all_labels).mean(), auc_score
+ 
 def collate_mil_fn(batch):
     """
     Collates a batch of samples into a batch dictionary for Multiple Instance Learning.
