@@ -7,8 +7,7 @@ import torch.nn as nn
 
 import numpy as np
 from sklearn.metrics import roc_auc_score, precision_recall_curve 
-
-
+import pandas as pd 
 def save_checkpoint(model, optimizer, epoch, best_auc, checkpoint_path="best_mil_model.pth"):
     """
     Saves a model checkpoint.
@@ -251,6 +250,85 @@ def evaluate_mil_classifier(model, test_loader, criterion, device):
 
     return total_loss / len(test_loader), overall_acc, auc_score
 
+# import torch
+# import numpy as np
+# import pandas as pd
+# from sklearn.metrics import roc_auc_score
+
+def predict_and_save(model, test_loader, criterion, device, output_file="predictions.csv"):
+    """
+    Evaluates the MIL model on the test dataset and saves predictions.
+
+    Returns:
+        tuple: (test_loss, test_accuracy, auc_score)
+    """
+    model.eval()
+    total_loss = 0
+    all_file_basenames = []
+    all_labels = []
+    all_logits = []
+    all_probs = []
+
+    with torch.no_grad():
+        for batch in test_loader:
+            features, bag_labels, bag_sizes, file_basenames = (
+                batch["features"].to(device),
+                batch["label"].to(device),
+                batch["bag_sizes"],
+                batch["file_basename"]  # Assuming file_basename is a list of filenames
+            )
+
+            bag_labels = bag_labels.view(-1, 1)  # Reshape labels
+            bag_outputs = model(features, bag_sizes).view(-1, 1)  # Get logits
+
+            loss = criterion(bag_outputs, bag_labels.float())  # Compute loss
+
+            # Convert logits to probabilities
+            probs = torch.sigmoid(bag_outputs)
+
+            # Store results
+            all_file_basenames.extend(file_basenames)  # Store file names as strings
+            all_labels.append(bag_labels.cpu().numpy())
+            all_logits.append(bag_outputs.cpu().numpy())
+            all_probs.append(probs.cpu().numpy())
+
+            total_loss += loss.item()
+
+    # Convert to NumPy efficiently
+    if len(all_labels) == 0:
+        print("⚠ Warning: No test samples were processed.")
+        return float("nan"), float("nan"), float("nan")
+
+    all_labels = np.vstack(all_labels).flatten()
+    all_logits = np.vstack(all_logits).flatten()
+    all_probs = np.vstack(all_probs).flatten()
+
+    # Compute AUC safely
+    if len(np.unique(all_labels)) > 1:
+        auc_score = roc_auc_score(all_labels, all_probs)
+    else:
+        auc_score = 0.5  # Default AUC if only one class exists
+
+    # Find optimal threshold
+    best_threshold = find_best_threshold(all_labels, all_probs)
+
+    # Apply threshold to predictions
+    preds = (all_probs > best_threshold).astype(int)
+
+    # Save predictions
+
+    df = pd.DataFrame({
+        "file_basename": all_file_basenames,
+        "logit": all_logits,
+        "probability": all_probs,
+        "predicted_label": preds,
+        "true_label": all_labels
+    })
+    
+    df.to_csv(output_file, index=False)
+    print(f"Predictions saved to {output_file}")
+
+    return total_loss / len(test_loader), (preds == all_labels).mean(), auc_score
 
 
 def collate_mil_fn(batch):
