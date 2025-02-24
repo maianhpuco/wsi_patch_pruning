@@ -12,25 +12,7 @@ from utils.plotting import (
     rescaling_stat_for_segmentation, 
     min_max_scale, 
     replace_outliers_with_bounds 
-) 
-
-def load_h5_file(h5_path):
-    """
-    Load data from an H5 file.
-    
-    Args:
-        h5_path (str): Path to the H5 file
-    
-    Returns:
-        dict: Dictionary containing the loaded data
-    """
-    dict_data = {}
-    with h5py.File(h5_path, "r") as f:
-        # Load all datasets from the h5 file
-        for key in f.keys():
-            dict_data[key] = f[key][:]
-            
-    return dict_data
+)
 
 def __main__():
     parser = argparse.ArgumentParser()
