@@ -104,3 +104,7 @@ drsig2:
 
 get_ground_truth: 
 	python metrics_segmentation/main_interior_mask.py
+	python metrics_segmentation/main_interior_mask.py
+
+plot_all:
+	

@@ -175,7 +175,6 @@ def plot_image_with_bboxes(basename, SLIDE_PATH, coordinates, scores, figsize=(2
     # Show the plot with both subplots
     plt.show()
 
-
 def plot_heatmap_with_bboxes(
     scale_x,scale_y, 
     new_height, new_width, 
@@ -183,7 +182,9 @@ def plot_heatmap_with_bboxes(
     scores, 
     figsize=(10, 10), 
     name="", 
-    save_path=None):
+    save_path=None,
+    color_bar=True,
+    show_plot=True):
     
     norm_scores = (scores - np.min(scores)) / (np.max(scores) - np.min(scores))
 
@@ -229,7 +230,8 @@ def plot_heatmap_with_bboxes(
     ax.axis('off')
 
     # Add color bar
-    fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
+    if color_bar:
+        fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
 
 
     plt.title(name, fontsize=10, fontweight='bold') 
@@ -241,5 +243,6 @@ def plot_heatmap_with_bboxes(
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         print(f"Saved heatmap to {save_path}")  
  
-    plt.show()
+    if show_plot:
+        plt.show()
 

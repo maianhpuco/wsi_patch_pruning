@@ -66,18 +66,18 @@ def main(args):
         scale_y = new_height / original_height
         h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
         
-        result = {} 
         with h5py.File(h5_file_path, "r") as f:
             coordinates= f['coordinates'][:]
         scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
-        
         plot_path = os.path.join(plot_dir, f'{basename}.png')
         plot_heatmap_with_bboxes(
             scale_x, scale_y, new_height, new_width,
             coordinates,
             scaled_scores,
             name = "",
-            save_path = plot_path
+            save_path = plot_path,
+            color_bar = args.color_bar,
+            show_plot = args.show_plot
         ) 
         print("-> Save the plot at: ", plot_path)
         # scale_x, scale_y, new_height, new_width  
@@ -88,6 +88,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
+    parser.add_argument('--color_bar', type=int, default=1)
+    parser.add_argument('--show_plot', type=int, default=1)
     parser.add_argument('--ig_name', 
                     default='integrated_gradients', 
                     choices=[
@@ -102,7 +104,7 @@ if __name__ == '__main__':
                     help='Choose the attribution method to use.') 
     
     args = parser.parse_args()
-    
+
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
         config = load_config(f'./testbest_config/{args.config_file}.yaml')
         args.use_features = config.get('use_features', True)
