@@ -97,7 +97,8 @@ def main(args):
         std=std, 
         dataset_type='test' 
     )   
-    
+    print("example test ")
+    print(test_dataset[0])
     print("- test dataset" , len(test_dataset)) 
     
     # Define model & optimizer
