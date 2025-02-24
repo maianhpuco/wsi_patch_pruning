@@ -102,8 +102,8 @@ def main(args):
     total_file = len(annotation_list)
     print("total file to process:", total_file)
     for idx, basename in enumerate(annotation_list):
+        print(basename)
         print(f">>> Processing the annotation file number {idx+1}/{total_file}")
-        
         name = basename.split(".")[0]
         h5_path = os.path.join(args.features_h5_path, f"{name}.h5")
         xml_path = os.path.join(args.annotation_path, f"{name}.xml")
@@ -183,6 +183,10 @@ if __name__=="__main__":
         args.sanity_check_path = config.get("SANITY_CHECK_PATH")   
         args.ground_truth_corr_path = config.get("GROUND_TRUTH_CORR_PATH") 
         args.ground_truth_path = config.get("GROUND_TRUTH_PATH") 
+        
+        print("args.ground_truth_corr_path", args.ground_truth_corr_path)
+        print("args.ground_truth_path", args.ground_truth_path)        
+        
         os.makedirs(args.ground_truth_corr_path, exist_ok=True)   
         os.makedirs(args.ground_truth_path, exist_ok=True)    
         os.makedirs(args.sanity_check_path, exist_ok=True) 
