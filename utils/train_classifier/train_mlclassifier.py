@@ -325,7 +325,8 @@ def predict_and_save(model, test_dataset, criterion, device, output_file="predic
         "probability": all_probs,
         "predicted_label": preds,
         "true_label": all_labels, 
-        "best_threshold": best_threshold 
+        "best_threshold": best_threshold, 
+        "correct": (preds == all_labels).astype(int)
     })
     
     df.to_csv(output_file, index=False)
