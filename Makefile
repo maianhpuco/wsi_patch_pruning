@@ -2,9 +2,9 @@
 
 group1: ig eg  
 
-group2: idg cg 
+group2: cg sig 
 
-group3: sig vg sig2  
+group3: vg idg sig2  
 
 ig:
 	@echo "Running with ig_name=integrated_gradient"
@@ -15,11 +15,6 @@ eg:
 	@echo "Running with ig_name=expected_gradient"
 	python main_ig.py --ig_name expected_gradient
 	# python main_plot_ig.py --ig_name expected_gradient
-
-idg:
-	@echo "Running with ig_name=expected_gradient"
-	python main_ig.py --ig_name integrated_decision_gradient
-	# python main_plot_ig.py --ig_name integrated_decision_gradient
 
 cg:
 	@echo "Running with ig_name=contrastive_gradient"
@@ -35,6 +30,12 @@ vg:
 	@echo "Running with ig_name=vanilla_gradient"
 	python main_ig.py --ig_name vanilla_gradient 
 	# python main_plot_ig.py --ig_name vanilla_gradient 
+
+idg:
+	@echo "Running with ig_name=integrated_decision_gradient"
+	python main_ig.py --ig_name integrated_decision_gradient
+	# python main_plot_ig.py --ig_name integrated_decision_gradient
+ 
 
 sig2:
 	@echo "Running with ig_name=optim_square_integrated_gradient"

@@ -60,8 +60,6 @@ from metrics_segmentation.utils_metrics import (
 
 import openslide 
 
-
-
 def read_h5_data(file_path, dataset_name=None):
     data = None
     with h5py.File(file_path, "r") as file:
@@ -87,7 +85,6 @@ def read_h5_data(file_path, dataset_name=None):
     return data 
  
 def main(args):
-
     # Assume that have path of h5 file
     _annotation_list = os.listdir(args.annotation_path)
     _excluded_list = os.listdir(args.ground_truth_corr_path)
@@ -128,9 +125,9 @@ def main(args):
         print("Save the mask into:", mask_save_path)
         np.save(mask_save_path, mask) 
          
-        print("shape of mask", mask.shape)
-        print("sum of mask", np.sum(mask))
-        print(">>> MASK: ", mask[:10]) 
+        # print("shape of mask", mask.shape)
+        # print("sum of mask", np.sum(mask))
+        # print(">>> MASK: ", mask[:10]) 
 
     print("- Check total number of file")
     import glob 

@@ -22,7 +22,8 @@ class ContrastiveGradients(CoreSaliency):
         x_steps = kwargs.get("x_steps", 25) 
         
         attribution_values =  np.zeros_like(x_value, dtype=np.float32)
-        # total_grad =  np.zeros_like(x_value, dtype=np.float32) 
+        # total_grad =  np.zeros_like(x_value, dtype=np.float32)
+         
         alphas = np.linspace(0, 1, x_steps)
         sampled_indices = np.random.choice(baseline_features.shape[0], (1, x_value.shape[0]), replace=True)
         x_baseline_batch = baseline_features[sampled_indices]
