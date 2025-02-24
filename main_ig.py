@@ -218,7 +218,8 @@ if __name__=="__main__":
         args.do_normalizing = True
         args.memmap_path = config.get("MEMMAP_PATH")
         
-    CHECK_POINT_FILE = 'mil_checkpoint_draft.pth' 
+    # CHECK_POINT_FILE = 'mil_checkpoint_draft.pth' 
+    CHECK_POINT_FILE = 'mil_checkpoint_official.pth'   
     main(args) 
    
    

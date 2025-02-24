@@ -151,8 +151,9 @@ class IntegratedDecisionGradients(CoreSaliency):
             # compute slope 
             prev_logit = logit  
 
-            weighted_grad =  gradients_avg * slopes[idx]
+            weighted_grad = gradients_avg * slopes[idx]
             weighted_grad = weighted_grad * alpha_substep_size_np[idx]
+            
             _integrated_gradient += weighted_grad
             
         attribution_values = _integrated_gradient * x_diff.reshape(-1, x_value.shape[1])

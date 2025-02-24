@@ -147,4 +147,6 @@ if __name__ == '__main__':
     
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting_dryrun  .
     # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting_dryrun/optim_square_integrated_gradient .
-    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/ground_truth_mask .  
+    # scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/ground_truth_mask . 
+    
+    #scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/attribution_scores/ . 
