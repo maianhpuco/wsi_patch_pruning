@@ -85,7 +85,7 @@ def main(args):
     print("Image will be plotted at:", args.plot_anno_dir)
     
     if os.path.exists(args.plot_anno_dir):
-        shutil.rmtree(args.plot_anno_dirplot_anno_dir)  # Delete the existing directory
+        shutil.rmtree(args.plot_anno_dir)  # Delete the existing directory
     os.makedirs(args.plot_anno_dir)   
     
     # scale_x, scale_y, new_height, new_width  
@@ -115,4 +115,3 @@ if __name__ == '__main__':
         
      
     main(args) 
-    
