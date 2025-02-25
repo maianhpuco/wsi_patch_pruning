@@ -75,12 +75,12 @@ def main(args):
     all_coordinates = [] 
     # Process all XML files
     for xml_file in file_paths:
-        print(f"Processing XML: {xml_file}")
+        # print(f"Processing XML: {xml_file}")
         all_coordinates.extend(extract_coordinates(xml_file))
 
     # Convert to DataFrame
     df = pd.DataFrame(all_coordinates)  
-    anno_paths = glob.glob(os.path.join(args.anno_, "*."))  
+    anno_paths = glob.glob(os.path.join(args.anno_path, "*."))  
     
     print("Image will be plotted at:", args.plot_anno_dir)
     

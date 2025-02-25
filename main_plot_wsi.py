@@ -60,7 +60,9 @@ if __name__ == '__main__':
         args.gt_path = config.get("GROUND_TRUTH_PATH")
         args.plot_slide_dir = config.get("PLOT_SLIDE") 
         
-        
+
      
     main(args) 
     
+    #scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting_slide
+    #scp -r mvu9@maui.rcdc.uh.edu:/project/hnguyen2/mvu9/camelyon16/plotting_annotation   
