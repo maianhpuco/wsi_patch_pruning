@@ -34,13 +34,12 @@ def main(args):
     Input: h5 file
     Output: save scores into a json folder
     '''
-    print("Folder: ",os.path.join(args.attribution_scores_folder, f'{args.ig_name}'))
-    all_scores_paths = glob.glob(os.path.join(
-        args.attribution_scores_folder, f'{args.ig_name}', "*.npy"))
+    print("Folder: ",os.path.join(args.gt_path))
+    all_scores_paths = glob.glob(os.path.join(args.gt_path, "*.npy"))
         
     print("Number of file in the file", len(all_scores_paths))
     
-    plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
+    plot_dir = os.path.join(args.plot_path, 'ground_truth')    
     
     if os.path.exists(plot_dir):
         shutil.rmtree(plot_dir)  # Delete the existing directory
@@ -79,8 +78,7 @@ def main(args):
             name = "",
             save_path = plot_path
         ) 
-        print("-> Save the plot at: ", plot_path)
-        # scale_x, scale_y, new_height, new_width  
+        print("-> Save the plot at: ", plot_path)        # scale_x, scale_y, new_height, new_width  
 
 
 if __name__ == '__main__':
@@ -88,19 +86,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
-    parser.add_argument('--ig_name', 
-                    default='integrated_gradients', 
-                    choices=[
-                        'integrated_gradient', 
-                        'expected_gradient', 
-                        'integrated_decision_gradient', 
-                        'contrastive_gradient', 
-                        'vanilla_gradient', 
-                        'square_integrated_gradient', 
-                        'optim_square_integrated_gradient'
-                        ],
-                    help='Choose the attribution method to use.') 
-    
+
     args = parser.parse_args()
     
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
@@ -113,13 +99,7 @@ if __name__ == '__main__':
         args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
-        if args.dry_run==1:
-            args.attribution_scores_folder = config.get("SCORE_FOLDER_DRYRUN") 
-            args.plot_path = config.get("PLOT_PATH_DRYRUN")    
-        else: 
-            args.attribution_scores_folder = config.get("SCORE_FOLDER")    
-            args.plot_path = config.get("PLOT_NOBAR_PATH")
-            
+
         print("Attribution folder path", args.attribution_scores_folder) 
         # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         # os.makedirs(args.features_h5_path, exist_ok=True)  
@@ -128,6 +108,7 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
+        args.gt_path = config.get("GROUND_TRUTH_PATH") 
         # args.ig_name = "integrated_gradients"
         
      
