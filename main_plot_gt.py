@@ -100,10 +100,8 @@ if __name__ == '__main__':
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
 
-        print("Attribution folder path", args.attribution_scores_folder) 
         # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
         # os.makedirs(args.features_h5_path, exist_ok=True)  
-        os.makedirs(args.attribution_scores_folder, exist_ok=True) 
         
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
