@@ -56,8 +56,8 @@ import matplotlib.pyplot as plt
 def main(args): 
     # List of image paths and titles
     image_paths = [
-        os.path.join(args.plot_path, f'{args.wsi_name}_raw.png'),
-        os.path.join(args.plot_path, f'{args.wsi_name}_ground_truth.png'),
+        os.path.join(args.plot_path, f'raw/{args.wsi_name}.png'),
+        os.path.join(args.plot_path, f'ground_truth/{args.wsi_name}.png'),
         os.path.join(args.plot_path, f'integrated_gradient/{args.wsi_name}.png'),
         os.path.join(args.plot_path, f'expected_gradient/{args.wsi_name}.png'),
         os.path.join(args.plot_path, f'integrated_decision_gradient/{args.wsi_name}.png'),
@@ -66,7 +66,7 @@ def main(args):
         os.path.join(args.plot_path, f'square_integrated_gradient/{args.wsi_name}.png'),
         os.path.join(args.plot_path, f'optim_square_integrated_gradient/{args.wsi_name}.png'),
     ]
-    titles = ["Raw", "Ground Truth", "Integrated Gradient", "Expected Gradient", "Integrated Decision Gradient", "Contrastive Gradient", "Vanilla Gradient", "Square Integrated Gradient", "Optimized Square Integrated Gradient"]
+    titles = ["Raw", "GT", "IG", "EG", "IDG", "CG", "VG", "S-IG", "OS-IG"]
 
     # Load the first image to set the target size for all images
     first_image = Image.open(image_paths[0])
@@ -96,18 +96,15 @@ def main(args):
 
     plt.savefig(os.path.join(args.plot_path, f'{args.wsi_name}_all.png'), bbox_inches='tight', dpi=100)
     if args.show_plot:
-        plt.show()
-    
-        
-
+        plt.show()        
 
 if __name__ == '__main__':
     # get config 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
     parser.add_argument('--show_plot', type=int, default=0)
     parser.add_argument('--wsi_name', type=str, default='tumor_026')
+    parser.add_argument('--dry_run', type=int, default=0)
     
     args = parser.parse_args()
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):

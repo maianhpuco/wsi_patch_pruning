@@ -107,4 +107,11 @@ get_ground_truth:
 	python metrics_segmentation/main_interior_mask.py
 
 plot_all:
-	
+	python main_plot_raw.py --wsi_name=$(wsi_name) --show_plot=$(show_plot) --config_file=$(config_file) --dry_run=1
+	python main_plot_groundtruth.py --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=integrated_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=expected_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=integrated_decision_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=contrastive_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=square_integrated_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1
+	python main_plot_ig_one_wsi_name.py --ig_name=vanilla_gradient --wsi_name=$(wsi_name) --show_plot=$(show_plot) --color_bar=$(color_bar) --config_file=$(config_file) --dry_run=1

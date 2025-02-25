@@ -64,7 +64,7 @@ def __main__():
     ax.imshow(image_numpy)
     ax.axis('off')
 
-    plt.savefig(os.path.join(args.plot_path, f'{args.wsi_name}_raw.png'), bbox_inches='tight', dpi=100)
+    plt.savefig(os.path.join(args.plot_path, f'raw/{args.wsi_name}.png'), bbox_inches='tight', dpi=100)
     if args.show_plot:
         plt.show()
     
