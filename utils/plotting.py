@@ -32,8 +32,7 @@ def plot_wsi(basename, SLIDE_PATH, save_dir=None, figsize=(20, 20)):
 
     # Save the image if save_path is provided
     save_path = os.path.join(save_dir, f'{basename}.png') if save_dir else None 
-    if save_path:
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    if save_dir:
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         print(f"Saved WSI image to {save_path}")
 
@@ -269,7 +268,7 @@ def plot_heatmap_with_bboxes(
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         print(f"Saved heatmap to {save_path}")  
  
-    plt.show()
+    # plt.show()
 
 def plot_heatmap_with_bboxes_nobar(
     scale_x,scale_y, 
@@ -336,7 +335,7 @@ def plot_heatmap_with_bboxes_nobar(
         plt.savefig(save_path, bbox_inches='tight', dpi=100)
         print(f"Saved heatmap to {save_path}")  
  
-    plt.show()
+    # plt.show()
 
 
 
@@ -366,7 +365,7 @@ def scale_and_filter_mask(df_mask, basename, scale_x, scale_y):
 
     return mask_data
 
-def plot_anno_with_mask(basename, SLIDE_PATH, df_mask, save_path=None, figsize=(20, 20)):
+def plot_anno_with_mask(basename, SLIDE_PATH, df_mask, save_dir=None, figsize=(20, 20)):
     """
     Plots the downscaled slide image and overlays the mask from the XML annotation.
 
@@ -403,14 +402,8 @@ def plot_anno_with_mask(basename, SLIDE_PATH, df_mask, save_path=None, figsize=(
     # Plot mask points with tqdm progress bar
     for _, row in tqdm(mask_data.iterrows(), total=len(mask_data), desc="Plotting Mask Points"):
         ax.scatter(row["X"], row["Y"], color='yellow', s=1, alpha=0.6)
-     # Save the heatmap
-    if save_path:
-        save_dir = os.path.dirname(save_path)
-        if save_dir:  # Ensure save_dir is not an empty string (for root files)
-            os.makedirs(save_dir, exist_ok=True)
-        plt.savefig(save_path, bbox_inches='tight', dpi=100)
-        print(f"Saved heatmap to {save_path}") 
 
-    # plt.title(f"Slide: {basename} with Mask Overlay")
-    # plt.show()
- 
+    save_path = os.path.join(save_dir, f'{basename}.png') if save_dir else None 
+    if save_dir:
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
+        print(f"Saved WSI image to {save_path}")
