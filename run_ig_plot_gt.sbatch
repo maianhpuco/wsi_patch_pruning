@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=group1
-#SBATCH --output=group1.log
+#SBATCH --job-name=plot_nobar
+#SBATCH --output=plot_nobar.log
 #SBATCH --gres=gpu:1
 #SBATCH --mem=24G
 #SBATCH --time=24:00:00
