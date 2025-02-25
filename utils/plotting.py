@@ -11,6 +11,32 @@ from skimage.transform import resize
 import os 
 from tqdm import tqdm  
 
+def plot_wsi(basename, SLIDE_PATH, save_dir=None, figsize=(20, 20)):
+    slide_path = os.path.join(SLIDE_PATH, f'{basename}.tif')
+
+    # Open slide image using OpenSlide
+    slide = openslide.open_slide(slide_path)
+
+    # Rescale and downscale the slide
+    downsample_factor, new_width, new_height, original_width, original_height = rescaling_stat_for_segmentation(slide, downsampling_size=1096)
+    image_numpy = downscaling(slide, new_width, new_height)
+
+    # Create figure & axis (no list, only one subplot)
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Display the WSI image
+    ax.imshow(image_numpy)
+    ax.axis('off')  # Hide axes
+
+    # Save the image if save_path is provided
+    save_path = os.path.join(save_dir, f'{basename}.png') if save_dir else None 
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
+        print(f"Saved WSI image to {save_path}")
+
+    # plt.show() 
+
 def min_max_scale(array):
     min_val = np.min(array)
     max_val = np.max(array)
