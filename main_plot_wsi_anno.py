@@ -80,7 +80,7 @@ def main(args):
 
     # Convert to DataFrame
     df = pd.DataFrame(all_coordinates)  
-    anno_paths = glob.glob(os.path.join(args.anno_path, "*."))  
+    anno_paths = glob.glob(os.path.join(args.anno_path, "*.xml"))  
     
     print("Image will be plotted at:", args.plot_anno_dir)
     
