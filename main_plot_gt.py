@@ -108,7 +108,8 @@ if __name__ == '__main__':
         args.batch_size = config.get('batch_size')
         args.feature_extraction_model = config.get('feature_extraction_model')
         args.device = "cuda" if torch.cuda.is_available() else "cpu"
-        args.gt_path = config.get("GROUND_TRUTH_PATH") 
+        args.gt_path = config.get("GROUND_TRUTH_PATH")
+        args.plot_path  = config.get("PLOT_NOBAR_PATH") 
         # args.ig_name = "integrated_gradients"
         
      
