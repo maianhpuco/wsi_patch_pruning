@@ -11,6 +11,8 @@ from skimage.transform import resize
 import os 
 from tqdm import tqdm  
 
+
+
 def plot_wsi(basename, SLIDE_PATH, save_dir=None, figsize=(20, 20)):
     slide_path = os.path.join(SLIDE_PATH, f'{basename}.tif')
 
@@ -336,3 +338,79 @@ def plot_heatmap_with_bboxes_nobar(
  
     plt.show()
 
+
+
+
+def scale_and_filter_mask(df_mask, basename, scale_x, scale_y):
+    """
+    Scale mask coordinates, convert to integers, and remove duplicates.
+
+    Arguments:
+    - df_mask: DataFrame containing mask coordinates.
+    - basename: The slide name (without extension) to filter the DataFrame.
+    - scale_x: Scaling factor for X-coordinates.
+    - scale_y: Scaling factor for Y-coordinates.
+
+    Returns:
+    - A DataFrame with scaled integer coordinates and duplicates removed.
+    """
+    # Filter mask data for the given slide
+    mask_data = df_mask[df_mask["File"] == f"{basename}.xml"].copy()
+
+    # Scale the X and Y coordinates and convert them to integers
+    mask_data["X"] = (mask_data["X"].astype(float) * scale_x).astype(int)
+    mask_data["Y"] = (mask_data["Y"].astype(float) * scale_y).astype(int)
+
+    # Remove duplicates based on integer X and Y values
+    mask_data = mask_data.drop_duplicates(subset=["X", "Y"])
+
+    return mask_data
+
+def plot_anno_with_mask(basename, SLIDE_PATH, df_mask, save_path=None, figsize=(20, 20)):
+    """
+    Plots the downscaled slide image and overlays the mask from the XML annotation.
+
+    Arguments:
+    - basename: The filename (without extension) of the slide.
+    - SLIDE_PATH: The path where slide images are stored.
+    - df_mask: DataFrame containing mask coordinates (extracted from XML).
+    - figsize: Size of the plot.
+    """
+
+    slide_path = os.path.join(SLIDE_PATH, f'{basename}.tif')
+
+    # Open slide image using OpenSlide
+    slide = openslide.open_slide(slide_path)
+
+    # Compute downsampling and dimensions
+    downsample_factor, new_width, new_height, original_width, original_height = rescaling_stat_for_segmentation(slide, downsampling_size=1096)
+
+    # Downscale the slide
+    image_numpy = downscaling(slide, new_width, new_height)
+    scale_x = new_width / original_width
+    scale_y = new_height / original_height
+
+    # Apply scaling and remove duplicates in the DataFrame
+    mask_data = scale_and_filter_mask(df_mask, basename, scale_x, scale_y)
+
+    # Set up figure
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Display the downscaled image
+    ax.imshow(image_numpy)
+    ax.axis('off')
+
+    # Plot mask points with tqdm progress bar
+    for _, row in tqdm(mask_data.iterrows(), total=len(mask_data), desc="Plotting Mask Points"):
+        ax.scatter(row["X"], row["Y"], color='yellow', s=1, alpha=0.6)
+     # Save the heatmap
+    if save_path:
+        save_dir = os.path.dirname(save_path)
+        if save_dir:  # Ensure save_dir is not an empty string (for root files)
+            os.makedirs(save_dir, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
+        print(f"Saved heatmap to {save_path}") 
+
+    # plt.title(f"Slide: {basename} with Mask Overlay")
+    # plt.show()
+ 
