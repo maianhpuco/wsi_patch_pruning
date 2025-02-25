@@ -65,16 +65,16 @@ def main(args):
         scale_y = new_height / original_height
         h5_file_path = os.path.join(args.features_h5_path, f'{basename}.h5') 
         
-        result = {} 
         with h5py.File(h5_file_path, "r") as f:
             coordinates= f['coordinates'][:]
-        scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
+        
+        # scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
         
         plot_path = os.path.join(plot_dir, f'{basename}.png')
         plot_heatmap_with_bboxes_nobar(
             scale_x, scale_y, new_height, new_width,
             coordinates,
-            scaled_scores,
+            scores_array,
             name = "",
             save_path = plot_path
         ) 
