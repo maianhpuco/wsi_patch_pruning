@@ -27,4 +27,4 @@ GROUND_TRUTH_CORR_PATH: '/project/hnguyen2/mvu9/camelyon16/ground_truth_corr_ver
 GROUND_TRUTH_PATH: '/project/hnguyen2/mvu9/camelyon16/ground_truth_mask_ver2' 
 PRED_PATH: '/project/hnguyen2/mvu9/camelyon16/pred_on_testset.csv' 
 PLOT_NOBAR_PATH: '/project/hnguyen2/mvu9/camelyon16/plotting_nobar'
-PLOT_SLIDE: '/project/hnguyen2/mvu9/camelyon16/plotting_slide
+PLOT_SLIDE: '/project/hnguyen2/mvu9/camelyon16/plotting_slide'
