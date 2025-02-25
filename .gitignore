@@ -15,6 +15,7 @@ data/camelyon16_features/*
 env/ 
 
 backup/
+all_datas 
 
 data/test.py
 utils/train_bk.py

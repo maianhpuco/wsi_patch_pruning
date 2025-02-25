@@ -243,3 +243,70 @@ def plot_heatmap_with_bboxes(
  
     plt.show()
 
+def plot_heatmap_with_bboxes_nobar(
+    scale_x,scale_y, 
+    new_height, new_width, 
+    coordinates, 
+    scores, 
+    figsize=(10, 10), 
+    name="", 
+    save_path=None):
+    
+    norm_scores = (scores - np.min(scores)) / (np.max(scores) - np.min(scores))
+
+    # Define colormap
+    # cmap = cm.get_cmap('coolwarm')
+    cmap=cm.get_cmap('jet')
+    norm = plt.Normalize(vmin=np.min(scores), vmax=np.max(scores))
+
+    # Create a figure for the heatmap
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Create a white background
+    white_background = np.ones((new_height, new_width, 3))
+    ax.imshow(white_background)
+
+    # Iterate through bounding boxes and draw semi-transparent colored rectangles
+    for i, bbox in tqdm(enumerate(coordinates), total=len(coordinates), desc="Plotting Bounding Boxes"):
+    # for i, bbox in enumerate(coordinates):
+        ymax, xmax, ymin, xmin = bbox.astype('int')
+
+        # Scale bounding box coordinates
+        scaled_xmin = xmin * scale_x
+        scaled_xmax = xmax * scale_x
+        scaled_ymin = ymin * scale_y
+        scaled_ymax = ymax * scale_y
+
+        # Get the color based on the normalized score
+        color = cmap(norm_scores[i])
+
+        # Create a semi-transparent bounding box
+        rect = patches.Rectangle(
+            (scaled_xmin, scaled_ymin),
+            scaled_xmax - scaled_xmin,
+            scaled_ymax - scaled_ymin,
+            linewidth=0.5,
+            edgecolor=color,
+            facecolor=color,
+            alpha=0.5  # Transparency
+        )
+        ax.add_patch(rect)
+
+    # Hide axes for better visualization
+    ax.axis('off')
+
+    # Add color bar
+    fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
+
+
+    plt.title(name, fontsize=10, fontweight='bold') 
+    # Show the heatmap
+    if save_path:
+        save_dir = os.path.dirname(save_path)
+        if save_dir:  # Ensure save_dir is not an empty string (for root files)
+            os.makedirs(save_dir, exist_ok=True)
+        plt.savefig(save_path, bbox_inches='tight', dpi=100)
+        print(f"Saved heatmap to {save_path}")  
+ 
+    plt.show()
+

@@ -17,7 +17,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader 
 from utils.utils import load_config
 from utils.plotting import (
-    plot_heatmap_with_bboxes,
+    plot_heatmap_with_bboxes_nobar,
     get_region_original_size,
     downscaling,
     rescaling_stat_for_segmentation, 
@@ -72,7 +72,7 @@ def main(args):
         scaled_scores = min_max_scale(replace_outliers_with_bounds(scores_array.copy()))
         
         plot_path = os.path.join(plot_dir, f'{basename}.png')
-        plot_heatmap_with_bboxes(
+        plot_heatmap_with_bboxes_nobar(
             scale_x, scale_y, new_height, new_width,
             coordinates,
             scaled_scores,
@@ -118,7 +118,7 @@ if __name__ == '__main__':
             args.plot_path = config.get("PLOT_PATH_DRYRUN")    
         else: 
             args.attribution_scores_folder = config.get("SCORE_FOLDER")    
-            args.plot_path = config.get("PLOT_PATH")
+            args.plot_path = config.get("PLOT_NOBAR_PATH")
             
         print("Attribution folder path", args.attribution_scores_folder) 
         # args.attribution_scores_folder = config.get("SCORE_FOLDER")    
