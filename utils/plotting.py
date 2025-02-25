@@ -296,7 +296,7 @@ def plot_heatmap_with_bboxes_nobar(
     ax.axis('off')
 
     # Add color bar
-    fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
+    # fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax, label='Score Value')
 
 
     plt.title(name, fontsize=10, fontweight='bold') 
