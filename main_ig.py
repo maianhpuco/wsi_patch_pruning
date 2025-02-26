@@ -88,14 +88,11 @@ def main(args):
     attribution_method = AttrMethod()   
     
     score_save_path = os.path.join(args.attribution_scores_folder, f'{args.ig_name}') 
-    print("score_save_path", score_save_path)
-    if os.path.exists(score_save_path):
-        shutil.rmtree(score_save_path)  # Delete the existing directory
-    os.makedirs(score_save_path)    
+    # print("score_save_path", score_save_path)
+    # if os.path.exists(score_save_path):
+    #     shutil.rmtree(score_save_path)  # Delete the existing directory
+    # os.makedirs(score_save_path)    
     
-    if os.path.exists(score_save_path):
-        shutil.rmtree(score_save_path)  # Delete the existing directory
-    os.makedirs(score_save_path) 
 
     checkpoint_path = os.path.join(args.checkpoints_dir, f'{CHECK_POINT_FILE}')
     mil_model = load_model(checkpoint_path)
@@ -111,7 +108,8 @@ def main(args):
         basenames = [] 
         for basename in os.listdir(args.slide_path):
             basename = basename.split(".")[0]
-            if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
+            if basename.startwith('normal_'): 
+            # if basename.startswith(('tumor_', 'test_')):  # Check if it starts with either prefix
                 basenames.append(basename)
         
         dataset = IG_dataset(
@@ -124,6 +122,7 @@ def main(args):
         with h5py.File(args.feature_mean_std_path, "r") as f:
             mean = f["mean"][:]
             std = f["std"][:]
+            
     print(">>>>>>>>>----- Total number of sample in dataset:", len(dataset)) 
     
     for idx, data in enumerate(dataset):
