@@ -200,7 +200,7 @@ def plot_image_with_bboxes(basename, SLIDE_PATH, coordinates, scores, figsize=(2
     fig.colorbar(cm.ScalarMappable(cmap=cmap, norm=norm), ax=ax2, label='Score Value')
 
     # Show the plot with both subplots
-    plt.show()
+    # plt.show()
 
 
 def plot_heatmap_with_bboxes(
