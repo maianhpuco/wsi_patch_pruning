@@ -42,7 +42,7 @@ def main(args):
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
     
-    basename_already_plotted = [i.split(".")[0] for i in os.listdir(os.path.join(plot_dir, "*.png"))] 
+    basename_already_plotted = [i.split(".")[0] for i in os.listdir(plot_dir)] 
     
     print("Number of already plotted", len(basename_already_plotted)) 
     scores_path_to_plot = [] 

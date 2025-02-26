@@ -1,5 +1,6 @@
 .PHONY: all ig eg gg cg
 
+
 group1: ig eg  
 
 group2: cg sig 
