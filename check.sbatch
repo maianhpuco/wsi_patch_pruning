@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=plot_cg
-#SBATCH --output=plot_nobar_cg.log
+#SBATCH --job-name=check
+#SBATCH --output=check.log
 #SBATCH --gres=gpu:1
 #SBATCH --mem=24G
 #SBATCH --time=24:00:00
