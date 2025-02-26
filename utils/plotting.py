@@ -401,7 +401,7 @@ def plot_anno_with_mask(basename, SLIDE_PATH, df_mask, save_dir=None, figsize=(2
 
     # Plot mask points with tqdm progress bar
     for _, row in tqdm(mask_data.iterrows(), total=len(mask_data), desc="Plotting Mask Points"):
-        ax.scatter(row["X"], row["Y"], color='yellow', s=1, alpha=0.6)
+        ax.scatter(row["X"], row["Y"], color='yellow', s=3, alpha=0.6)
 
     save_path = os.path.join(save_dir, f'{basename}.png') if save_dir else None 
     if save_dir:
