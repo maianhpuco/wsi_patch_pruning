@@ -52,18 +52,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dry_run', type=int, default=0)
     parser.add_argument('--config_file', default='ma_exp002')
-    parser.add_argument('--ig_name', 
-                    default='integrated_gradients', 
-                    choices=[
-                        'integrated_gradient', 
-                        'expected_gradient', 
-                        'integrated_decision_gradient', 
-                        'contrastive_gradient', 
-                        'vanilla_gradient', 
-                        'square_integrated_gradient', 
-                        'optim_square_integrated_gradient'
-                        ],
-                    help='Choose the attribution method to use.') 
+
     
     args = parser.parse_args()
     

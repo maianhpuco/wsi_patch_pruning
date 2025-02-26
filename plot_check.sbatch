@@ -10,6 +10,5 @@ conda activate camil
 
 export PROJECT_DIR=$(pwd) 
 
-echo "Running with ig_name=contrastive_gradient"
-python main_plot_ig_nobar.py --ig_name contrastive_gradient 
+python main_check.py 
 
