@@ -42,12 +42,22 @@ def main(args):
     
     plot_dir = os.path.join(args.plot_path, f'{args.ig_name}')    
     
-    if os.path.exists(plot_dir):
-        shutil.rmtree(plot_dir)  # Delete the existing directory
-    os.makedirs(plot_dir)  
+    basename_already_plotted = [i.split(".")[0] for i in os.listdir(os.path.join(plot_dir, "*.png"))] 
+    
+    print("Number of already plotted", len(basename_already_plotted)) 
+    scores_path_to_plot = [] 
+    for numpy_path in all_scores_paths:
+        _basename = os.path.basename(numpy_path).split(".")[0] 
+        if _basename not in basename_already_plotted:
+            scores_path_to_plot.append(numpy_path)
+    
+    print("Number of file to plot", len(scores_path_to_plot))  
+    # if os.path.exists(plot_dir):
+    #     shutil.rmtree(plot_dir)  # Delete the existing directory
+    # os.makedirs(plot_dir)  
         
-    for idx, scores_path in enumerate(all_scores_paths):
-        print(f"Print the plot {idx+1}/{len(all_scores_paths)}")
+    for idx, scores_path in enumerate(scores_path_to_plot):
+        print(f"Print the plot {idx+1}/{len(scores_path_to_plot)}")
         print(scores_path)
         scores_array = np.load(scores_path)
         print("scores array shape", scores_array.shape)
