@@ -1,5 +1,21 @@
 .PHONY: all ig eg gg cg
 
+SIMEA_CHECKPOINT_FOLDER=/home/mvu9/processing_datasets/camelyon16/checkpoints
+CHECKPOINT_FILE=mil_checkpoint_exp002.pth
+SIMEA_CONFIG_FILE=simea_ma_exp002
+
+
+classifing: 
+	python main.py \
+		--config_file $(CONFIG_FILE) \
+		--checkpoint_folder $(SIMEA_CHECKPOINT_FOLDER) \
+		--checkpoint_file $(CHECKPOINT_FILE) 
+
+predicting:
+	python main_predict.py \
+		--config_file $(CONFIG_FILE) \
+		--checkpoint_folder $(SIMEA_CHECKPOINT_FOLDER) \
+		--checkpoint_file $(CHECKPOINT_FILE) 
 
 group1: ig eg  
 

@@ -1,0 +1,33 @@
+SLIDE_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/images'
+JSON_PATH: '/home/mvu9/processing_datasets/camelyon16/json_files_v2' # replace your path 
+SPIXEL_PATH: '/home/mvu9/processing_datasets/camelyon16/spixel_paths'
+PATCH_PATH: '/home/mvu9/processing_datasets/camelyon16/patch_paths'
+
+FEATURES_H5_PATH: '/home/mvu9/processing_datasets/camelyon16/features_h5_files' 
+CHECKPOINT_PATH: '/home/mvu9/processing_datasets/camelyon16/checkpoints'
+IMPORTANT_SCORES_PATH: '/home/mvu9/processing_datasets/camelyon16/important_scores_path'
+IMPORTANT_SCORES_PATH2: '/home/mvu9/processing_datasets/camelyon16/important_scores_path2' 
+PLOT_PATH: '/home/mvu9/processing_datasets/camelyon16/plotting'
+FEATURE_MEAN_STD_PATH: '/home/mvu9/processing_datasets/camelyon16/feature_mean_std_path/mean_std.h5'
+ANNOTATION_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/annotations'
+LABEL_PATH: '/project/hnguyen2/hqvo3/Datasets/digital_pathology/public/CAMELYON16/evaluation/reference.csv'
+SPLIT_PATH: '/home/mvu9/processing_datasets/camelyon16/camelyon_csv_splits/splits_3.csv'
+
+batch_size: 256
+patch_size: 224 
+feature_extraction_model: 'vit_base_patch16_224'
+
+SANITY_CHECK_PATH: '/home/mvu9/processing_datasets/camelyon16/sanity_check'  
+PLOT_PATH_DRYRUN: '/home/mvu9/processing_datasets/camelyon16/plotting_dryrun'
+
+SCORE_FOLDER_DRYRUN: '/home/mvu9/processing_datasets/camelyon16/attribution_scores_dryrun'  
+MEMMAP_PATH:  '/home/mvu9/processing_datasets/camelyon16/memmap'
+
+SCORE_FOLDER: '/home/mvu9/processing_datasets/camelyon16/attribution_scores' 
+GROUND_TRUTH_CORR_PATH: '/home/mvu9/processing_datasets/camelyon16/ground_truth_corr'    
+GROUND_TRUTH_PATH: '/home/mvu9/processing_datasets/camelyon16/ground_truth_mask'
+ 
+PRED_PATH: '/home/mvu9/processing_datasets/camelyon16/pred_on_testset.csv' 
+PLOT_NOBAR_PATH: '/home/mvu9/processing_datasets/camelyon16/plotting_nobar'
+PLOT_SLIDE: '/home/mvu9/processing_datasets/camelyon16/plotting_slide'
+PLOT_ANNO: '/home/mvu9/processing_datasets/camelyon16/plotting_annotation' 

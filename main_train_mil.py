@@ -157,8 +157,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser() 
     parser.add_argument('--dry_run', type=bool, default=False)
     parser.add_argument('--config_file', default=arg_file_name)
+    parser.add_argument('--checkpoint_file', type=str, default='mil_checkpoint_official.pth',
+                    help='Filename for saving/loading the MIL model checkpoint')
+
+    parser.add_argument('--checkpoint_folder', type=str)
     args = parser.parse_args()
-    
+    checkpoint_path = os.path.join(args.checkpoint_folder, args.args.checkpoint_file)
+
     if os.path.exists(f'./testbest_config/{args.config_file}.yaml'):
         config = load_config(f'./testbest_config/{args.config_file}.yaml')
         args.use_features = config.get('use_features', True)
@@ -181,6 +186,7 @@ if __name__ == '__main__':
     
     # CHECK_POINT_FILE = 'mil_checkpoint.pth' 
     # CHECK_POINT_FILE = 'mil_checkpoint_draft.pth'
-    CHECK_POINT_FILE = 'mil_checkpoint_official.pth'  
+    # CHECK_POINT_FILE = 'mil_checkpoint_official.pth'  
     
     main(args)
+    # python main.py --config_file ma_exp002 --checkpoint_folder /home/mvu9/processing_datasets/camelyon16/checkpoints --checkpoint_file mil_checkpoint_exp002.pth

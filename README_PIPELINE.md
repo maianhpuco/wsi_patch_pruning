@@ -1,0 +1,46 @@
+
+### Preprocessing into patches: 
+
+
+### Train mil classifier: 
+- input: 
+    FEATURES_H5_PATH: path/to/h5/features
+    FEATURE_MEAN_STD_PATH: path/to/save/mean_std.h5
+    SPLIT_PATH: path/to/split.csv
+    CHECKPOINT_PATH: path/to/save/checkpoints
+    PATCH_PATH: path/to/patches
+    SLIDE_PATH: path/to/slides
+    JSON_PATH: path/to/json
+    SPIXEL_PATH: path/to/superpixels
+    batch_size: 64
+    feature_extraction_model: 'some_model'
+
+- output: /path/to/checkpoints/mil_checkpoint_exp002.pth
+- run: 
+ 
+```
+make classifing 
+```
+
+### PREDICT: predict on test set and return the result 
+- input: 
+    FEATURES_H5_PATH	Directory containing .h5 feature files per WSI
+    FEATURE_MEAN_STD_PATH	Path to store or load mean/std stats
+    SPLIT_PATH	CSV file specifying which WSIs belong to test/val
+    CHECKPOINT_PATH	Folder containing model checkpoints
+    PRED_PATH	Path to save test predictions
+    batch_size	Batch size for evaluation
+    Others (optional)	Slide path, patch path, etc.
+- output: <PRED_PATH> 
+
+```
+make predicting 
+```
+
+### Get IG from classification
+
+```
+make group1 
+make group2 
+make group3 
+``` 

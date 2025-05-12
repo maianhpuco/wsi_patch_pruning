@@ -152,7 +152,7 @@ def main(args):
             "memmap_path": args.memmap_path, 
             "x_steps": 50,  
         }  
-            
+ 
         attribution_values = attribution_method.GetMask(**kwargs) 
         scores = attribution_values.mean(1)
         _save_path = os.path.join(score_save_path, f'{basename}.npy')
@@ -185,9 +185,9 @@ if __name__=="__main__":
         args.use_features = config.get('use_features', True)
         
         args.slide_path = config.get('SLIDE_PATH')
-        args.json_path = config.get('JSON_PATH')
-        args.spixel_path = config.get('SPIXEL_PATH')
-        args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
+        # args.json_path = config.get('JSON_PATH')
+        # args.spixel_path = config.get('SPIXEL_PATH')
+        # args.patch_path = config.get('PATCH_PATH') # save all the patch (image)
         args.features_h5_path = config.get("FEATURES_H5_PATH") # save all the features
         args.checkpoints_dir = config.get("CHECKPOINT_PATH")
         if args.dry_run==1:
