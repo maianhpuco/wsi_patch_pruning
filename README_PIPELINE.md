@@ -1,5 +1,6 @@
 
 ### Preprocessing into patches: 
+if we have to preprocessing: should be similar to this (but need to replace data with Camelyon16):  https://github.com/maianhpuco/wsi-data 
 
 
 ### Train mil classifier: 
@@ -44,3 +45,8 @@ make group1
 make group2 
 make group3 
 ``` 
+
+
+### TABLE
+in this folder: 
+https://drive.google.com/drive/folders/1Y9Rx7ibHpCXtR30aSRHXvw26vvM3uZE7 
